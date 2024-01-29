@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 
 export type BlogPageConfig = {
   titlePrefix?: string;
+  description?: string;
   readMore?: ReactNode;
   head?: ({
     meta,
