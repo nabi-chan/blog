@@ -1,7 +1,7 @@
 import Head from "next/head";
 import type { ReactNode } from "react";
-import { useRef } from "react";
 import { useBlogContext } from "../contexts/blogContext";
+import Link from "next/link";
 
 export const BasicLayout = ({ children }: { children: ReactNode }) => {
   const { config, opts } = useBlogContext();
@@ -15,7 +15,15 @@ export const BasicLayout = ({ children }: { children: ReactNode }) => {
       </Head>
 
       <header className="prose-h1:nx-mb-0 prose-p:nx-mt-2 prose-p:text-xs">
-        <h1>{opts.title}</h1>
+        {(!opts.frontMatter.layout || opts.frontMatter.layout === "post") && (
+          <Link href="/" className="nx-mb-4 nx-inline-block">
+            {`🏠 돌아가기`}
+          </Link>
+        )}
+
+        <h1>
+          {opts.frontMatter.icon ?? "📝"} {opts.title}
+        </h1>
         <p>{opts.frontMatter?.description}</p>
       </header>
 

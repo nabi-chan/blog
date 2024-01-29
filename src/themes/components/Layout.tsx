@@ -13,7 +13,7 @@ const layoutMap = {
 
 function BlogLayout({ children }: { children: ReactNode }) {
   const { opts } = useBlogContext();
-  const Layout = layoutMap[opts.frontMatter.layout ?? "page"];
+  const Layout = layoutMap[opts.frontMatter.layout ?? "post"];
 
   if (!Layout) {
     throw new Error(

@@ -4,8 +4,10 @@ import { BasicLayout } from "./Basic";
 
 export function PostLayout({ children }: { children: ReactNode }) {
   return (
-    <BasicLayout>
-      <MDXTheme>{children}</MDXTheme>
-    </BasicLayout>
+    <>
+      <BasicLayout>
+        <MDXTheme>{children}</MDXTheme>
+      </BasicLayout>
+    </>
   );
 }
