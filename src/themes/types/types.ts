@@ -26,6 +26,8 @@ export type BlogFrontMatter = {
   description?: string;
   tag?: string | string[];
   title?: string;
+  icon?: string;
+  image?: string;
   layout?: PageLayout;
 };
 
