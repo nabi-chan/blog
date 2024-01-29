@@ -8,6 +8,7 @@ import Link from "next/link";
 import getTags from "../utils/get-tags";
 import { formatRelative } from "date-fns";
 import { ko } from "date-fns/locale";
+import { dateWithoutTimezone } from "../utils/date";
 
 export function PostsLayout({ children }: { children: ReactNode }) {
   const { config, opts } = useBlogContext();
@@ -28,7 +29,7 @@ export function PostsLayout({ children }: { children: ReactNode }) {
 
     const postTitle = post.frontMatter?.title || post.name;
     const date: Date | null = post.frontMatter?.date
-      ? new Date(post.frontMatter.date)
+      ? dateWithoutTimezone(post.frontMatter.date)
       : null;
     const description = post.frontMatter?.description;
 
