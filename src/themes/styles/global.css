@@ -25,6 +25,14 @@ h1 {
   letter-spacing: -0.03em;
 }
 
+p {
+  white-space: pre-wrap;
+}
+
+.nx-prose p {
+  @apply nx-my-1;
+}
+
 .nx-prose code {
   &:before,
   &:after {
