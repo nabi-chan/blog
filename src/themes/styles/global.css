@@ -13,7 +13,7 @@ body {
   @apply nx-px-4;
 }
 
-article {
+main {
   @apply nx-mx-auto nx-block nx-pt-20 nx-pb-32;
 }
 
