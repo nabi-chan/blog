@@ -34,7 +34,7 @@ export function PostsLayout({ children }: { children: ReactNode }) {
     const description = post.frontMatter?.description;
 
     return (
-      <div key={post.route} className="post-item">
+      <div key={post.route} className="post-item nx-mb-8">
         <h2 className="!nx-m-0">
           <Link href={post.route} passHref legacyBehavior>
             <a className="!nx-no-underline nx-font-bold">
