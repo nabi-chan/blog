@@ -3,9 +3,11 @@ import { NextraThemeLayoutProps } from "nextra";
 import { BlogProvider, useBlogContext } from "Themes/contexts/blogContext";
 import { BaseLayout } from "Themes/layouts/Base";
 import { Blog as blogConfig } from "@/constants/blog";
+import { PostsLayout } from "Themes/layouts/Posts";
 
 const layoutMap = {
   default: BaseLayout,
+  posts: PostsLayout,
 };
 
 function BlogLayout({ children }: { children: ReactNode }) {
