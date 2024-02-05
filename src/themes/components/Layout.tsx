@@ -4,10 +4,12 @@ import { BlogProvider, useBlogContext } from "Themes/contexts/blogContext";
 import { Blog as blogConfig } from "@/constants/blog";
 import { PostsLayout } from "Themes/layouts/Posts";
 import { PageLayout } from "Themes/layouts/Page";
+import { PostLayout } from "Themes/layouts/Post";
 
 const layoutMap = {
   default: PageLayout,
   posts: PostsLayout,
+  post: PostLayout,
 };
 
 function BlogLayout({ children }: { children: ReactNode }) {
