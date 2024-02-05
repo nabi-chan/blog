@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
 import { NextraThemeLayoutProps } from "nextra";
 import { BlogProvider, useBlogContext } from "Themes/contexts/blogContext";
-import { BaseLayout } from "Themes/layouts/Base";
 import { Blog as blogConfig } from "@/constants/blog";
 import { PostsLayout } from "Themes/layouts/Posts";
+import { PageLayout } from "Themes/layouts/Page";
 
 const layoutMap = {
-  default: BaseLayout,
+  default: PageLayout,
   posts: PostsLayout,
 };
 
