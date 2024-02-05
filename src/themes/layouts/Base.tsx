@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
-import { useBlogContext } from "Themes/contexts/blogContext";
 import { Head } from "Themes/components/Head";
+import { Header } from "Themes/components/Header";
+import { Footer } from "Themes/components/Footer";
 
 interface BaseLayoutProps {
   children: ReactNode;
@@ -10,7 +11,9 @@ export function BaseLayout({ children }: BaseLayoutProps) {
   return (
     <>
       <Head />
+      <Header />
       <main className="container mx-auto px-8">{children}</main>
+      <Footer />
     </>
   );
 }
