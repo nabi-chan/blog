@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Head } from "Themes/components/Head";
 import { Header } from "Themes/components/Header";
 import { Footer } from "Themes/components/Footer";
+import { MDXRenderer } from "Themes/components/MdxRenderer";
 
 interface BaseLayoutProps {
   children: ReactNode;
@@ -12,7 +13,9 @@ export function BaseLayout({ children }: BaseLayoutProps) {
     <>
       <Head />
       <Header />
-      <main className="container mx-auto px-8">{children}</main>
+      <main className="container mx-auto px-8">
+        <MDXRenderer>{children}</MDXRenderer>
+      </main>
       <Footer />
     </>
   );
