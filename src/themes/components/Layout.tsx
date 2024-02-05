@@ -1,14 +1,16 @@
 import { ReactNode } from "react";
 import { NextraThemeLayoutProps } from "nextra";
 import { BlogProvider, useBlogContext } from "Themes/contexts/blogContext";
+import { BaseLayout } from "Themes/layouts/Base";
+import { Blog as blogConfig } from "@/constants/blog";
 
 const layoutMap = {
-  page: ({ children }: { children: ReactNode }) => <>{children}</>,
+  default: BaseLayout,
 };
 
 function BlogLayout({ children }: { children: ReactNode }) {
   const { opts } = useBlogContext();
-  const Layout = layoutMap[opts.frontMatter.layout ?? "page"];
+  const Layout = layoutMap[opts.frontMatter.layout ?? "default"];
 
   if (!Layout) {
     throw new Error(

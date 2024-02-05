@@ -1,14 +1,27 @@
 import { Blog } from "@/constants/blog";
 import type { PageOpts } from "nextra";
 
-export type BlogPageOpts = PageOpts<BlogFrontMatter>;
+type PageLayout = "default";
 
-type PageLayout = "page";
+export type FrontMatter = {
+  // 메타데이터
+  title?: string;
+  description?: string;
+  image?: string;
 
-export type BlogFrontMatter = {
+  // 블로그 컨텐츠
+  icon?: string;
+  date?: string;
+
+  // 태그, 시리즈
+  tags?: string | string[];
+  series?: string;
+
+  // 페이지 레이아웃
   layout?: PageLayout;
 };
 
+export type BlogPageOpts = PageOpts<FrontMatter>;
 export interface LayoutProps {
   config: typeof Blog;
   opts: BlogPageOpts;
