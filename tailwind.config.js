@@ -11,14 +11,12 @@ const makePrimaryColor =
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  prefix: "nx-",
   content: ["./src/**/*.{ts,tsx,mdx}", "./theme.config.tsx"],
   theme: {
     extend: {
       colors: {
         transparent: "transparent",
         current: "currentColor",
-        dark: "#111",
         primary: {
           50: makePrimaryColor(97),
           100: makePrimaryColor(94),
