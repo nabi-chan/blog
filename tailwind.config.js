@@ -1,5 +1,3 @@
-import typography from '@tailwindcss/typography';
-
 const makePrimaryColor =
   (l) =>
   ({ opacityValue }) => {
@@ -33,5 +31,5 @@ export default {
       },
     },
   },
-  plugins: [typography],
+  plugins: [],
 };
