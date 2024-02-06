@@ -2,17 +2,10 @@ import { ReactNode } from "react";
 import { BaseLayout } from "./Base";
 import { useBlogContext } from "Themes/contexts/blogContext";
 import { MdxFile } from "nextra";
-import { Link } from "Themes/components/Link";
 import { FrontMatter } from "Themes/types/types";
-import { relativeTime } from "../utils/time";
 import { MDXRenderer } from "../components/MdxRenderer";
-import {
-  flattenTree,
-  isActivePost,
-  isPublishedThisWeek,
-  sortPostsByDate,
-} from "Themes/utils/posts";
-import { get } from "lodash-es";
+import { flattenTree, isActivePost, sortPostsByDate } from "Themes/utils/posts";
+import { Post } from "../components/Post";
 
 interface PostsLayoutProps {
   children: ReactNode;
@@ -35,28 +28,7 @@ export function PostsLayout({ children }: PostsLayoutProps) {
           <p className="py-12 text-center">아직은 작성된 글이 없네요 😢</p>
         )}
         {posts.map((post) => (
-          <article key={post.route} className="py-4 group">
-            <Link
-              href={post.route}
-              title={post.frontMatter?.title}
-              className="text-2xl font-bold group-hover:text-blue-500 transition-colors truncate flex items-center gap-2"
-            >
-              {post.frontMatter?.title}
-              {isPublishedThisWeek(get(post.frontMatter, "date", "0")) && (
-                <span className="text-xs bg-blue-300 text-zinc-900 px-1 rounded-md">
-                  new!
-                </span>
-              )}
-            </Link>
-            <p className="text-sm my-1">{post.frontMatter.description}</p>
-            <div className="flex gap-2">
-              {post.frontMatter.date && (
-                <time className="text-xs">
-                  {relativeTime(post.frontMatter.date)}
-                </time>
-              )}
-            </div>
-          </article>
+          <Post key={post.route} post={post} />
         ))}
       </div>
     </BaseLayout>
