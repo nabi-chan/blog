@@ -78,6 +78,11 @@
   @apply ml-4 mt-1;
 }
 
+.markdown ul li,
+.markdown ol li {
+  @apply whitespace-normal;
+}
+
 .markdown blockquote {
   @apply border-l-4 border-slate-200 dark:border-slate-700 pl-4;
 }
