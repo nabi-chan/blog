@@ -14,7 +14,7 @@ export function Footer() {
         >
           @{config.footer.githubUserName}
         </Link>
-        <ul className="flex space-x-3">
+        <ul className="divide-bullet">
           {config.footer.links.map((link) => (
             <li key={link.url}>
               <Link

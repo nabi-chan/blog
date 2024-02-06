@@ -17,16 +17,14 @@ export function PostLayout({ children }: PostLayoutProps) {
       <header className="flex flex-col">
         <h1 className="text-4xl font-bold mb-1">{opts.title}</h1>
         <p className="mb-2">{opts.frontMatter.description}</p>
-        <div className="flex divide-x">
+        <ul className="divide-bullet text-xs">
           {opts.frontMatter.date && (
-            <time className="text-xs px-2 first:-ml-2">
-              {relativeTime(opts.frontMatter.date)}
-            </time>
+            <li>
+              <time>{relativeTime(opts.frontMatter.date)}</time>
+            </li>
           )}
-          <span className="text-xs px-2 first:-ml-2">
-            {opts.readingTime.text}
-          </span>
-        </div>
+          <li>{opts.readingTime.text}</li>
+        </ul>
       </header>
       <MDXRenderer>{children}</MDXRenderer>
       <Comment />

@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @layer utilities {
+  ul.divide-bullet {
+    @apply flex gap-2;
+  }
+
+  ul.divide-bullet li:not(:last-child) {
+    @apply after:content-['•'] after:ml-2;
+  }
+
   .text-balance {
     text-wrap: balance;
   }
