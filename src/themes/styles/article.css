@@ -4,7 +4,7 @@
 }
 
 .markdown * {
-  @apply text-balance break-keep whitespace-pre-wrap;
+  @apply text-pretty break-keep whitespace-pre-wrap;
 }
 
 .markdown h1 {
