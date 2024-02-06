@@ -14,7 +14,7 @@ export function BaseLayout({ children, className }: BaseLayoutProps) {
     <>
       <Head />
       <Header />
-      <main className={clsx("max-w-3xl mx-auto px-8", className)}>
+      <main className={clsx("max-w-3xl mx-auto px-8 pt-8", className)}>
         {children}
       </main>
       <Footer />
