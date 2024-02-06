@@ -36,7 +36,7 @@
 }
 
 .markdown code {
-  @apply text-xs font-mono bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200 p-1 rounded-md;
+  @apply text-xs font-mono bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200 p-1 rounded-md;
 }
 
 .markdown code:has(pre) {
@@ -70,7 +70,7 @@
 
 .markdown ul ::marker,
 .markdown ol ::marker {
-  @apply text-slate-500 mr-4;
+  @apply text-zinc-500 mr-4;
 }
 
 .markdown li:has(ul) ul,
@@ -84,7 +84,7 @@
 }
 
 .markdown blockquote {
-  @apply border-l-4 border-slate-200 dark:border-slate-700 pl-4;
+  @apply border-l-4 border-zinc-200 dark:border-zinc-700 pl-4;
 }
 
 .markdown a {

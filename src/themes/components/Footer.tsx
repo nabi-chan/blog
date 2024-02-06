@@ -7,7 +7,7 @@ export function Footer() {
 
   return (
     <footer>
-      <div className="max-w-3xl mx-auto px-8 pt-12 pb-4 flex justify-between items-center text-sm text-slate-700">
+      <div className="max-w-3xl mx-auto px-8 pt-12 pb-4 flex justify-between items-center text-sm text-zinc-500">
         <Link
           href={`https://github.com/${config.footer.githubUserName}`}
           className="hover:underline underline-offset-4"

@@ -26,9 +26,7 @@ export function PostsLayout({ children }: PostsLayoutProps) {
       <MDXRenderer>{children}</MDXRenderer>
       <div className="divide-y divide-slate-200">
         {posts.length === 0 && (
-          <p className="py-12 text-center text-slate-700">
-            아직은 작성된 글이 없네요 😢
-          </p>
+          <p className="py-12 text-center">아직은 작성된 글이 없네요 😢</p>
         )}
         {posts.map((post) => (
           <article key={post.route} className="py-4 group">
