@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
-import { BaseLayout } from "./Base";
-import { MDXRenderer } from "../components/MdxRenderer";
+import { ReactNode } from 'react';
+import { BaseLayout } from './Base';
+import { MDXRenderer } from '../components/MdxRenderer';
 
 interface PageLayoutProps {
   children: ReactNode;

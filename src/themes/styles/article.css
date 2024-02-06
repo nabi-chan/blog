@@ -55,7 +55,7 @@
   @apply list-none;
 }
 
-.markdown ul.contains-task-list .task-list-item input[type="checkbox"] {
+.markdown ul.contains-task-list .task-list-item input[type='checkbox'] {
   @apply mr-1;
 }
 

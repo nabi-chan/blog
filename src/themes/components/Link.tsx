@@ -1,11 +1,7 @@
-import NextLink from "next/link";
-import { ComponentProps } from "react";
+import NextLink from 'next/link';
+import { ComponentProps } from 'react';
 
-export function Link({
-  href,
-  children,
-  ...props
-}: Omit<ComponentProps<typeof NextLink>, "href"> & { href: string }) {
+export function Link({ href, children, ...props }: Omit<ComponentProps<typeof NextLink>, 'href'> & { href: string }) {
   const url = href.toString();
 
   if (url.match(/^https?:\/\//) || url.match(/^\/\//)) {

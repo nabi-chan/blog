@@ -1,7 +1,7 @@
-import nextra from "nextra";
+import nextra from 'nextra';
 
 const withNextra = nextra({
-  theme: "Themes/index.ts",
+  theme: 'Themes/index.ts',
   readingTime: true,
 });
 

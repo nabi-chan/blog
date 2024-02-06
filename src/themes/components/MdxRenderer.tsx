@@ -1,8 +1,8 @@
-import { Code, Pre, Table, Td, Th, Tr } from "nextra/components";
-import { MDXProvider } from "nextra/mdx";
-import type { Components } from "nextra/mdx";
-import type { ComponentProps, ReactElement, ReactNode } from "react";
-import { Link } from "./Link";
+import { Code, Pre, Table, Td, Th, Tr } from 'nextra/components';
+import { MDXProvider } from 'nextra/mdx';
+import type { Components } from 'nextra/mdx';
+import type { ComponentProps, ReactElement, ReactNode } from 'react';
+import { Link } from './Link';
 
 function HeadingLink({
   tag: Tag,
@@ -10,18 +10,11 @@ function HeadingLink({
   id,
   className,
   ...props
-}: ComponentProps<"h1"> & { tag: `h${1 | 2 | 3 | 4 | 5 | 6}` }): ReactElement {
+}: ComponentProps<'h1'> & { tag: `h${1 | 2 | 3 | 4 | 5 | 6}` }): ReactElement {
   return (
     <Tag {...props}>
       {children}
-      {id && (
-        <a
-          href={`#${id}`}
-          id={id}
-          className="subheading-anchor"
-          aria-label="Permalink for this section"
-        />
-      )}
+      {id && <a href={`#${id}`} id={id} className="subheading-anchor" aria-label="Permalink for this section" />}
     </Tag>
   );
 }
@@ -44,11 +37,7 @@ const useComponents = (): Components => {
   };
 };
 
-export const MDXRenderer = ({
-  children,
-}: {
-  children: ReactNode;
-}): ReactElement => {
+export const MDXRenderer = ({ children }: { children: ReactNode }): ReactElement => {
   return (
     <MDXProvider components={useComponents()}>
       <article className="markdown">{children}</article>

@@ -1,22 +1,22 @@
-import typography from "@tailwindcss/typography";
+import typography from '@tailwindcss/typography';
 
 const makePrimaryColor =
   (l) =>
   ({ opacityValue }) => {
     return (
       `hsl(var(--nextra-primary-hue) var(--nextra-primary-saturation) ${l}%` +
-      (opacityValue ? ` / ${opacityValue})` : ")")
+      (opacityValue ? ` / ${opacityValue})` : ')')
     );
   };
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./src/**/*.{ts,tsx,mdx}", "./theme.config.tsx"],
+  content: ['./src/**/*.{ts,tsx,mdx}', './theme.config.tsx'],
   theme: {
     extend: {
       colors: {
-        transparent: "transparent",
-        current: "currentColor",
+        transparent: 'transparent',
+        current: 'currentColor',
         primary: {
           50: makePrimaryColor(97),
           100: makePrimaryColor(94),

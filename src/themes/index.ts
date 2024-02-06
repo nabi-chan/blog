@@ -1,1 +1,1 @@
-export { RootLayout as default } from "Themes/components/Layout";
+export { RootLayout as default } from 'Themes/components/Layout';

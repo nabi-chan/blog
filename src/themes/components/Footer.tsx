@@ -1,12 +1,12 @@
-import { useBlogContext } from "Themes/contexts/blogContext";
-import { Link } from "./Link";
-import { useTheme } from "next-themes";
+import { useBlogContext } from 'Themes/contexts/blogContext';
+import { Link } from './Link';
+import { useTheme } from 'next-themes';
 
 export function Footer() {
   const { config } = useBlogContext();
   const { theme, setTheme } = useTheme();
 
-  const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
+  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
 
   return (
     <footer>
@@ -20,10 +20,7 @@ export function Footer() {
         <ul className="divide-bullet">
           {config.footer.links.map((link) => (
             <li key={link.url}>
-              <Link
-                href={link.url}
-                className="hover:underline underline-offset-4 capitalize"
-              >
+              <Link href={link.url} className="hover:underline underline-offset-4 capitalize">
                 {link.title}
               </Link>
             </li>

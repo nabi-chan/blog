@@ -1,9 +1,9 @@
-import { MdxFile } from "nextra";
-import { FrontMatter } from "../types/types";
-import { Link } from "./Link";
-import { isPublishedThisWeek } from "../utils/posts";
-import { relativeTime } from "../utils/time";
-import { get } from "lodash-es";
+import { MdxFile } from 'nextra';
+import { FrontMatter } from '../types/types';
+import { Link } from './Link';
+import { isPublishedThisWeek } from '../utils/posts';
+import { relativeTime } from '../utils/time';
+import { get } from 'lodash-es';
 
 export function Post({ post }: { post: MdxFile<FrontMatter> }) {
   return (
@@ -14,17 +14,15 @@ export function Post({ post }: { post: MdxFile<FrontMatter> }) {
         className="text-2xl font-bold group-hover:text-blue-500 transition-colors truncate flex items-center gap-2"
       >
         {post.frontMatter?.title}
-        {isPublishedThisWeek(get(post.frontMatter, "date", "0")) && (
-          <span className="text-xs bg-blue-300 text-zinc-900 px-1 rounded-md">
-            new!
-          </span>
+        {isPublishedThisWeek(get(post.frontMatter, 'date', '0')) && (
+          <span className="text-xs bg-blue-300 text-zinc-900 px-1 rounded-md">new!</span>
         )}
       </Link>
       <p className="text-sm my-1">{post.frontMatter.description}</p>
       {post.frontMatter.tags && (
         <div className="flex gap-1 text-xs">
           {post.frontMatter.tags
-            .sort((tagA, tagB) => tagA.localeCompare(tagB, "ko"))
+            .sort((tagA, tagB) => tagA.localeCompare(tagB, 'ko'))
             .map((tag) => (
               <Link
                 href={`/tag/${tag}`}
@@ -36,9 +34,7 @@ export function Post({ post }: { post: MdxFile<FrontMatter> }) {
             ))}
         </div>
       )}
-      {post.frontMatter.date && (
-        <time className="text-xs">{relativeTime(post.frontMatter.date)}</time>
-      )}
+      {post.frontMatter.date && <time className="text-xs">{relativeTime(post.frontMatter.date)}</time>}
     </article>
   );
 }

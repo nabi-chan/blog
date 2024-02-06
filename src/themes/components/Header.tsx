@@ -1,5 +1,5 @@
-import { useBlogContext } from "Themes/contexts/blogContext";
-import { Link } from "./Link";
+import { useBlogContext } from 'Themes/contexts/blogContext';
+import { Link } from './Link';
 
 export function Header() {
   const { config } = useBlogContext();

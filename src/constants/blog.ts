@@ -1,51 +1,51 @@
 export namespace Blog {
-  export const lang = "ko";
+  export const lang = 'ko';
 
-  export const url = "https://nabi.kim";
+  export const url = 'https://nabi.kim';
 
-  export const icon = "📝";
-  export const title = (title?: string) => (title ? `${title}` : "🫠");
-  export const description = "고양이의 작고 소중한 기술 블로그";
+  export const icon = '📝';
+  export const title = (title?: string) => (title ? `${title}` : '🫠');
+  export const description = '고양이의 작고 소중한 기술 블로그';
   export const keywords = [
-    "nabi",
-    "tech",
-    "blog",
-    "tech blog",
-    "javascript",
-    "typescript",
-    "나비",
-    "블로그",
-    "기술 블로그",
-    "자바스크립트",
-    "타입스크립트",
+    'nabi',
+    'tech',
+    'blog',
+    'tech blog',
+    'javascript',
+    'typescript',
+    '나비',
+    '블로그',
+    '기술 블로그',
+    '자바스크립트',
+    '타입스크립트',
   ];
 
   export const openGraph = {
-    type: "blog",
+    type: 'blog',
     siteName: "Nabi's blog",
-    image: "/og-image.png",
+    image: '/og-image.png',
   };
 
   export const header = {
-    title: "🐈",
+    title: '🐈',
     nav: [
       {
-        title: "블로그",
-        url: "/posts",
+        title: '블로그',
+        url: '/posts',
       },
       {
-        title: "태그",
-        url: "/tags",
+        title: '태그',
+        url: '/tags',
       },
     ],
   };
 
   export const footer = {
-    githubUserName: "nabi-chan",
+    githubUserName: 'nabi-chan',
     links: [
       {
-        title: "source",
-        url: "https://github.com/nabi-chan/nabi-blog-2024",
+        title: 'source',
+        url: 'https://github.com/nabi-chan/nabi-blog-2024',
       },
     ],
   };

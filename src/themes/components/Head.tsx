@@ -1,8 +1,8 @@
-import NextHead from "next/head";
-import { useBlogContext } from "Themes/contexts/blogContext";
-import { getEmojiIcon } from "Themes/utils/meta";
-import { join } from "lodash-es";
-import { useRouter } from "next/router";
+import NextHead from 'next/head';
+import { useBlogContext } from 'Themes/contexts/blogContext';
+import { getEmojiIcon } from 'Themes/utils/meta';
+import { join } from 'lodash-es';
+import { useRouter } from 'next/router';
 
 export function Head() {
   const { opts, config } = useBlogContext();
@@ -21,10 +21,7 @@ export function Head() {
       {/* Default Meta */}
       <title>{title}</title>
       <meta name="description" content={description} />
-      <meta
-        name="keywords"
-        content={join([...config.keywords, opts.frontMatter.tags], "")}
-      />
+      <meta name="keywords" content={join([...config.keywords, opts.frontMatter.tags], '')} />
       <meta name="url" content={pathname} />
       <meta name="canonical" content={config.url} />
 

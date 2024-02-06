@@ -1,28 +1,19 @@
-import { eq, get, isEmpty } from "lodash-es";
-import { MdxFile, PageMapItem } from "nextra";
-import { FrontMatter } from "Themes/types/types";
+import { eq, get, isEmpty } from 'lodash-es';
+import { MdxFile, PageMapItem } from 'nextra';
+import { FrontMatter } from 'Themes/types/types';
 
 export function flattenTree(tree: PageMapItem[]): PageMapItem[] {
-  return tree.flatMap((item) =>
-    item.kind === "Folder" ? flattenTree(item.children) : item
-  );
+  return tree.flatMap((item) => (item.kind === 'Folder' ? flattenTree(item.children) : item));
 }
 
 export function isActivePost(postMeta: MdxFile<FrontMatter>) {
-  return [
-    !isEmpty(postMeta.frontMatter.title),
-    eq(get(postMeta.frontMatter, "draft", false), false),
-  ].every((conditional) => conditional === true);
+  return [!isEmpty(postMeta.frontMatter.title), eq(get(postMeta.frontMatter, 'draft', false), false)].every(
+    (conditional) => conditional === true,
+  );
 }
 
-export function sortPostsByDate(
-  postA: MdxFile<FrontMatter>,
-  postB: MdxFile<FrontMatter>
-) {
-  return (
-    new Date(get(postB.frontMatter, "date", 0)).getTime() -
-    new Date(get(postA.frontMatter, "date", 0)).getTime()
-  );
+export function sortPostsByDate(postA: MdxFile<FrontMatter>, postB: MdxFile<FrontMatter>) {
+  return new Date(get(postB.frontMatter, 'date', 0)).getTime() - new Date(get(postA.frontMatter, 'date', 0)).getTime();
 }
 
 export function isPublishedThisWeek(date: string) {

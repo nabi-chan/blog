@@ -1,7 +1,7 @@
-import { Blog } from "@/constants/blog";
-import type { PageOpts } from "nextra";
+import { Blog } from '@/constants/blog';
+import type { PageOpts } from 'nextra';
 
-type PageLayout = "default" | "posts" | "post" | "tags" | "tag";
+type PageLayout = 'default' | 'posts' | 'post' | 'tags' | 'tag';
 
 export type FrontMatter = {
   // 메타데이터
