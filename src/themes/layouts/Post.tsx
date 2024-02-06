@@ -23,11 +23,9 @@ export function PostLayout({ children }: PostLayoutProps) {
               {relativeTime(opts.frontMatter.date)}
             </time>
           )}
-          {opts.readingTime && (
-            <span className="text-xs px-2 first:-ml-2">
-              {opts.readingTime.text}
-            </span>
-          )}
+          <span className="text-xs px-2 first:-ml-2">
+            {opts.readingTime.text}
+          </span>
         </div>
       </header>
       <MDXRenderer>{children}</MDXRenderer>
