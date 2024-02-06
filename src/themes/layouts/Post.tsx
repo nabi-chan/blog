@@ -3,6 +3,7 @@ import { BaseLayout } from "./Base";
 import { MDXRenderer } from "Themes/components/MdxRenderer";
 import { useBlogContext } from "Themes/contexts/blogContext";
 import { relativeTime } from "Themes/utils/time";
+import { Comment } from "Themes/components/Comment";
 
 interface PostLayoutProps {
   children: ReactNode;
@@ -30,6 +31,7 @@ export function PostLayout({ children }: PostLayoutProps) {
         </div>
       </header>
       <MDXRenderer>{children}</MDXRenderer>
+      <Comment />
     </BaseLayout>
   );
 }
