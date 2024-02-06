@@ -2,11 +2,13 @@ import 'Themes/styles/tailwind.css';
 import 'Themes/styles/article.css';
 
 import { ThemeProvider } from 'next-themes';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App({ Component, pageProps }) {
   return (
     <ThemeProvider>
       <Component {...pageProps} />
+      <Analytics />
     </ThemeProvider>
   );
 }
