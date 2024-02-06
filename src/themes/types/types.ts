@@ -1,7 +1,7 @@
 import { Blog } from "@/constants/blog";
 import type { PageOpts } from "nextra";
 
-type PageLayout = "page" | "posts" | "post";
+type PageLayout = "default" | "posts" | "post" | "tags" | "tag";
 
 export type FrontMatter = {
   // 메타데이터
@@ -15,7 +15,7 @@ export type FrontMatter = {
   draft?: boolean;
 
   // 태그, 시리즈
-  tags?: string | string[];
+  tags?: string[];
   series?: string;
 
   // 페이지 레이아웃

@@ -30,8 +30,12 @@ export namespace Blog {
     title: "🐈",
     nav: [
       {
-        title: "글 목록",
+        title: "블로그",
         url: "/posts",
+      },
+      {
+        title: "태그",
+        url: "/tags",
       },
     ],
   };
