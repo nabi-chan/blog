@@ -21,11 +21,24 @@ export function Post({ post }: { post: MdxFile<FrontMatter> }) {
         )}
       </Link>
       <p className="text-sm my-1">{post.frontMatter.description}</p>
-      <div className="flex gap-2">
-        {post.frontMatter.date && (
-          <time className="text-xs">{relativeTime(post.frontMatter.date)}</time>
-        )}
-      </div>
+      {post.frontMatter.tags && (
+        <div className="flex gap-1 text-xs">
+          {post.frontMatter.tags
+            .sort((tagA, tagB) => tagA.localeCompare(tagB, "ko"))
+            .map((tag) => (
+              <Link
+                href={`/tag/${tag}`}
+                key={tag}
+                className="hover:text-blue-500 hover:underline transition-colors underline-offset-4"
+              >
+                #{tag}
+              </Link>
+            ))}
+        </div>
+      )}
+      {post.frontMatter.date && (
+        <time className="text-xs">{relativeTime(post.frontMatter.date)}</time>
+      )}
     </article>
   );
 }
