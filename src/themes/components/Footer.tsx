@@ -1,9 +1,13 @@
 import { useBlogContext } from "Themes/contexts/blogContext";
 import { capitalize } from "lodash-es";
 import { Link } from "./Link";
+import { useTheme } from "next-themes";
 
 export function Footer() {
   const { config } = useBlogContext();
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
 
   return (
     <footer>
@@ -25,6 +29,11 @@ export function Footer() {
               </Link>
             </li>
           ))}
+          <li>
+            <button className="capitalize" onClick={toggleTheme}>
+              switch theme
+            </button>
+          </li>
         </ul>
       </div>
     </footer>
