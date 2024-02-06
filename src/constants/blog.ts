@@ -30,8 +30,7 @@ export namespace Blog {
     title: "🐈",
     nav: [
       {
-        icon: "🗂️",
-        title: "posts",
+        title: "글 목록",
         url: "/posts",
       },
     ],
