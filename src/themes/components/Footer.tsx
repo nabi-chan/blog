@@ -1,5 +1,4 @@
 import { useBlogContext } from "Themes/contexts/blogContext";
-import { capitalize } from "lodash-es";
 import { Link } from "./Link";
 import { useTheme } from "next-themes";
 
@@ -23,9 +22,9 @@ export function Footer() {
             <li key={link.url}>
               <Link
                 href={link.url}
-                className="hover:underline underline-offset-4"
+                className="hover:underline underline-offset-4 capitalize"
               >
-                {capitalize(link.title)}
+                {link.title}
               </Link>
             </li>
           ))}
