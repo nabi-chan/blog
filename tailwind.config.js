@@ -9,6 +9,7 @@ const makePrimaryColor =
 
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: ['class', '[data-theme="dark"]'],
   content: ['./src/**/*.{ts,tsx,mdx}', './theme.config.tsx'],
   theme: {
     extend: {
