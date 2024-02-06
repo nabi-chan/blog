@@ -6,7 +6,13 @@ import { Link } from "Themes/components/Link";
 import { FrontMatter } from "Themes/types/types";
 import { relativeTime } from "../utils/time";
 import { MDXRenderer } from "../components/MdxRenderer";
-import { flattenTree, isActivePost, sortPostsByDate } from "Themes/utils/posts";
+import {
+  flattenTree,
+  isActivePost,
+  isPublishedThisWeek,
+  sortPostsByDate,
+} from "Themes/utils/posts";
+import { get } from "lodash-es";
 
 interface PostsLayoutProps {
   children: ReactNode;
@@ -33,9 +39,14 @@ export function PostsLayout({ children }: PostsLayoutProps) {
             <Link
               href={post.route}
               title={post.frontMatter?.title}
-              className="text-2xl font-bold group-hover:text-blue-500 transition-colors truncate"
+              className="text-2xl font-bold group-hover:text-blue-500 transition-colors truncate flex items-center gap-2"
             >
               {post.frontMatter?.title}
+              {isPublishedThisWeek(get(post.frontMatter, "date", "0")) && (
+                <span className="text-xs bg-blue-300 text-zinc-900 px-1 rounded-md">
+                  new!
+                </span>
+              )}
             </Link>
             <p className="text-sm my-1">{post.frontMatter.description}</p>
             <div className="flex gap-2">

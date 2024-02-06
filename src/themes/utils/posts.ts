@@ -24,3 +24,11 @@ export function sortPostsByDate(
     new Date(get(postA.frontMatter, "date", 0)).getTime()
   );
 }
+
+export function isPublishedThisWeek(date: string) {
+  const postDate = new Date(date);
+  const today = new Date();
+  const oneWeekAgo = new Date(today.setDate(today.getDate() - 7));
+
+  return postDate > oneWeekAgo;
+}
