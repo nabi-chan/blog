@@ -12,6 +12,7 @@ export type FrontMatter = {
   // 블로그 컨텐츠
   icon?: string;
   date?: string;
+  draft?: boolean;
 
   // 태그, 시리즈
   tags?: string | string[];

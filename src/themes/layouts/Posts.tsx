@@ -6,8 +6,7 @@ import { Link } from "Themes/components/Link";
 import { FrontMatter } from "Themes/types/types";
 import { relativeTime } from "../utils/time";
 import { MDXRenderer } from "../components/MdxRenderer";
-import { isEmpty } from "lodash-es";
-import { flattenTree } from "../utils/posts";
+import { flattenTree, isActivePost, sortPostsByDate } from "Themes/utils/posts";
 
 interface PostsLayoutProps {
   children: ReactNode;
@@ -17,9 +16,10 @@ export function PostsLayout({ children }: PostsLayoutProps) {
   const { opts } = useBlogContext();
 
   const posts = flattenTree(opts.pageMap)
-    .filter((page) => (page as MdxFile).frontMatter?.layout === "post")
-    .filter((page) => !isEmpty((page as MdxFile).frontMatter?.title))
-    .map((page) => page as MdxFile<FrontMatter>);
+    .map((page) => page as MdxFile<FrontMatter>)
+    .filter((page) => page.frontMatter?.layout === "post")
+    .filter(isActivePost)
+    .sort(sortPostsByDate);
 
   return (
     <BaseLayout className="flex flex-col gap-2">
