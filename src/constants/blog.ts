@@ -49,4 +49,6 @@ export namespace Blog {
       },
     ],
   };
+
+  export const channelPluginKey = '779e5020-caa6-4dcb-8abc-09f818957a0c';
 }
