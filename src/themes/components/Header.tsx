@@ -5,7 +5,7 @@ export function Header() {
   const { config } = useBlogContext();
 
   return (
-    <header className="sticky top-0 left-0 shadow-md">
+    <header className="sticky top-0 left-0 shadow-md backdrop-blur-sm">
       <div className="max-w-3xl mx-auto flex justify-between items-center px-8 py-3">
         <Link href="/" className="font-bold text-3xl">
           {config.header.title}
