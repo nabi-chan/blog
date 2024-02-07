@@ -1,5 +1,11 @@
 # nabi-blog
 
+## 1.1.3
+
+### Patch Changes
+
+- docs: update /well-written description
+
 ## 1.1.2
 
 ### Patch Changes
