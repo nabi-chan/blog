@@ -1,5 +1,16 @@
 # nabi-blog
 
+## 1.1.0
+
+### Minor Changes
+
+- b9c817c0 feat: add inter / noto sans / jetbtains mono fonts
+- 32122f38 feat: add channel-talk button
+- 4403db47 feat: add style on tagDescription
+- 81d7d4a1 docs: Update tags.json
+- 293cb000 feat: add backdrop blur on header
+- 18c0ca3a fix: fix comment not changed by theme
+
 ## 1.0.3
 
 ### Patch Changes
