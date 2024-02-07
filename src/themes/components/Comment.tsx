@@ -18,10 +18,14 @@ export function Comment() {
         script.setAttribute('theme', theme === 'dark' ? 'github-dark' : 'github-light');
         script.setAttribute('crossorigin', 'anonymous');
 
+        console.log('element.children.length', element.children.length);
+
+        if (element.children.length > 1) {
+          element.replaceChild(script, element.children[0]);
+        }
+
         if (element.children.length === 0) {
           element.appendChild(script);
-        } else {
-          element.replaceChild(script, element.children[0]);
         }
       }}
     />
