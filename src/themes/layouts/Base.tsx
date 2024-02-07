@@ -8,7 +8,7 @@ import { useTheme } from 'next-themes';
 import { Blog } from '@/constants/blog';
 import { Inter, Noto_Sans_KR, JetBrains_Mono } from 'next/font/google';
 
-const InterSans = Inter({ subsets: ['latin'], variable: '--Noto-Sans-KR' });
+const InterSans = Inter({ subsets: ['latin'], variable: '--Inter' });
 
 const NotoSans = Noto_Sans_KR({ subsets: ['latin'], variable: '--Noto-Sans-KR' });
 
