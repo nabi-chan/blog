@@ -1,5 +1,11 @@
 # nabi-blog
 
+## 1.1.2
+
+### Patch Changes
+
+- - fix: fix inter font variable duplicated noto sans
+
 ## 1.1.1
 
 ### Patch Changes
