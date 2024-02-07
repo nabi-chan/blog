@@ -13,6 +13,10 @@ export default {
   content: ['./src/**/*.{ts,tsx,mdx}', './theme.config.tsx'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--Inter), var(--Noto-Sans-KR), sans-serif'],
+        mono: ['var(--JetBrains-Mono)', 'monospace'],
+      },
       colors: {
         transparent: 'transparent',
         current: 'currentColor',

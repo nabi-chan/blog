@@ -6,6 +6,13 @@ import clsx from 'clsx';
 import * as ChannelService from '@channel.io/channel-web-sdk-loader';
 import { useTheme } from 'next-themes';
 import { Blog } from '@/constants/blog';
+import { Inter, Noto_Sans_KR, JetBrains_Mono } from 'next/font/google';
+
+const InterSans = Inter({ subsets: ['latin'], variable: '--Noto-Sans-KR' });
+
+const NotoSans = Noto_Sans_KR({ subsets: ['latin'], variable: '--Noto-Sans-KR' });
+
+const JetBrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--JetBrains-Mono' });
 
 interface BaseLayoutProps {
   className?: string;
@@ -32,11 +39,11 @@ export function BaseLayout({ children, className }: BaseLayoutProps) {
   }, [theme]);
 
   return (
-    <>
+    <div className={clsx(InterSans.variable, JetBrainsMono.variable, NotoSans.variable, 'font-sans')}>
       <Head />
       <Header />
       <main className={clsx('max-w-3xl mx-auto px-8 pt-8', className)}>{children}</main>
       <Footer />
-    </>
+    </div>
   );
 }
