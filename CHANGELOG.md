@@ -1,5 +1,13 @@
 # nabi-blog
 
+## 1.1.1
+
+### Patch Changes
+
+- b8af34e2 docs: add well-written page
+  a9f366eb docs: update blog todo list
+  4c632fa0 fix: fix comment has warning issueaa
+
 ## 1.1.0
 
 ### Minor Changes
