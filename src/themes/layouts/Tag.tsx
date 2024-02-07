@@ -25,7 +25,7 @@ export function TagLayout() {
   return (
     <BaseLayout className="flex flex-col gap-2">
       <h1 className="text-4xl font-bold">{tag}</h1>
-      {tagDescription && <p>{tagDescription}</p>}
+      {tagDescription && <p className="break-keep whitespace-pre-wrap">{tagDescription}</p>}
       <div className="divide-y divide-slate-200">
         {posts.length === 0 && <p className="py-12 text-center">아직은 작성된 글이 없네요 😢</p>}
         {posts.map((post) => (
