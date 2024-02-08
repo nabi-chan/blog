@@ -16,10 +16,12 @@ const JetBrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--JetBrain
 
 interface BaseLayoutProps {
   className?: string;
+  leftPanel?: ReactNode;
+  rightPanel?: ReactNode;
   children: ReactNode;
 }
 
-export function BaseLayout({ children, className }: BaseLayoutProps) {
+export function BaseLayout({ children, leftPanel, rightPanel, className }: BaseLayoutProps) {
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -42,7 +44,11 @@ export function BaseLayout({ children, className }: BaseLayoutProps) {
     <div className={clsx(InterSans.variable, JetBrainsMono.variable, NotoSans.variable, 'font-sans')}>
       <Head />
       <Header />
-      <main className={clsx('max-w-3xl mx-auto px-8 pt-8', className)}>{children}</main>
+      <div className="flex justify-center mx-auto pt-8">
+        <div className="max-w-48 w-full lg:flex hidden flex-col gap-4">{leftPanel}</div>
+        <main className={clsx('max-w-3xl w-full px-8', className)}>{children}</main>
+        <div className="max-w-48 w-full lg:flex hidden flex-col gap-4">{rightPanel}</div>
+      </div>
       <Footer />
     </div>
   );
