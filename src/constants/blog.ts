@@ -33,10 +33,6 @@ export namespace Blog {
         title: '블로그',
         url: '/posts',
       },
-      {
-        title: '태그',
-        url: '/tags',
-      },
     ],
   };
 

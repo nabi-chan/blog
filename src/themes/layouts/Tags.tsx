@@ -6,6 +6,7 @@ import { flattenTree, isActivePost } from '../utils/posts';
 import { MdxFile } from 'nextra';
 import { FrontMatter } from '../types/types';
 import { Link } from '../components/Link';
+import { Badge } from '../components/Badge';
 
 interface TagsLayoutProps {
   children: ReactNode;
@@ -38,13 +39,12 @@ export function TagsLayout({ children }: TagsLayoutProps) {
         {Object.entries(tagCountMap)
           .sort(([tagA], [tagB]) => tagA.localeCompare(tagB, 'ko'))
           .sort(([, countA], [, countB]) => countB - countA)
-          .map(([tag]) => (
+          .map(([tag, count]) => (
             <li key={tag}>
-              <Link
-                href={`/tag/${tag}`}
-                className="p-1 hover:text-blue-500 hover:underline transition-colors underline-offset-4"
-              >
-                #{tag}
+              <Link href={`/tag/${tag}`}>
+                <Badge>
+                  #{tag} ({count})
+                </Badge>
               </Link>
             </li>
           ))}
