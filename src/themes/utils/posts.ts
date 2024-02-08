@@ -23,3 +23,10 @@ export function isPublishedThisWeek(date: string) {
 
   return postDate > oneWeekAgo;
 }
+
+export function getPosts(tree: PageMapItem[]) {
+  return flattenTree(tree)
+    .map((page) => page as MdxFile<FrontMatter>)
+    .filter((page) => page.frontMatter?.layout === 'post')
+    .filter(isActivePost);
+}
