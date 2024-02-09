@@ -1,5 +1,17 @@
 # nabi-blog
 
+## 1.2.0
+
+### Minor Changes
+
+- eadfaf01 docs: finish what-is-kpt Post
+  ead4c172 feat: add mdx codeblock
+  25cd6b11 docs: wip /what-is-kpt
+  d7c11669 refactor: re-design tags page, remove tags page from header
+  a6fce55a feat: add tags panel
+  16239434 refactor: add posts / tags utils
+  8100b40d feat: add left / right layout for tag / etc
+
 ## 1.1.3
 
 ### Patch Changes
