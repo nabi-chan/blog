@@ -1,4 +1,4 @@
-import { Code, Pre, Table, Td, Th, Tr } from 'nextra/components';
+import { Code, Pre, Table, Td, Th, Tr } from './nextra';
 import { MDXProvider } from 'nextra/mdx';
 import type { Components } from 'nextra/mdx';
 import type { ComponentProps, ReactElement, ReactNode } from 'react';

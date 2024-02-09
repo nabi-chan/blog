@@ -35,13 +35,13 @@
   @apply text-base;
 }
 
-.markdown code {
+/* .markdown code {
   @apply text-xs font-mono bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200 p-1 rounded-md;
-}
+} */
 
-.markdown code:has(pre) {
+/* .markdown code:has(pre) {
   @apply p-4;
-}
+} */
 
 .markdown img {
   @apply mx-auto max-w-full;
