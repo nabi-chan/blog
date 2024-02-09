@@ -1,5 +1,11 @@
 # nabi-blog
 
+## 1.2.2
+
+### Patch Changes
+
+- de7910e fix: fix build with delete tabs component
+
 ## 1.2.1
 
 ### Patch Changes
