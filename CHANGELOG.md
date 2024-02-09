@@ -1,5 +1,11 @@
 # nabi-blog
 
+## 1.2.1
+
+### Patch Changes
+
+- 17377f2 docs: add KPT link for well-written
+
 ## 1.2.0
 
 ### Minor Changes
