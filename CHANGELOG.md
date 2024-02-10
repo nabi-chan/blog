@@ -1,5 +1,14 @@
 # nabi-blog
 
+## 1.3.0
+
+### Minor Changes
+
+- e29aa346 feat: add 500 error page
+  ab927685 feat: add 404 page
+  ee081c9c feat: add opengraph image
+  157787c8 fix: fix tailwindcss nesting issue
+
 ## 1.2.2
 
 ### Patch Changes
