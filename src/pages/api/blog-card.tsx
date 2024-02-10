@@ -7,8 +7,8 @@ export const config = {
 
 export default async function handler() {
   const [pretendardBold, pretendardRegular] = await Promise.all([
-    fetch(new URL('./Pretendard-Bold.ttf', import.meta.url)).then((res) => res.arrayBuffer()),
-    fetch(new URL('./Pretendard-Regular.ttf', import.meta.url)).then((res) => res.arrayBuffer()),
+    fetch(new URL('./Pretendard-Bold.woff', import.meta.url)).then((res) => res.arrayBuffer()),
+    fetch(new URL('./Pretendard-Regular.woff', import.meta.url)).then((res) => res.arrayBuffer()),
   ]);
 
   try {
