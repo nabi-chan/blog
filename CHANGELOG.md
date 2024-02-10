@@ -1,5 +1,13 @@
 # nabi-blog
 
+## 1.4.0
+
+### Minor Changes
+
+- - 01987f56 docs: add /cv page
+  - 5bba9f87 feat: hide header / footer when print
+  - 2baac5e7 feat: add color on code
+
 ## 1.3.2
 
 ### Patch Changes
