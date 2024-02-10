@@ -14,7 +14,7 @@ export function Head() {
   const description = opts.frontMatter.description ?? config.description;
   const image =
     opts.frontMatter.layout === 'post'
-      ? `${config.url}/api/article-card?title=${title}&description=${description}&tags=${opts.frontMatter.tags.join('&tags=')}`
+      ? `${config.url}/api/article-card?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&tags=${opts.frontMatter.tags.join('&tags=')}`
       : opts.frontMatter.image ?? config.openGraph.image;
 
   const pathname = `${config.url}${asPath}`;
