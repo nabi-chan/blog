@@ -1,5 +1,11 @@
 # nabi-blog
 
+## 1.3.2
+
+### Patch Changes
+
+- f9bb02a5 fix: fix font-size is toooooo big
+
 ## 1.3.1
 
 ### Patch Changes
