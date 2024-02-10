@@ -1,5 +1,11 @@
 # nabi-blog
 
+## 1.3.1
+
+### Patch Changes
+
+- f97b86e7 fix: remove unused import
+
 ## 1.3.0
 
 ### Minor Changes
