@@ -33,6 +33,10 @@ export namespace Blog {
         title: '블로그',
         url: '/posts',
       },
+      {
+        title: '정보',
+        url: '/cv',
+      },
     ],
   };
 
