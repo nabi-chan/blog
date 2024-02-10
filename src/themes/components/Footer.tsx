@@ -9,7 +9,7 @@ export function Footer() {
   const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
 
   return (
-    <footer>
+    <footer className="print:hidden">
       <div className="max-w-3xl mx-auto px-8 pt-12 pb-4 flex justify-between items-center text-sm text-zinc-500">
         <Link
           href={`https://github.com/${config.footer.githubUserName}`}
