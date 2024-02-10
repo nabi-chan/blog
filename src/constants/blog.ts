@@ -1,7 +1,7 @@
 export namespace Blog {
   export const lang = 'ko';
 
-  export const url = 'https://nabi.kim';
+  export const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
   export const icon = '📝';
   export const title = (title?: string) => (title ? `${title}` : '🫠');
@@ -23,7 +23,7 @@ export namespace Blog {
   export const openGraph = {
     type: 'blog',
     siteName: "Nabi's blog",
-    image: '/og-image.png',
+    image: `${url}/api/blog-card`,
   };
 
   export const header = {
