@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "next build",
+    "changeset-version": "changeset version",
     "dev": "next dev",
     "lint": "next lint",
     "prettier": "prettier --write .",
