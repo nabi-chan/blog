@@ -1,5 +1,12 @@
 # nabi-blog
 
+## 1.4.2
+
+### Patch Changes
+
+- - 80ccae60 fix: fix if link overflows, break with words
+  - 1297b280 refactor: delete unused comment
+
 ## 1.4.1
 
 ### Patch Changes
