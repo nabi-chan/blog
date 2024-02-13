@@ -1,5 +1,11 @@
 # nabi-blog
 
+## 1.4.5
+
+### Patch Changes
+
+- cc95bd0: 37a0a54 fix: fix eslint issues
+
 ## 1.4.4
 
 ### Patch Changes
