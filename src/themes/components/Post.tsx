@@ -15,7 +15,7 @@ export function Post({ post }: { post: MdxFile<FrontMatter> }) {
       >
         {post.frontMatter?.title}
         {isPublishedThisWeek(get(post.frontMatter, 'date', '0')) && (
-          <span className="text-xs bg-primary-300 text-zinc-900 px-1 rounded-md">new!</span>
+          <span className="text-xs bg-primary-300 text-zinc-900 px-1 py-0.5 rounded-md">new!</span>
         )}
       </Link>
       <p className="text-sm my-1">{post.frontMatter.description}</p>
