@@ -1,5 +1,15 @@
 # nabi-blog
 
+## 1.4.1
+
+### Patch Changes
+
+- - 20fcc8d93 feat: add text-border with text-shadow
+  - 93a1bd39 feat: update new! badge's padding
+  - d13e2f58 refactor: replace blue to primary
+  - 794187ae fix: fix darkmode style not setted
+  - fd598a94 fix: fix opengraph is not showing
+
 ## 1.4.0
 
 ### Minor Changes
