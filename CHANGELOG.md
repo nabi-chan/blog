@@ -1,5 +1,11 @@
 # nabi-blog
 
+## 1.4.3
+
+### Patch Changes
+
+- aab0720: refactor: make content sorted by date
+
 ## 1.4.2
 
 ### Patch Changes
