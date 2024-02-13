@@ -10,7 +10,8 @@
 
 ### Patch Changes
 
-- fca641e: - b09c446e refactor: apply prettier
+- fca641e: Bump version
+  - b09c446e refactor: apply prettier
   - 894a96a9 chore: add eslint
 
 ## 1.4.3
@@ -23,26 +24,26 @@
 
 ### Patch Changes
 
-- - 80ccae60 fix: fix if link overflows, break with words
-  - 1297b280 refactor: delete unused comment
+- 80ccae60 fix: fix if link overflows, break with words
+- 1297b280 refactor: delete unused comment
 
 ## 1.4.1
 
 ### Patch Changes
 
-- - 20fcc8d93 feat: add text-border with text-shadow
-  - 93a1bd39 feat: update new! badge's padding
-  - d13e2f58 refactor: replace blue to primary
-  - 794187ae fix: fix darkmode style not setted
-  - fd598a94 fix: fix opengraph is not showing
+- 20fcc8d93 feat: add text-border with text-shadow
+- 93a1bd39 feat: update new! badge's padding
+- d13e2f58 refactor: replace blue to primary
+- 794187ae fix: fix darkmode style not setted
+- fd598a94 fix: fix opengraph is not showing
 
 ## 1.4.0
 
 ### Minor Changes
 
-- - 01987f56 docs: add /cv page
-  - 5bba9f87 feat: hide header / footer when print
-  - 2baac5e7 feat: add color on code
+- 01987f56 docs: add /cv page
+- 5bba9f87 feat: hide header / footer when print
+- 2baac5e7 feat: add color on code
 
 ## 1.3.2
 
@@ -61,9 +62,9 @@
 ### Minor Changes
 
 - e29aa346 feat: add 500 error page
-  ab927685 feat: add 404 page
-  ee081c9c feat: add opengraph image
-  157787c8 fix: fix tailwindcss nesting issue
+- ab927685 feat: add 404 page
+- ee081c9c feat: add opengraph image
+- 157787c8 fix: fix tailwindcss nesting issue
 
 ## 1.2.2
 
@@ -82,12 +83,12 @@
 ### Minor Changes
 
 - eadfaf01 docs: finish what-is-kpt Post
-  ead4c172 feat: add mdx codeblock
-  25cd6b11 docs: wip /what-is-kpt
-  d7c11669 refactor: re-design tags page, remove tags page from header
-  a6fce55a feat: add tags panel
-  16239434 refactor: add posts / tags utils
-  8100b40d feat: add left / right layout for tag / etc
+- ead4c172 feat: add mdx codeblock
+- 25cd6b11 docs: wip /what-is-kpt
+- d7c11669 refactor: re-design tags page, remove tags page from header
+- a6fce55a feat: add tags panel
+- 16239434 refactor: add posts / tags utils
+- 8100b40d feat: add left / right layout for tag / etc
 
 ## 1.1.3
 
@@ -99,15 +100,15 @@
 
 ### Patch Changes
 
-- - fix: fix inter font variable duplicated noto sans
+- fix: fix inter font variable duplicated noto sans
 
 ## 1.1.1
 
 ### Patch Changes
 
 - b8af34e2 docs: add well-written page
-  a9f366eb docs: update blog todo list
-  4c632fa0 fix: fix comment has warning issueaa
+- a9f366eb docs: update blog todo list
+- 4c632fa0 fix: fix comment has warning issueaa
 
 ## 1.1.0
 
