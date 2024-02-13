@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { OpenGraphStyles } from '@/themes/features/opengraph/styles';
 import { ImageResponse } from '@vercel/og';
 

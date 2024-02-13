@@ -16,7 +16,7 @@ export function TypeWriteText({ text, speed = 100, onComplete = noop }) {
     } else {
       onComplete();
     }
-  }, [index, text, speed]);
+  }, [index, text, speed, onComplete]);
 
   return <span>{displayedText}</span>;
 }
