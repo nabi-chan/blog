@@ -1,5 +1,12 @@
 # nabi-blog
 
+## 1.4.4
+
+### Patch Changes
+
+- fca641e: - b09c446e refactor: apply prettier
+  - 894a96a9 chore: add eslint
+
 ## 1.4.3
 
 ### Patch Changes
