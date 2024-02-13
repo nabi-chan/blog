@@ -17,7 +17,7 @@ export function Header() {
                 <Link
                   href={link.url}
                   title={link.title}
-                  className="hover:underline hover:text-sky-500 underline-offset-8 capitalize transition-colors"
+                  className="hover:underline hover:text-sky-500 underline-offset-8 capitalize transition-colors text-shadow"
                 >
                   {link.title}
                 </Link>
