@@ -80,5 +80,5 @@
 }
 
 .markdown a {
-  @apply text-primary-400 underline underline-offset-4;
+  @apply text-primary-400 underline underline-offset-4 break-words;
 }
