@@ -26,7 +26,7 @@ function Vacation() {
           transform: `translateY(${isTextComplete ? 0 : 20}px)`,
         }}
       >
-        <button className="text-blue-400 underline underline-offset-4" onClick={back}>
+        <button className="text-primary-400 underline underline-offset-4" onClick={back}>
           돌아가기
         </button>
         <Link href="/">메인으로</Link>

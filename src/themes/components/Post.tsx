@@ -11,11 +11,11 @@ export function Post({ post }: { post: MdxFile<FrontMatter> }) {
       <Link
         href={post.route}
         title={post.frontMatter?.title}
-        className="text-2xl font-bold group-hover:text-blue-500 transition-colors truncate flex items-center gap-2"
+        className="text-2xl font-bold group-hover:text-primary-500 transition-colors truncate flex items-center gap-2"
       >
         {post.frontMatter?.title}
         {isPublishedThisWeek(get(post.frontMatter, 'date', '0')) && (
-          <span className="text-xs bg-blue-300 text-zinc-900 px-1 rounded-md">new!</span>
+          <span className="text-xs bg-primary-300 text-zinc-900 px-1 rounded-md">new!</span>
         )}
       </Link>
       <p className="text-sm my-1">{post.frontMatter.description}</p>
@@ -27,7 +27,7 @@ export function Post({ post }: { post: MdxFile<FrontMatter> }) {
               <Link
                 href={`/tag/${tag}`}
                 key={tag}
-                className="hover:text-blue-500 hover:underline transition-colors underline-offset-4"
+                className="hover:text-primary-500 hover:underline transition-colors underline-offset-4"
               >
                 #{tag}
               </Link>
