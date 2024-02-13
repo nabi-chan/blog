@@ -52,7 +52,7 @@
   --shiki-color-ansi-bright-white-dim: #d1d5da80;
 }
 
-.dark {
+html[data-theme='dark'] {
   --nextra-primary-hue: 204deg;
   --nextra-primary-saturation: 100%;
 
