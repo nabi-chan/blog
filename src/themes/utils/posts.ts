@@ -28,5 +28,6 @@ export function getPosts(tree: PageMapItem[]) {
   return flattenTree(tree)
     .map((page) => page as MdxFile<FrontMatter>)
     .filter((page) => page.frontMatter?.layout === 'post')
-    .filter(isActivePost);
+    .filter(isActivePost)
+    .sort(sortPostsByDate);
 }

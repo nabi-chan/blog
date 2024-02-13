@@ -1,13 +1,9 @@
 import { BaseLayout } from './Base';
-import { MDXRenderer } from '../components/MdxRenderer';
 import { useRouter } from 'next/router';
 import tagsDescription from '@/constants/tags.json';
 import { useBlogContext } from '../contexts/blogContext';
-import { flattenTree, isActivePost } from '../utils/posts';
-import { MdxFile } from 'nextra';
-import { FrontMatter } from '../types/types';
+import { getPosts } from '../utils/posts';
 import { Post } from '../components/Post';
-import { Link } from '../components/Link';
 
 export function TagLayout() {
   const { query } = useRouter();
@@ -16,11 +12,7 @@ export function TagLayout() {
   const tag = query.slug as string;
   const tagDescription = tagsDescription[tag];
 
-  const posts = flattenTree(opts.pageMap)
-    .map((page) => page as MdxFile<FrontMatter>)
-    .filter((page) => page.frontMatter?.layout === 'post')
-    .filter((page) => page.frontMatter.tags?.includes(tag))
-    .filter(isActivePost);
+  const posts = getPosts(opts.pageMap).filter((page) => page.frontMatter.tags?.includes(tag));
 
   return (
     <BaseLayout className="flex flex-col gap-2">
