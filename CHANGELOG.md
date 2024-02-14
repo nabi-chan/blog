@@ -1,5 +1,13 @@
 # nabi-blog
 
+## 1.5.0
+
+### Minor Changes
+
+- 57db9cb: Initialize Database with prisma
+
+  - ab06ebd6 chore: initialize database with prisma
+
 ## 1.4.5
 
 ### Patch Changes
