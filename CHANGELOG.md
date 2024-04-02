@@ -1,5 +1,11 @@
 # nabi-blog
 
+## 1.5.1
+
+### Patch Changes
+
+- /post/vercel-og
+
 ## 1.5.0
 
 ### Minor Changes
