@@ -3,7 +3,7 @@ import { GetServerSidePropsContext } from 'next';
 const redirectMap = [
   {
     from: '2024-nextjs-starter',
-    destination: 'https://nabi-blog.vercel.app/presentation/2024-nextjs-starter.pdf',
+    destination: 'https://2024-nextjs-starter.vercel.app',
   },
 ];
 
