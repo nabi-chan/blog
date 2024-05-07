@@ -1,5 +1,11 @@
 # nabi-blog
 
+## 1.5.4
+
+### Patch Changes
+
+- update short-link
+
 ## 1.5.3
 
 ### Patch Changes

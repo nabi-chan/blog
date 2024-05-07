@@ -1,6 +1,6 @@
 {
   "name": "nabi-blog",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "type": "module",
   "scripts": {
     "build": "next build",
