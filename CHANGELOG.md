@@ -1,5 +1,11 @@
 # nabi-blog
 
+## 1.5.2
+
+### Patch Changes
+
+- add short-link feature
+
 ## 1.5.1
 
 ### Patch Changes
