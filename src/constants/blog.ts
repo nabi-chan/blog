@@ -34,8 +34,8 @@ export namespace Blog {
         url: '/posts',
       },
       {
-        title: '정보',
-        url: '/cv',
+        title: 'CV',
+        url: 'https://nane.notion.site/4779ec94b3f24a909fb9c2afbfcba343',
       },
     ],
   };
