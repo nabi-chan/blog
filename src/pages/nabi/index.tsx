@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Text } from '@channel.io/bezier-react'
-import { SiteLayout } from '@/layouts/SiteLayout/SiteLayout'
+import { AdminLayout } from '@/layouts/AdminLayout/AdminLayout'
 
 export default function Page() {
   return (
@@ -11,5 +11,5 @@ export default function Page() {
 }
 
 Page.getLayout = (page: ReactNode) => (
-  <SiteLayout title="메인">{page}</SiteLayout>
+  <AdminLayout title="메인">{page}</AdminLayout>
 )
