@@ -1,5 +1,6 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import type { ReactNode } from 'react'
+import { parse } from 'html-to-ast'
 import assert from 'assert'
 import { supabase } from '@/supabase/server'
 import { getSiteLayout } from '@/features/cms/utils/getSiteLayout'
@@ -36,7 +37,7 @@ export const getServerSideProps = (async (context) => {
       title,
       description: description ?? '',
 
-      content,
+      content: parse(content),
     },
   }
 }) satisfies GetServerSideProps
@@ -49,7 +50,7 @@ export default function Page({
   description,
   content,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  return getSiteLayout(<Renderer html={content} />, {
+  return getSiteLayout(<Renderer htmlAst={content} />, {
     layout,
     title,
     description,
