@@ -1,0 +1,50 @@
+diff --git a/node_modules/html-to-ast/dist/index.d.ts b/node_modules/html-to-ast/dist/index.d.ts
+index 9a7f3fc..f1209ec 100644
+--- a/node_modules/html-to-ast/dist/index.d.ts
++++ b/node_modules/html-to-ast/dist/index.d.ts
+@@ -1,4 +1,4 @@
+ import { htmlVoidElements } from './element';
+-import { parse } from './parse';
++import { parse, MaybeDoc } from './parse';
+ import { stringify } from './stringify';
+-export { parse, stringify, htmlVoidElements };
++export { parse, stringify, htmlVoidElements, MaybeDoc };
+diff --git a/node_modules/html-to-ast/package.json b/node_modules/html-to-ast/package.json
+index a678b6a..753e2f3 100644
+--- a/node_modules/html-to-ast/package.json
++++ b/node_modules/html-to-ast/package.json
+@@ -54,7 +54,8 @@
+   "exports": {
+     ".": {
+       "import": "./dist/html-to-ast.esm.js",
+-      "require": "./dist/index.js"
++      "require": "./dist/index.js",
++      "types": "./dist/index.d.ts"
+     }
+   }
+ }
+diff --git a/node_modules/html-to-ast/src/index.ts b/node_modules/html-to-ast/src/index.ts
+index c360724..50346dd 100644
+--- a/node_modules/html-to-ast/src/index.ts
++++ b/node_modules/html-to-ast/src/index.ts
+@@ -1,5 +1,5 @@
+ import { htmlVoidElements } from './element';
+-import { parse } from './parse';
++import { parse, MaybeDoc } from './parse';
+ import { stringify } from './stringify';
+ 
+-export { parse, stringify, htmlVoidElements };
++export { parse, stringify, htmlVoidElements, MaybeDoc };
+diff --git a/node_modules/html-to-ast/src/parse.ts b/node_modules/html-to-ast/src/parse.ts
+index 8c8706b..9692023 100644
+--- a/node_modules/html-to-ast/src/parse.ts
++++ b/node_modules/html-to-ast/src/parse.ts
+@@ -8,7 +8,7 @@ const whitespaceRE = /^\s*$/;
+ // re-used obj for quick lookups of components
+ const empty = Object.create(null);
+ 
+-interface MaybeDoc {
++export interface MaybeDoc {
+   type?: string;
+   text?: string;
+   content?: string;
