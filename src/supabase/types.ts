@@ -55,9 +55,9 @@ export type Database = {
           content: string
           created_at?: string
           description?: string | null
-          id: string
+          id?: string
           title: string
-          updated_at: string
+          updated_at?: string
         }
         Update: {
           content?: string
@@ -69,6 +69,45 @@ export type Database = {
         }
         Relationships: []
       }
+      CustomPage: {
+        Row: {
+          content: string
+          created_at: string
+          description: string | null
+          id: string
+          layout: string
+          slug: string
+          stage: Database["public"]["Enums"]["Stage"]
+          title: string
+          updated_at: string
+          views: number
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          layout: string
+          slug: string
+          stage?: Database["public"]["Enums"]["Stage"]
+          title: string
+          updated_at?: string
+          views?: number
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          layout?: string
+          slug?: string
+          stage?: Database["public"]["Enums"]["Stage"]
+          title?: string
+          updated_at?: string
+          views?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -77,7 +116,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      Stage: "PRIVATE" | "PUBLIC" | "LINK_ONLY"
     }
     CompositeTypes: {
       [_ in never]: never

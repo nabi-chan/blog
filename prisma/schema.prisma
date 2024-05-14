@@ -9,11 +9,29 @@ datasource db {
 }
 
 model Article {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
   title       String
   description String?
   content     String
+}
+
+model CustomPage {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String   @unique
+  views       Int      @default(0)
+  title       String
+  description String?
+  content     String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  stage       Stage    @default(PRIVATE)
+  layout      String
+}
+
+enum Stage {
+  PRIVATE
+  PUBLIC
+  LINK_ONLY
 }
