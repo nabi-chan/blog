@@ -1,4 +1,4 @@
-import type { BezierIcon } from '@channel.io/bezier-icons'
+import { PencilIcon, type BezierIcon } from '@channel.io/bezier-icons'
 
 type SidebarLink = {
   icon: BezierIcon
@@ -10,4 +10,20 @@ type SidebarLink = {
   }[]
 }
 
-export const ADMIN_SIDEBAR_LINKS: SidebarLink[] = []
+export const ADMIN_SIDEBAR_LINKS: SidebarLink[] = [
+  {
+    icon: PencilIcon,
+    title: '블로그',
+    slug: '/nabi/blog',
+    links: [
+      {
+        href: '/list',
+        title: '글 목록',
+      },
+      {
+        href: '/create',
+        title: '글 작성',
+      },
+    ],
+  },
+]
