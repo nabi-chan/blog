@@ -16,13 +16,14 @@ model Article {
   content     Json
   id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   category    BlogCategory? @default(NOTE)
-  stage       Stage?        @default(PRIVATE)
+  stage       Stage?        @default(DRAFT)
 }
 
 enum Stage {
   PRIVATE
   PUBLIC
   LINK_ONLY
+  DRAFT
 }
 
 enum BlogCategory {

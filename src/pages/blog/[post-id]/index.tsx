@@ -15,6 +15,7 @@ export const getStaticPaths = (async () => {
     .from('Article')
     .select('id')
     .neq('stage', 'PRIVATE')
+    .neq('stage', 'DRAFT')
     .throwOnError()
 
   assert(posts !== null, 'posts is null, expected array')
