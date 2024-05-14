@@ -1,14 +1,7 @@
-import { useState, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import { useState } from 'react'
 import type { GetStaticProps, InferGetStaticPropsType } from 'next'
-import {
-  VStack,
-  Text,
-  ListItem,
-  HStack,
-  Checkbox,
-  Icon,
-  Tooltip,
-} from '@channel.io/bezier-react'
+import { VStack, ListItem, HStack } from '@channel.io/bezier-react'
 import {
   BookCoverIcon,
   ChatProgressIcon,
@@ -17,9 +10,12 @@ import {
 import Link from 'next/link'
 import { Set } from 'immutable'
 import assert from 'assert'
-import { SiteLayout } from '@/layouts/SiteLayout/SiteLayout'
 import { supabase } from '@/supabase/server'
 import type { Enums } from '@/supabase/types'
+import { PageHeader } from '@/components/PageHeader'
+import { PostCategoryCheckbox } from '@/features/blog/component/PostCategoryCheckbox'
+import { PostListError } from '@/features/blog/component/PostListError'
+import { SiteLayout } from '@/layouts/SiteLayout/SiteLayout'
 
 export const getStaticProps = (async () => {
   const { data: posts } = await supabase
@@ -60,88 +56,47 @@ export default function Page({
 
   return (
     <VStack spacing={16}>
-      <VStack spacing={8}>
-        <Text
-          typo="18"
-          bold
-        >
-          /blog
-        </Text>
-        <Text
-          typo="14"
-          color="txt-black-darker"
-        >
-          개인적인 감상들과 기술적인 이야기들, 그리고 메모들을 담아놓았습니다.
-        </Text>
-
+      <PageHeader
+        title="/blog"
+        description="개인적인 감상들과 기술적인 이야기들, 그리고 메모들을 담아놓았습니다."
+      >
         <HStack
           spacing={24}
           as="nav"
         >
-          <Checkbox
+          <PostCategoryCheckbox
             checked={selectedCategories.has('TECHNICAL')}
             onCheckedChange={handleCheckedChange('TECHNICAL')}
-          >
-            <Tooltip content="보통 기술과 관련된 내용들을 적어둡니다.">
-              <HStack
-                spacing={4}
-                align="center"
-              >
-                <Icon
-                  source={PageIcon}
-                  color="txt-black-dark"
-                  size="s"
-                />
-                기술 블로그
-              </HStack>
-            </Tooltip>
-          </Checkbox>
-          <Checkbox
+            help="보통 기술과 관련된 내용들을 적어둡니다."
+            icon={PageIcon}
+            label="기술 블로그"
+          />
+
+          <PostCategoryCheckbox
             checked={selectedCategories.has('JOURNAL')}
             onCheckedChange={handleCheckedChange('JOURNAL')}
-          >
-            <Tooltip content="기술 블로그에서 다루지 못하는 여러가지 생각들을 담습니다.">
-              <HStack
-                spacing={4}
-                align="center"
-              >
-                <Icon
-                  source={ChatProgressIcon}
-                  color="txt-black-dark"
-                  size="s"
-                />
-                생각
-              </HStack>
-            </Tooltip>
-          </Checkbox>
-          <Checkbox
+            help="기술 블로그에서 다루지 못하는 여러가지 생각들을 담습니다."
+            icon={ChatProgressIcon}
+            label="생각"
+          />
+
+          <PostCategoryCheckbox
             checked={selectedCategories.has('NOTE')}
             onCheckedChange={handleCheckedChange('NOTE')}
-          >
-            <Tooltip content="500자 미만의 토막글을 보통 다룹니다.">
-              <HStack
-                spacing={4}
-                align="center"
-              >
-                <Icon
-                  source={BookCoverIcon}
-                  color="txt-black-dark"
-                  size="s"
-                />
-                메모
-              </HStack>
-            </Tooltip>
-          </Checkbox>
+            help="500자 미만의 토막글을 보통 다룹니다."
+            icon={BookCoverIcon}
+            label="메모"
+          />
         </HStack>
-      </VStack>
+      </PageHeader>
 
       <VStack>
         {filteredPosts.map((post) => {
           const IconMap = {
+            DEFAULT: PageIcon,
             TECHNICAL: PageIcon,
             JOURNAL: ChatProgressIcon,
             NOTE: BookCoverIcon,
-            DEFAULT: PageIcon,
           }
 
           return (
@@ -160,27 +115,11 @@ export default function Page({
         })}
 
         {isCategoryNotSelected && (
-          <VStack paddingVertical={24}>
-            <Text
-              typo="14"
-              color="txt-black-darker"
-              align="center"
-            >
-              보고싶은 카테고리를 1개 이상 선택해주세요.
-            </Text>
-          </VStack>
+          <PostListError>카테고리를 1개 이상 선택해주세요.</PostListError>
         )}
 
         {!isCategoryNotSelected && isEmptyPosts && (
-          <VStack paddingVertical={24}>
-            <Text
-              typo="14"
-              color="txt-black-darker"
-              align="center"
-            >
-              아직 작성된 글이 없는것 같네요 ^_^;;
-            </Text>
-          </VStack>
+          <PostListError>아직 작성된 글이 없는것 같네요 ^_^;;</PostListError>
         )}
       </VStack>
     </VStack>

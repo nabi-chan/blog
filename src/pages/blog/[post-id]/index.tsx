@@ -1,13 +1,14 @@
-import type { ReactNode } from 'react'
-import { VStack, Text, Box } from '@channel.io/bezier-react'
+import { VStack, Box, Text } from '@channel.io/bezier-react'
 import type {
   GetStaticPaths,
   GetStaticProps,
   InferGetStaticPropsType,
 } from 'next'
+import type { ReactNode } from 'react'
 import assert from 'assert'
-import { SiteLayout } from '@/layouts/SiteLayout/SiteLayout'
 import { supabase } from '@/supabase/server'
+import { PageHeader } from '@/components/PageHeader'
+import { SiteLayout } from '@/layouts/SiteLayout/SiteLayout'
 
 export const getStaticPaths = (async () => {
   const { data: posts } = await supabase
@@ -24,7 +25,6 @@ export const getStaticPaths = (async () => {
       },
     })),
     fallback: true,
-    revalidate: 1 * 60 * 60,
   }
 }) satisfies GetStaticPaths
 
@@ -32,7 +32,7 @@ export const getStaticProps = (async (context) => {
   assert(context.params, 'context.params is empty, expected object')
   const { data: post } = await supabase
     .from('Article')
-    .select('title, description, content')
+    .select('title, description, content, created_at')
     .eq('id', context.params['post-id'] as string)
     .single()
     .throwOnError()
@@ -52,24 +52,21 @@ export const getStaticProps = (async (context) => {
 }) satisfies GetStaticProps
 
 export default function Page({
-  post: { title, description, content },
+  post: { title, description, content, created_at },
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <VStack spacing={16}>
-      <VStack spacing={8}>
+      <PageHeader
+        title={title}
+        description={description}
+      >
         <Text
-          typo="18"
-          bold
-        >
-          {title}
-        </Text>
-        <Text
-          typo="14"
+          typo="12"
           color="txt-black-darker"
         >
-          {description}
+          {created_at}에 나비가 작성했어요. 다 읽는데 10분이 걸려요.
         </Text>
-      </VStack>
+      </PageHeader>
 
       <Box
         style={{ fontSize: 'initial' }}
