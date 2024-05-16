@@ -14,6 +14,7 @@
     "@channel.io/bezier-icons": "^0.24.0",
     "@channel.io/bezier-react": "^2.0.4",
     "@ebay/nice-modal-react": "^1.2.13",
+    "@github/markdown-toolbar-element": "^2.2.3",
     "@prisma/client": "5.13.0",
     "@supabase/supabase-js": "^2.43.1",
     "@tanstack/react-query": "^5.35.1",

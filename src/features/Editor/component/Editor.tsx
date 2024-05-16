@@ -24,12 +24,18 @@ import {
   Text,
   Tooltip,
 } from '@channel.io/bezier-react'
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useMemo, useRef, useState } from 'react'
 import EditorTextArea from './TextArea'
+import type { FormattingToolsHandlers } from './_FormattingTools'
+import { FormattingTools } from './_FormattingTools'
+import { useIgnoreKeyboardActionsWhileComposing } from './useIgnoreKeyboardActionWhileComposing'
+import { isModifierKey } from './utils'
 
 export function Editor() {
   const [value, setValue] = useState('')
   const [editorHeight, setEditorHeight] = useState(400)
+
+  const formattingToolsRef = useRef<FormattingToolsHandlers>(null)
 
   const actions = useMemo(
     () => [
@@ -37,63 +43,88 @@ export function Editor() {
         {
           icon: HeadingIcon,
           description: '제목',
-          onclick: () => {},
+          onClick: () => formattingToolsRef.current?.header(),
         },
         {
           icon: BoldIcon,
           description: '굵음',
-          onclick: () => {},
+          onClick: () => formattingToolsRef.current?.bold(),
         },
         {
           icon: ItalicIcon,
           description: '기울임',
-          onclick: () => {},
+          onClick: () => formattingToolsRef.current?.italic(),
         },
       ],
       [
         {
           icon: ListIcon,
           description: '순서가 없는 목록',
-          onclick: () => {},
+          onClick: () => formattingToolsRef.current?.unorderedList(),
         },
         {
           icon: ListNumberIcon,
           description: '순서가 있는 목록',
-          onclick: () => {},
+          onClick: () => formattingToolsRef.current?.orderedList(),
         },
       ],
       [
         {
           icon: CodeBlockIcon,
           description: '코드블럭',
-          onclick: () => {},
+          onClick: () => formattingToolsRef.current?.code(),
         },
         {
           icon: TableIcon,
           description: '테이블',
-          onclick: () => {},
+          onClick: () => {},
         },
       ],
       [
         {
           icon: ClipIcon,
           description: '파일',
-          onclick: () => {},
+          onClick: () => {},
         },
         {
           icon: ImageIcon,
           description: '이미지',
-          onclick: () => {},
+          onClick: () => formattingToolsRef.current?.image(),
         },
         {
           icon: VideocamIcon,
           description: '비디오',
-          onclick: () => {},
+          onClick: () => {},
         },
       ],
     ],
     []
   )
+
+  const inputCompositionProps = useIgnoreKeyboardActionsWhileComposing(
+    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      const format = formattingToolsRef.current
+
+      if (isModifierKey(e)) {
+        if (e.key === 'b') format?.bold()
+        else if (e.key === 'i') format?.italic()
+        else if (e.shiftKey && e.key === '.') format?.quote()
+        else if (e.key === 'e') format?.code()
+        else if (e.key === 'k') format?.link()
+        else if (e.key === '8') format?.unorderedList()
+        else if (e.shiftKey && e.key === '7') format?.orderedList()
+        else if (e.shiftKey && e.key === 'l') format?.taskList()
+        else return
+
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+  )
+
+  // TODO(@nabi-chan): add listEditing feature https://github.com/primer/react/blob/main/packages/react/src/drafts/MarkdownEditor/_useListEditing.ts
+  // TODO(@nabi-chan): add indenting feature https://github.com/primer/react/blob/main/packages/react/src/drafts/MarkdownEditor/_useIndenting.ts
+  // TODO(@nabi-chan): add file handling feature https://github.com/primer/react/blob/main/packages/react/src/drafts/MarkdownEditor/_useFileHandling.ts
 
   return (
     <Box
@@ -124,13 +155,14 @@ export function Editor() {
                     style={{ height: 17, width: 2 }}
                   />
                 )}
-                {group.map(({ icon, description, onclick }, idx) => {
+                {group.map(({ icon, description, onClick }, idx) => {
                   return (
                     <Tooltip
                       content={description}
                       key={idx}
                     >
-                      <TabAction onClick={onclick}>
+                      {/* @ts-ignore */}
+                      <TabAction onClick={onClick}>
                         <Icon
                           source={icon}
                           color="txt-black-darker"
@@ -145,11 +177,17 @@ export function Editor() {
           </TabActions>
         </TabList>
         <TabContent value="editor">
+          <FormattingTools
+            forInputId="editor"
+            ref={formattingToolsRef}
+          />
           <EditorTextArea
+            id="editor"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             initialHeight={editorHeight}
             onResize={setEditorHeight}
+            {...inputCompositionProps}
           />
         </TabContent>
         <TabContent value="preview">
