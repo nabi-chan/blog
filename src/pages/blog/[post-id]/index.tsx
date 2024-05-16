@@ -25,7 +25,7 @@ export const getStaticPaths = (async () => {
         'post-id': id,
       },
     })),
-    fallback: true,
+    fallback: false,
   }
 }) satisfies GetStaticPaths
 
@@ -82,11 +82,13 @@ export default function Page({
 Page.getLayout = (
   page: ReactNode,
   pageProps: InferGetStaticPropsType<typeof getStaticProps>
-) => (
-  <SiteLayout
-    title={pageProps.post.title}
-    description={pageProps.post.description ?? undefined}
-  >
-    {page}
-  </SiteLayout>
-)
+) => {
+  return (
+    <SiteLayout
+      title={pageProps.post.title}
+      description={pageProps.post.description ?? undefined}
+    >
+      {page}
+    </SiteLayout>
+  )
+}
