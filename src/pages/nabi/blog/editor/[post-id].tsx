@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import {
-  Box,
   Button,
   ButtonGroup,
   FormControl,
@@ -15,6 +14,7 @@ import assert from 'assert'
 import { AdminLayout } from '@/layouts/AdminLayout/AdminLayout'
 import { PageHeader } from '@/components/PageHeader'
 import { supabase } from '@/supabase/server'
+import { Editor } from '@/features/Editor/component'
 
 export const getServerSideProps = (async (context) => {
   assert(context.params, 'context.params is empty, expected object')
@@ -60,12 +60,7 @@ export default function Page({
 
       <FormControl>
         <FormLabel>컨텐츠</FormLabel>
-        <Box
-          padding={32}
-          backgroundColor="bg-black-darker"
-        >
-          여기에 에디터 넣기
-        </Box>
+        <Editor />
       </FormControl>
 
       <FormControl labelPosition="left">
