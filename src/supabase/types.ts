@@ -12,7 +12,7 @@ export type Database = {
       Article: {
         Row: {
           category: Database["public"]["Enums"]["BlogCategory"] | null
-          content: Json
+          content: string
           created_at: string
           description: string | null
           id: string
@@ -22,7 +22,7 @@ export type Database = {
         }
         Insert: {
           category?: Database["public"]["Enums"]["BlogCategory"] | null
-          content: Json
+          content: string
           created_at?: string
           description?: string | null
           id?: string
@@ -32,7 +32,7 @@ export type Database = {
         }
         Update: {
           category?: Database["public"]["Enums"]["BlogCategory"] | null
-          content?: Json
+          content?: string
           created_at?: string
           description?: string | null
           id?: string
@@ -51,7 +51,7 @@ export type Database = {
     }
     Enums: {
       BlogCategory: "TECHNICAL" | "JOURNAL" | "NOTE"
-      Stage: "PRIVATE" | "PUBLIC" | "LINK_ONLY"
+      Stage: "PRIVATE" | "PUBLIC" | "LINK_ONLY" | "DRAFT"
     }
     CompositeTypes: {
       [_ in never]: never
