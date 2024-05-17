@@ -21,7 +21,6 @@ import {
   TabItems,
   TabList,
   Tabs,
-  Text,
   Tooltip,
 } from '@channel.io/bezier-react'
 import { Fragment, useMemo, useRef, useState } from 'react'
@@ -29,6 +28,7 @@ import { useIgnoreKeyboardActionsWhileComposing } from '@/features/Editor/hooks/
 import { isModifierKey } from '@/features/Editor/utils/utils'
 import type { FormattingToolsHandlers } from '@/features/Editor/utils/_FormattingTools'
 import { FormattingTools } from '@/features/Editor/utils/_FormattingTools'
+import { Viewer } from '@/features/Viewer/components/Viewer'
 import EditorTextArea from './TextArea'
 
 export function Editor() {
@@ -197,7 +197,7 @@ export function Editor() {
             height={editorHeight}
             overflowY="auto"
           >
-            <Text typo="14">{value}</Text>
+            <Viewer markdown={value} />
           </Box>
         </TabContent>
       </Tabs>
