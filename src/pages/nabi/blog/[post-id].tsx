@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import {
+  Box,
   Button,
   ButtonGroup,
   KeyValueItem,
@@ -13,6 +14,7 @@ import assert from 'assert'
 import { AdminLayout } from '@/layouts/AdminLayout/AdminLayout'
 import { PageHeader } from '@/components/PageHeader'
 import { supabase } from '@/supabase/server'
+import { Viewer } from '@/features/Viewer/components/Viewer'
 
 export const getServerSideProps = (async (context) => {
   assert(context.params, 'context.params is empty, expected object')
@@ -63,7 +65,14 @@ export default function Page({
       <KeyValueItem keyContent="카테고리">{category}</KeyValueItem>
       <KeyValueItem keyContent="공개 상태">{stage}</KeyValueItem>
       <KeyValueMultiLineItem keyContent="블로그 컨텐츠">
-        길고 긴 블로그 글 렌더링...
+        <Box
+          borderWidth={1}
+          borderRadius="8"
+          borderColor="bdr-black-dark"
+          padding={8}
+        >
+          <Viewer markdown={content} />
+        </Box>
       </KeyValueMultiLineItem>
       <ButtonGroup justify="end">
         <Link href={`/nabi/blog/editor/${postId}`}>
