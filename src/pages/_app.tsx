@@ -1,5 +1,6 @@
 import '@/styles/globals.css'
 import '@channel.io/bezier-react/styles.css'
+import 'github-markdown-css'
 
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
