@@ -5,10 +5,13 @@ import type {
   InferGetStaticPropsType,
 } from 'next'
 import type { ReactNode } from 'react'
+import { merge } from 'immutable'
+import readingTime from 'reading-time'
 import assert from 'assert'
 import { supabase } from '@/supabase/server'
 import { PageHeader } from '@/components/PageHeader'
 import { SiteLayout } from '@/layouts/SiteLayout/SiteLayout'
+import { renderMarkdown } from '@/features/Viewer/utils/renderMarkdown'
 
 export const getStaticPaths = (async () => {
   const { data: posts } = await supabase
@@ -44,9 +47,13 @@ export const getStaticProps = (async (context) => {
     }
   }
 
+  const rendered = await renderMarkdown(post.content)
+  const { minutes } = readingTime(post.content)
+
   return {
     props: {
-      post,
+      post: merge(post, { content: rendered.toString() }),
+      readingTime: minutes,
     },
     revalidate: 1 * 60 * 60,
   }
@@ -54,6 +61,7 @@ export const getStaticProps = (async (context) => {
 
 export default function Page({
   post: { title, description, content, created_at },
+  readingTime,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <VStack spacing={16}>
@@ -65,14 +73,14 @@ export default function Page({
           typo="12"
           color="txt-black-darker"
         >
-          {created_at}에 나비가 작성했어요. 다 읽는데 10분이 걸려요.
+          {created_at}에 나비가 작성했어요. 다 읽는데 {readingTime}분이 걸려요.
         </Text>
       </PageHeader>
 
       <Box
         style={{ fontSize: 'initial' }}
         dangerouslySetInnerHTML={{
-          __html: `<pre>${JSON.stringify(content, null, 2)}</pre>`,
+          __html: content,
         }}
       />
     </VStack>
