@@ -78,7 +78,8 @@ export default function Page({
       </PageHeader>
 
       <Box
-        style={{ fontSize: 'initial' }}
+        className="markdown-body"
+        style={{ fontFamily: 'inherit', fontSize: 14 }}
         dangerouslySetInnerHTML={{
           __html: content,
         }}
