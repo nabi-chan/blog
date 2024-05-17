@@ -23,7 +23,7 @@ import {
   Tabs,
   Tooltip,
 } from '@channel.io/bezier-react'
-import type { ChangeEventHandler } from 'react'
+import type { HTMLProps } from 'react'
 import { Fragment, useMemo, useRef, useState } from 'react'
 import { useIgnoreKeyboardActionsWhileComposing } from '@/features/Editor/hooks/useIgnoreKeyboardActionWhileComposing'
 import { isModifierKey } from '@/features/Editor/utils/utils'
@@ -32,15 +32,20 @@ import { FormattingTools } from '@/features/Editor/utils/_FormattingTools'
 import { Viewer } from '@/features/Viewer/components/Viewer'
 import EditorTextArea from './TextArea'
 
-interface EditorProps {
-  value?: string
-  onChange?: ChangeEventHandler<HTMLTextAreaElement>
-}
+interface EditorProps extends Omit<HTMLProps<HTMLTextAreaElement>, 'style'> {}
 
-export function Editor({ value, onChange }: EditorProps) {
+export function Editor(props: EditorProps) {
+  const [value, setValue] = useState<string>(
+    (props.value as string | undefined) ?? ''
+  )
   const [editorHeight, setEditorHeight] = useState(400)
 
   const formattingToolsRef = useRef<FormattingToolsHandlers>(null)
+
+  const handleValueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    props.onChange?.(e)
+    setValue(e.target.value)
+  }
 
   const actions = useMemo(
     () => [
@@ -187,9 +192,9 @@ export function Editor({ value, onChange }: EditorProps) {
             ref={formattingToolsRef}
           />
           <EditorTextArea
+            {...props}
             id="editor"
-            value={value}
-            onChange={onChange}
+            onChange={handleValueChange}
             initialHeight={editorHeight}
             onResize={setEditorHeight}
             {...inputCompositionProps}

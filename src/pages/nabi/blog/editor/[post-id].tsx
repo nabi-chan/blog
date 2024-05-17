@@ -89,7 +89,11 @@ export default function Page({
 
         <FormControl>
           <FormLabel>컨텐츠</FormLabel>
-          <Editor />
+          <Editor
+            name="content"
+            value={values.content}
+            onChange={handleChange}
+          />
         </FormControl>
 
         <FormControl labelPosition="left">
