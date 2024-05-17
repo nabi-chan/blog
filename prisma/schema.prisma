@@ -9,11 +9,25 @@ datasource db {
 }
 
 model Article {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @default(now()) @updatedAt @map("updated_at")
   title       String
   description String?
   content     String
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  category    BlogCategory? @default(NOTE)
+  stage       Stage?        @default(DRAFT)
+}
+
+enum Stage {
+  PRIVATE
+  PUBLIC
+  LINK_ONLY
+  DRAFT
+}
+
+enum BlogCategory {
+  TECHNICAL
+  JOURNAL
+  NOTE
 }

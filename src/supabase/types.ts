@@ -11,26 +11,32 @@ export type Database = {
     Tables: {
       Article: {
         Row: {
+          category: Database["public"]["Enums"]["BlogCategory"] | null
           content: string
           created_at: string
           description: string | null
           id: string
+          stage: Database["public"]["Enums"]["Stage"] | null
           title: string
           updated_at: string
         }
         Insert: {
+          category?: Database["public"]["Enums"]["BlogCategory"] | null
           content: string
           created_at?: string
           description?: string | null
           id?: string
+          stage?: Database["public"]["Enums"]["Stage"] | null
           title: string
           updated_at?: string
         }
         Update: {
+          category?: Database["public"]["Enums"]["BlogCategory"] | null
           content?: string
           created_at?: string
           description?: string | null
           id?: string
+          stage?: Database["public"]["Enums"]["Stage"] | null
           title?: string
           updated_at?: string
         }
@@ -44,7 +50,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      Stage: "PRIVATE" | "PUBLIC" | "LINK_ONLY"
+      BlogCategory: "TECHNICAL" | "JOURNAL" | "NOTE"
+      Stage: "PRIVATE" | "PUBLIC" | "LINK_ONLY" | "DRAFT"
     }
     CompositeTypes: {
       [_ in never]: never
