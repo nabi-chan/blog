@@ -23,6 +23,7 @@ import {
   Tabs,
   Tooltip,
 } from '@channel.io/bezier-react'
+import type { ChangeEventHandler } from 'react'
 import { Fragment, useMemo, useRef, useState } from 'react'
 import { useIgnoreKeyboardActionsWhileComposing } from '@/features/Editor/hooks/useIgnoreKeyboardActionWhileComposing'
 import { isModifierKey } from '@/features/Editor/utils/utils'
@@ -31,8 +32,12 @@ import { FormattingTools } from '@/features/Editor/utils/_FormattingTools'
 import { Viewer } from '@/features/Viewer/components/Viewer'
 import EditorTextArea from './TextArea'
 
-export function Editor() {
-  const [value, setValue] = useState('')
+interface EditorProps {
+  value?: string
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>
+}
+
+export function Editor({ value, onChange }: EditorProps) {
   const [editorHeight, setEditorHeight] = useState(400)
 
   const formattingToolsRef = useRef<FormattingToolsHandlers>(null)
@@ -184,7 +189,7 @@ export function Editor() {
           <EditorTextArea
             id="editor"
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={onChange}
             initialHeight={editorHeight}
             onResize={setEditorHeight}
             {...inputCompositionProps}
@@ -197,7 +202,7 @@ export function Editor() {
             height={editorHeight}
             overflowY="auto"
           >
-            <Viewer markdown={value} />
+            <Viewer markdown={value ?? ''} />
           </Box>
         </TabContent>
       </Tabs>
