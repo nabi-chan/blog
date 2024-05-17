@@ -25,11 +25,11 @@ import {
   Tooltip,
 } from '@channel.io/bezier-react'
 import { Fragment, useMemo, useRef, useState } from 'react'
+import { useIgnoreKeyboardActionsWhileComposing } from '@/features/Editor/hooks/useIgnoreKeyboardActionWhileComposing'
+import { isModifierKey } from '@/features/Editor/utils/utils'
+import type { FormattingToolsHandlers } from '@/features/Editor/utils/_FormattingTools'
+import { FormattingTools } from '@/features/Editor/utils/_FormattingTools'
 import EditorTextArea from './TextArea'
-import type { FormattingToolsHandlers } from './_FormattingTools'
-import { FormattingTools } from './_FormattingTools'
-import { useIgnoreKeyboardActionsWhileComposing } from './useIgnoreKeyboardActionWhileComposing'
-import { isModifierKey } from './utils'
 
 export function Editor() {
   const [value, setValue] = useState('')

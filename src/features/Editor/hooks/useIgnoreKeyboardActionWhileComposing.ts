@@ -1,6 +1,6 @@
 import type { CompositionEventHandler, KeyboardEventHandler } from 'react'
 import { useCallback, useMemo, useRef } from 'react'
-import { isMacOS } from './utils'
+import { isMacOS } from '@/features/Editor/utils/utils'
 
 export const useIgnoreKeyboardActionsWhileComposing = (
   onKeyDown: KeyboardEventHandler<
