@@ -54,27 +54,6 @@ export const Content = styled(VStack).attrs({
   line-height: 1.5;
   word-wrap: break-word;
 
-  .octicon {
-    display: inline-block;
-    fill: currentColor;
-    vertical-align: text-bottom;
-  }
-
-  h1:hover .anchor .octicon-link:before,
-  h2:hover .anchor .octicon-link:before,
-  h3:hover .anchor .octicon-link:before,
-  h4:hover .anchor .octicon-link:before,
-  h5:hover .anchor .octicon-link:before,
-  h6:hover .anchor .octicon-link:before {
-    width: 16px;
-    height: 16px;
-    content: ' ';
-    display: inline-block;
-    background-color: currentColor;
-    -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
-    mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
-  }
-
   details,
   figcaption,
   figure {
@@ -494,17 +473,6 @@ export const Content = styled(VStack).attrs({
 
   blockquote > :last-child {
     margin-bottom: 0;
-  }
-
-  h1 .octicon-link,
-  h2 .octicon-link,
-  h3 .octicon-link,
-  h4 .octicon-link,
-  h5 .octicon-link,
-  h6 .octicon-link {
-    color: var(--color-fg-default);
-    vertical-align: middle;
-    visibility: hidden;
   }
 
   h1:hover .anchor,
