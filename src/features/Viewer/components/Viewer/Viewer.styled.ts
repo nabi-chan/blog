@@ -944,7 +944,7 @@ export const Content = styled(VStack).attrs({
   }
 
   .markdown-alert {
-    padding: var(--base-size-8) var(--base-size-16);
+    padding: 8px 16px;
     margin-bottom: 16px;
     color: inherit;
     border-left: 0.25em solid var(--color-border-default);
@@ -963,6 +963,8 @@ export const Content = styled(VStack).attrs({
     font-weight: var(--base-text-weight-medium, 500);
     align-items: center;
     line-height: 1;
+    margin-bottom: 8px;
+    text-transform: capitalize;
   }
 
   .markdown-alert.markdown-alert-note {
