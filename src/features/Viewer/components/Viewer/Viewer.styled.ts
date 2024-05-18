@@ -8,12 +8,10 @@ export const Content = styled(VStack).attrs({
   html[data-bezier-theme='dark'] & {
     color-scheme: dark;
     --color-fg-default: #e6edf3;
-    --color-fg-muted: #848d97;
     --color-fg-subtle: #6e7681;
     --color-canvas-default: #0d1117;
     --color-canvas-subtle: #161b22;
     --color-border-default: #30363d;
-    --color-border-muted: #21262d;
     --color-neutral-muted: rgba(110, 118, 129, 0.4);
     --color-accent-fg: #2f81f7;
     --color-accent-emphasis: #1f6feb;
@@ -31,12 +29,10 @@ export const Content = styled(VStack).attrs({
   html[data-bezier-theme='light'] & {
     color-scheme: light;
     --color-fg-default: #1f2328;
-    --color-fg-muted: #656d76;
     --color-fg-subtle: #6e7781;
     --color-canvas-default: #ffffff;
     --color-canvas-subtle: #f6f8fa;
     --color-border-default: #d0d7de;
-    --color-border-muted: hsla(210, 18%, 87%, 1);
     --color-neutral-muted: rgba(175, 184, 193, 0.2);
     --color-accent-fg: #0969da;
     --color-accent-emphasis: #0969da;
@@ -119,7 +115,7 @@ export const Content = styled(VStack).attrs({
     font-weight: var(--base-text-weight-semibold, 600);
     padding-bottom: 0.3em;
     font-size: 2em;
-    border-bottom: 1px solid var(--color-border-muted);
+    border-bottom: 1px solid var(--bdr-black-dark);
   }
 
   mark {
@@ -170,7 +166,7 @@ export const Content = styled(VStack).attrs({
     box-sizing: content-box;
     overflow: hidden;
     background: transparent;
-    border-bottom: 1px solid var(--color-border-muted);
+    border-bottom: 1px solid var(--bdr-black-dark);
     height: 0.25em;
     padding: 0;
     margin: 24px 0;
@@ -335,7 +331,7 @@ export const Content = styled(VStack).attrs({
     font-weight: var(--base-text-weight-semibold, 600);
     padding-bottom: 0.3em;
     font-size: 1.5em;
-    border-bottom: 1px solid var(--color-border-muted);
+    border-bottom: 1px solid var(--bdr-black-dark);
   }
 
   h3 {
@@ -356,7 +352,7 @@ export const Content = styled(VStack).attrs({
   h6 {
     font-weight: var(--base-text-weight-semibold, 600);
     font-size: 0.85em;
-    color: var(--color-fg-muted);
+    color: var(--txt-black-darker);
   }
 
   p {
@@ -367,7 +363,7 @@ export const Content = styled(VStack).attrs({
   blockquote {
     margin: 0;
     padding: 0 1em;
-    color: var(--color-fg-muted);
+    color: var(--txt-black-darker);
     border-left: 0.25em solid var(--color-border-default);
   }
 
@@ -648,7 +644,7 @@ export const Content = styled(VStack).attrs({
 
   table tr {
     background-color: var(--color-canvas-default);
-    border-top: 1px solid var(--color-border-muted);
+    border-top: 1px solid var(--bdr-black-dark);
   }
 
   table tr:nth-child(2n) {
@@ -867,7 +863,7 @@ export const Content = styled(VStack).attrs({
 
   .footnotes {
     font-size: 12px;
-    color: var(--color-fg-muted);
+    color: var(--txt-black-darker);
   }
 
   .footnotes .sr-only {
@@ -880,7 +876,7 @@ export const Content = styled(VStack).attrs({
     margin: 0;
     padding: 16px 0;
     list-style-position: inside;
-    border-top: 1px solid var(--color-border-muted);
+    border-top: 1px solid var(--bdr-black-dark);
   }
 
   .footnotes ol ul {
