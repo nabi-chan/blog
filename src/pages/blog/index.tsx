@@ -61,8 +61,10 @@ export default function Page({
         description="개인적인 감상들과 기술적인 이야기들, 그리고 메모들을 담아놓았습니다."
       >
         <HStack
-          spacing={24}
+          wrap
           as="nav"
+          spacing={24}
+          style={{ rowGap: 0 }}
         >
           <PostCategoryCheckbox
             checked={selectedCategories.has('TECHNICAL')}

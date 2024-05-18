@@ -2,6 +2,7 @@ import { Spinner, VStack } from '@channel.io/bezier-react'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Suspense } from 'react'
 import { useRenderMarkdownToHTMLQueryObject } from '@/features/Viewer/queries/useRenderMarkdownToHTMLQueryObject'
+import { Content } from './Viewer.styled'
 
 interface ViewerProps {
   markdown: string
@@ -12,14 +13,7 @@ export function BaseViewer({ markdown }: ViewerProps) {
     useRenderMarkdownToHTMLQueryObject(markdown)
   )
 
-  return (
-    <VStack
-      spacing={4}
-      className="markdown-body"
-      style={{ fontFamily: 'inherit', fontSize: 14 }}
-      dangerouslySetInnerHTML={{ __html: rendered.toString() }}
-    />
-  )
+  return <Content dangerouslySetInnerHTML={{ __html: rendered.toString() }} />
 }
 
 export default function Viewer(props: ViewerProps) {
