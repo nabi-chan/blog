@@ -42,6 +42,42 @@ export type Database = {
         }
         Relationships: []
       }
+      CustomPage: {
+        Row: {
+          content: string | null
+          created_at: string
+          description: string | null
+          id: number
+          layout: Database["public"]["Enums"]["PageLayout"]
+          slug: string
+          title: string
+          type: Database["public"]["Enums"]["PageType"]
+          updated_at: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          layout?: Database["public"]["Enums"]["PageLayout"]
+          slug: string
+          title: string
+          type?: Database["public"]["Enums"]["PageType"]
+          updated_at?: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          layout?: Database["public"]["Enums"]["PageLayout"]
+          slug?: string
+          title?: string
+          type?: Database["public"]["Enums"]["PageType"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -51,6 +87,8 @@ export type Database = {
     }
     Enums: {
       BlogCategory: "TECHNICAL" | "JOURNAL" | "NOTE"
+      PageLayout: "SITE" | "WIDE" | "BASE" | "EMPTY"
+      PageType: "MARKDOWN" | "HTML"
       Stage: "PRIVATE" | "PUBLIC" | "LINK_ONLY" | "DRAFT"
     }
     CompositeTypes: {
