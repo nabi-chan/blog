@@ -1,5 +1,6 @@
 html[data-bezier-theme='dark'] {
   background: rgb(38, 38, 38);
+  color-scheme: dark;
 }
 
 body {

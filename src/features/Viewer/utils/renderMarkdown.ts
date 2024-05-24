@@ -5,6 +5,7 @@ import remarkGithubBetaBlockquoteAdmonitions from 'remark-github-beta-blockquote
 import remarkRehype from 'remark-rehype'
 import rehypeRaw from 'rehype-raw'
 import rehypeShiki from '@shikijs/rehype'
+import * as shikiTransformers from '@shikijs/transformers'
 import rehypeStringify from 'rehype-stringify'
 import { capitalize, lowerCase } from 'lodash-es'
 
@@ -29,6 +30,13 @@ export function renderMarkdown(markdown: string) {
         light: 'one-light',
         dark: 'one-dark-pro',
       },
+      transformers: [
+        shikiTransformers.transformerNotationDiff(),
+        shikiTransformers.transformerNotationHighlight(),
+        shikiTransformers.transformerNotationWordHighlight(),
+        shikiTransformers.transformerNotationFocus(),
+        shikiTransformers.transformerMetaHighlight(),
+      ],
     })
     .use(rehypeStringify, {
       allowDangerousHtml: true,
