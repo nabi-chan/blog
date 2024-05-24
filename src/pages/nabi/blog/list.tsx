@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { AdminLayout } from '@/layouts/AdminLayout/AdminLayout'
 import { PageHeader } from '@/components/PageHeader'
 import { supabase } from '@/supabase/server'
-import { PostListError } from '@/features/blog/component/PostListError'
+import { PostListError } from '@/features/errors/ListError'
 
 export const getServerSideProps = (async () => {
   const { data: posts } = await supabase

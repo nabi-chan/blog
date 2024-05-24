@@ -1,7 +1,7 @@
 import { VStack, Text } from '@channel.io/bezier-react'
 import type { PropsWithChildren } from 'react'
 
-export function PostListError({ children }: PropsWithChildren) {
+export function ListError({ children }: PropsWithChildren) {
   return (
     <VStack paddingVertical={24}>
       <Text
