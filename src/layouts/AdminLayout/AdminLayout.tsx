@@ -1,9 +1,9 @@
 import { Suspense, type PropsWithChildren } from 'react'
 import { Box, HStack, Spinner } from '@channel.io/bezier-react'
+import dynamic from 'next/dynamic'
 import type { BaseLayoutProps } from '@/layouts/BaseLayout/BaseLayout'
 import { BaseLayout } from '@/layouts/BaseLayout/BaseLayout'
 import { Sidebar } from './Sidebar'
-import dynamic from 'next/dynamic'
 
 const AdminGuard = dynamic(
   () => import('./AdminGuard').then((m) => m.AdminGuard),

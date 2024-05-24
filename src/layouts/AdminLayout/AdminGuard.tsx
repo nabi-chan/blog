@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query'
+import type { PropsWithChildren } from 'react'
 import { useGetUserQueryObject } from '@/features/User/queries/useGetUserQueryObject'
 import { Redirect } from '@/components/Redirect/Redirect'
-import { PropsWithChildren } from 'react'
 
 export function AdminGuard({ children }: PropsWithChildren) {
   const { data } = useSuspenseQuery(useGetUserQueryObject())

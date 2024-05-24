@@ -1,7 +1,7 @@
 import type { GetServerSideProps } from 'next'
+import cuid from 'cuid'
 import assert from 'assert'
 import { supabase } from '@/supabase/server'
-import cuid from 'cuid'
 
 export const getServerSideProps = (async () => {
   const { data } = await supabase
