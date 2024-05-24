@@ -66,11 +66,11 @@ export function Navbar() {
         enableClickOutside
         onClick={() => setShow(false)}
         container={containerRef.current}
+        style={{ width: '100%' }}
       >
         <VStack
           justify="between"
           backgroundColor="bg-white-low"
-          width="100vw"
           maxWidth="72rem"
           marginHorizontal="auto"
           padding={8}

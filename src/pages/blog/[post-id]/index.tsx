@@ -1,4 +1,4 @@
-import { VStack, Box, Text } from '@channel.io/bezier-react'
+import { VStack, Text } from '@channel.io/bezier-react'
 import type {
   GetStaticPaths,
   GetStaticProps,
@@ -12,6 +12,7 @@ import { supabase } from '@/supabase/server'
 import { PageHeader } from '@/components/PageHeader'
 import { SiteLayout } from '@/layouts/SiteLayout/SiteLayout'
 import { renderMarkdown } from '@/features/Viewer/utils/renderMarkdown'
+import { Content } from '@/features/Viewer/components/Viewer'
 
 export const getStaticPaths = (async () => {
   const { data: posts } = await supabase
@@ -77,9 +78,7 @@ export default function Page({
         </Text>
       </PageHeader>
 
-      <Box
-        className="markdown-body"
-        style={{ fontFamily: 'inherit', fontSize: 14 }}
+      <Content
         dangerouslySetInnerHTML={{
           __html: content,
         }}

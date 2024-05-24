@@ -1,4 +1,5 @@
-import { useRef, type ReactNode } from 'react'
+import { useCallback, useRef } from 'react'
+import type { ChangeEvent, ReactNode } from 'react'
 import type { SelectRef } from '@channel.io/bezier-react'
 import {
   Button,
@@ -13,12 +14,14 @@ import {
 import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
+import { isEmpty, isNil } from 'lodash'
 import assert from 'assert'
 import { AdminLayout } from '@/layouts/AdminLayout/AdminLayout'
 import { PageHeader } from '@/components/PageHeader'
 import { supabase } from '@/supabase/server'
 import { Editor } from '@/features/Editor/component'
 import { useUpdateArticleMutation } from '@/features/Editor/queries/useUpdateArticleMutation'
+import { FileField } from '@/features/Editor/component/FileField'
 
 export const getServerSideProps = (async (context) => {
   assert(context.params, 'context.params is empty, expected object')
@@ -62,6 +65,20 @@ export default function Page({
     },
   })
 
+  const handleFileUpload = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      const { files } = event.target
+      console.log(files)
+      if (isEmpty(files) || isNil(files)) {
+        return
+      }
+
+      const file = files[0]
+      setFieldValue('content', await file.text())
+    },
+    [setFieldValue]
+  )
+
   return (
     <form onSubmit={handleSubmit}>
       <VStack spacing={12}>
@@ -93,6 +110,14 @@ export default function Page({
             name="content"
             value={values.content}
             onChange={handleChange}
+          />
+        </FormControl>
+
+        <FormControl>
+          <FormLabel>파일 업로드하기</FormLabel>
+          <FileField
+            accept="text/x-markdown"
+            onChange={handleFileUpload}
           />
         </FormControl>
 
