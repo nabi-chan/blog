@@ -9,6 +9,7 @@ import type { AppProps } from 'next/app'
 import NiceModal from '@ebay/nice-modal-react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { startsWith } from 'lodash'
+import Head from 'next/head'
 import { ThemeProvider } from '@/provider/ThemeProvider/ThemeProvider'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -32,6 +33,16 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <>
+      <Head>
+        <link
+          rel="apple-touch-icon"
+          href="/favicon.png"
+        />
+        <link
+          rel="icon"
+          href="/favicon.png"
+        />
+      </Head>
       <QueryClientProvider client={new QueryClient()}>
         <ThemeProvider defaultTheme="light">
           <NiceModal.Provider>
