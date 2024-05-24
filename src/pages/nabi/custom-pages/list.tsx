@@ -18,7 +18,7 @@ import { PageHeader } from '@/components/PageHeader'
 export const getServerSideProps = (async () => {
   const { data: customPages } = await supabase
     .from('CustomPage')
-    .select('id, title, description, created_at, updated_at, slug')
+    .select('id, title, description, created_at, updated_at, slug, layout')
     .order('created_at', { ascending: false })
     .throwOnError()
 
@@ -57,7 +57,7 @@ export default function Page({
       </HStack>
 
       <VStack as="section">
-        {customPages?.map((page) => (
+        {customPages.map((page) => (
           <Link
             key={page.id}
             href={`/nabi/custom-pages/${page.id}`}
@@ -70,11 +70,12 @@ export default function Page({
                   wrap
                   spacing={4}
                 >
+                  <Badge>layout : {page.layout}</Badge>
+                  <Badge>slug : /{page.slug}</Badge>
+                  <Badge>created_at : {page.created_at}</Badge>
                   {!isEmpty(page.description) && (
                     <Badge>description : {page.description}</Badge>
                   )}
-                  <Badge>slug : /{page.slug}</Badge>
-                  <Badge>created_at : {page.created_at}</Badge>
                 </HStack>
               }
             />

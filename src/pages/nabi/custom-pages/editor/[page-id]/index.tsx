@@ -30,6 +30,7 @@ export interface CustomPageFormValues {
   description: string
   slug: string
   type: Enums<'PageType'>
+  layout: Enums<'PageLayout'>
   content: string
 }
 
@@ -37,7 +38,7 @@ export const getServerSideProps = (async (context) => {
   assert(context.params, 'context.params is empty, expected object')
   const { data: page } = await supabase
     .from('CustomPage')
-    .select('title, description, slug, type, content')
+    .select('title, description, slug, type, layout, content')
     .eq('id', toNumber(context.params['page-id']))
     .single()
 
@@ -60,6 +61,7 @@ export default function Page({
       description: page?.description ?? '',
       slug: page?.slug ?? '',
       type: page?.type ?? 'MARKDOWN',
+      layout: page?.layout ?? 'BASE',
       content: page?.content ?? '',
     },
     onSubmit: async (page) => {
@@ -131,6 +133,23 @@ export default function Page({
             items={[
               { label: '마크다운 페이지', value: 'MARKDOWN' },
               { label: 'HTML 페이지', value: 'HTML' },
+            ]}
+          />
+        </FormControl>
+
+        {/* 페이지 레이아웃 */}
+        <FormControl labelPosition="left">
+          <FormLabel>페이지 레이아웃</FormLabel>
+          <Select
+            name="layout"
+            value={formik.values.layout}
+            placeholder="페이지 레이아웃을 선택해주세요."
+            onChange={formik.handleChange}
+            items={[
+              { label: '빈 레이아웃', value: 'EMPTY' },
+              { label: '기본 레이아웃', value: 'BASE' },
+              { label: '넓은 레이아웃', value: 'WIDE' },
+              { label: '사이트 레이아웃', value: 'SITE' },
             ]}
           />
         </FormControl>

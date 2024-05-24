@@ -21,7 +21,7 @@ export const getServerSideProps = (async (context) => {
   assert(context.params, 'context.params is empty, expected object')
   const { data: pages } = await supabase
     .from('CustomPage')
-    .select('title, description, created_at, content, type, slug')
+    .select('title, description, created_at, content, type, layout, slug')
     .eq('id', toNumber(context.params['page-id']))
     .single()
     .throwOnError()
@@ -45,6 +45,7 @@ export default function Page({
     description,
 
     slug,
+    layout,
 
     type,
     content,
@@ -64,6 +65,7 @@ export default function Page({
         <KeyValueItem keyContent="설명">{description}</KeyValueItem>
       )}
       <KeyValueItem keyContent="slug">/{slug}</KeyValueItem>
+      <KeyValueItem keyContent="레이아웃">{layout}</KeyValueItem>
       <KeyValueMultiLineItem keyContent="컨텐츠">
         <Box
           borderWidth={1}
