@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@channel.io/bezier-icons": "^0.24.0",
-    "@channel.io/bezier-react": "^2.0.4",
+    "@channel.io/bezier-react": "^2.0.6",
     "@ebay/nice-modal-react": "^1.2.13",
     "@github/markdown-toolbar-element": "^2.2.3",
     "@prisma/client": "5.13.0",
