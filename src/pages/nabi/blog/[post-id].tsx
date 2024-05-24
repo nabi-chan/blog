@@ -15,6 +15,7 @@ import { AdminLayout } from '@/layouts/AdminLayout/AdminLayout'
 import { PageHeader } from '@/components/PageHeader'
 import { supabase } from '@/supabase/server'
 import { Viewer } from '@/features/Viewer/components/Viewer'
+import { useDeleteArticleMutation } from '@/features/blog/queries/useDeleteArticleMutation'
 
 export const getServerSideProps = (async (context) => {
   assert(context.params, 'context.params is empty, expected object')
@@ -51,6 +52,9 @@ export default function Page({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { 'post-id': postId } = useRouter().query
 
+  const { mutateAsync: deleteArticle, isPending: isDeleting } =
+    useDeleteArticleMutation()
+
   return (
     <VStack spacing={12}>
       <PageHeader
@@ -82,6 +86,8 @@ export default function Page({
           />
         </Link>
         <Button
+          loading={isDeleting}
+          onClick={() => deleteArticle({ articleId: postId as string })}
           styleVariant="secondary"
           colorVariant="red"
           text="삭제하기"
