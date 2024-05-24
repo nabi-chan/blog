@@ -11,6 +11,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { startsWith } from 'lodash'
 import Head from 'next/head'
 import { ThemeProvider } from '@/provider/ThemeProvider/ThemeProvider'
+import { Font } from '@/components/Font'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement, pageProps: P) => ReactNode
@@ -46,7 +47,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <QueryClientProvider client={new QueryClient()}>
         <ThemeProvider defaultTheme="light">
           <NiceModal.Provider>
-            {getLayout(<Component {...pageProps} />)}
+            <Font>{getLayout(<Component {...pageProps} />)}</Font>
           </NiceModal.Provider>
         </ThemeProvider>
       </QueryClientProvider>
