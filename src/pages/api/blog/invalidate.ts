@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { isEmpty } from 'lodash'
 import { supabase } from '@/supabase/server'
 
 export default async function handler(
@@ -23,7 +24,7 @@ export default async function handler(
       }
 
       await res.revalidate(`/blog`)
-      if (req.query['post-id'] === undefined) {
+      if (!isEmpty(req.query['post-id'])) {
         await res.revalidate(`/blog/${req.query['post-id']}`)
       }
       return res.status(200).send('ok')
