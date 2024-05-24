@@ -20,7 +20,7 @@ import { AdminLayout } from '@/layouts/AdminLayout/AdminLayout'
 import { PageHeader } from '@/components/PageHeader'
 import { supabase } from '@/supabase/server'
 import { Editor } from '@/features/Editor/component'
-import { useUpdateArticleMutation } from '@/features/Editor/queries/useUpdateArticleMutation'
+import { useUpdateArticleMutation } from '@/features/blog/queries/useUpdateArticleMutation'
 import { FileField } from '@/features/Editor/component/FileField'
 
 export const getServerSideProps = (async (context) => {

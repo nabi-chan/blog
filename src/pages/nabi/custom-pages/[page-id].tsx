@@ -16,6 +16,7 @@ import { AdminLayout } from '@/layouts/AdminLayout/AdminLayout'
 import { PageHeader } from '@/components/PageHeader'
 import { supabase } from '@/supabase/server'
 import { Viewer } from '@/features/Viewer/components/Viewer'
+import { useDeletePageMutation } from '@/features/custom-pages/queries/useDeletePageMutation'
 
 export const getServerSideProps = (async (context) => {
   assert(context.params, 'context.params is empty, expected object')
@@ -52,6 +53,7 @@ export default function Page({
   },
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { 'page-id': pageId } = useRouter().query
+  const { mutateAsync, isPending } = useDeletePageMutation()
 
   return (
     <VStack spacing={12}>
@@ -87,6 +89,8 @@ export default function Page({
           />
         </Link>
         <Button
+          onClick={() => mutateAsync({ pageId: toNumber(pageId) })}
+          loading={isPending}
           styleVariant="secondary"
           colorVariant="red"
           text="삭제하기"
