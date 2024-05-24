@@ -14,7 +14,7 @@ import { supabase } from '@/supabase/server'
 import type { Enums } from '@/supabase/types'
 import { PageHeader } from '@/components/PageHeader'
 import { PostCategoryCheckbox } from '@/features/blog/component/PostCategoryCheckbox'
-import { PostListError } from '@/features/blog/component/PostListError'
+import { PostListError } from '@/features/errors/ListError'
 import { SiteLayout } from '@/layouts/SiteLayout/SiteLayout'
 
 export const getStaticProps = (async () => {
