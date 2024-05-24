@@ -3,9 +3,9 @@ import remarkParse from 'remark-parse'
 import remarkGfm from 'remark-gfm'
 import remarkGithubBetaBlockquoteAdmonitions from 'remark-github-beta-blockquote-admonitions'
 import remarkRehype from 'remark-rehype'
-import rehypeSanitize from 'rehype-sanitize'
-import rehypeStringify from 'rehype-stringify'
+import rehypeRaw from 'rehype-raw'
 import rehypeShiki from '@shikijs/rehype'
+import rehypeStringify from 'rehype-stringify'
 import { capitalize, lowerCase } from 'lodash-es'
 
 export function renderMarkdown(markdown: string) {
@@ -22,18 +22,16 @@ export function renderMarkdown(markdown: string) {
         checkedTitle: lowerCase(title.slice(2, -1)),
       }),
     })
-    .use(remarkRehype)
-    .use(rehypeSanitize, {
-      attributes: {
-        '*': ['className'],
-      },
-    })
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
     .use(rehypeShiki, {
       themes: {
         light: 'one-light',
         dark: 'one-dark-pro',
       },
     })
-    .use(rehypeStringify)
+    .use(rehypeStringify, {
+      allowDangerousHtml: true,
+    })
     .process(markdown)
 }
