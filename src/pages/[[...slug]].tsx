@@ -1,5 +1,9 @@
-import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
-import { join, merge } from 'lodash'
+import type {
+  GetStaticPaths,
+  GetStaticProps,
+  InferGetStaticPropsType,
+} from 'next'
+import { concat, join, merge } from 'lodash'
 import type { ReactNode } from 'react'
 import assert from 'assert'
 import { supabase } from '@/supabase/server'
@@ -8,7 +12,24 @@ import { renderMarkdown } from '@/features/Viewer/utils/renderMarkdown'
 import { Content } from '@/features/Viewer/components/Viewer'
 import { CustomPageLayout } from '@/features/custom-pages/components/CustomPageLayout'
 
-export const getServerSideProps = (async (context) => {
+export const getStaticPaths = (async () => {
+  const { data: pages } = await supabase
+    .from('CustomPage')
+    .select('slug')
+    .throwOnError()
+
+  assert(pages, 'pages is empty, expected array')
+  return {
+    paths: pages.map(({ slug }) => ({
+      params: {
+        slug: concat('/', slug.split('/')),
+      },
+    })),
+    fallback: 'blocking',
+  }
+}) satisfies GetStaticPaths
+
+export const getStaticProps = (async (context) => {
   assert(context.params, 'context.params is empty, expected object')
   const { data: pages } = await supabase
     .from('CustomPage')
@@ -40,11 +61,11 @@ export const getServerSideProps = (async (context) => {
       pageConfig: merge(pages, { content: renderedContent.toString() }),
     },
   }
-}) satisfies GetServerSideProps
+}) satisfies GetStaticProps
 
 export default function Page({
   pageConfig: { title, description, type, content },
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <BaseLayout
       title={title}
@@ -62,7 +83,7 @@ export default function Page({
 
 Page.getLayout = (
   page: ReactNode,
-  { pageConfig }: InferGetServerSidePropsType<typeof getServerSideProps>
+  { pageConfig }: InferGetStaticPropsType<typeof getStaticProps>
 ) => (
   <CustomPageLayout
     title={pageConfig.title}
