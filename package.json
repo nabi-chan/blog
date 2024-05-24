@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier --write .",
+    "postinstall": "patch-package",
     "supabase-typegen": "supabase gen types typescript --project-id 'gjhnwcqoaogfupxjanlh' --schema public > src/supabase/types.ts"
   },
   "dependencies": {
@@ -46,6 +47,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
+    "patch-package": "^8.0.0",
     "prisma": "^5.13.0",
     "supabase": "^1.165.0",
     "typescript": "^5"
