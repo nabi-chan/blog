@@ -1,6 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
 import { merge } from 'immutable'
 import { useToast } from '@channel.io/bezier-react'
+import axios from 'axios'
+import assert from 'assert'
 import { supabase } from '@/supabase/client'
 import type { Tables } from '@/supabase/types'
 
@@ -20,7 +22,19 @@ export function useUpdatePageMutation() {
         .select('id')
         .single()
         .throwOnError(),
-    onSuccess: async () => {
+    onSuccess: async (_, { pageId }) => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      assert(session?.access_token, 'session.access_token is undefined')
+      await axios.patch<'ok'>('/api/page/invalidate', undefined, {
+        params: {
+          pageId,
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      })
       addToast('성공적으로 수정되었습니다.', { preset: 'success' })
     },
     onError: async () => {
