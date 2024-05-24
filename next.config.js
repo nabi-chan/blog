@@ -1,11 +1,16 @@
-import nextra from 'nextra';
-
-const withNextra = nextra({
-  theme: 'Themes/index.ts',
-  readingTime: true,
-});
-
-export default withNextra({
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
-  cleanDistDir: true,
-});
+  compiler: {
+    styledComponents: true,
+  },
+  redirects: () => [
+    {
+      source: '/post',
+      destination: '/posts',
+      permanent: true,
+    },
+  ],
+}
+
+export default nextConfig

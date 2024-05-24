@@ -1,1 +1,0 @@
-export { PostsLayout } from './Posts';
