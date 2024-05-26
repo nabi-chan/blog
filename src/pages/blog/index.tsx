@@ -9,6 +9,7 @@ import {
 } from '@channel.io/bezier-icons'
 import Link from 'next/link'
 import { Set } from 'immutable'
+import { format } from 'date-fns'
 import assert from 'assert'
 import { supabase } from '@/supabase/server'
 import type { Enums } from '@/supabase/types'
@@ -110,7 +111,7 @@ export default function Page({
                 leftContent={IconMap[post.category ?? 'DEFAULT']}
                 content={post.title}
                 description={post.description}
-                rightContent={post.created_at}
+                rightContent={format(post.created_at, 'yyyy-MM-dd')}
               />
             </Link>
           )

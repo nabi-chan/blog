@@ -7,6 +7,7 @@ import type {
 import type { ReactNode } from 'react'
 import { merge } from 'immutable'
 import readingTime from 'reading-time'
+import { format } from 'date-fns'
 import assert from 'assert'
 import { supabase } from '@/supabase/server'
 import { PageHeader } from '@/components/PageHeader'
@@ -74,7 +75,8 @@ export default function Page({
           typo="12"
           color="txt-black-darker"
         >
-          {created_at}에 나비가 작성했어요. 다 읽는데 {readingTime}분이 걸려요.
+          {format(created_at, 'yyyy-MM-dd')}에 나비가 작성했어요. 다 읽는데{' '}
+          {readingTime}분이 걸려요.
         </Text>
       </PageHeader>
 
