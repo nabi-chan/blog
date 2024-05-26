@@ -3,7 +3,7 @@ import type {
   GetStaticProps,
   InferGetStaticPropsType,
 } from 'next'
-import { concat, join, merge } from 'lodash'
+import { concat, merge } from 'lodash'
 import type { ReactNode } from 'react'
 import assert from 'assert'
 import { supabase } from '@/supabase/server'
@@ -20,12 +20,12 @@ export const getStaticPaths = (async () => {
 
   assert(pages, 'pages is empty, expected array')
   return {
+    fallback: 'blocking',
     paths: pages.map(({ slug }) => ({
       params: {
         slug: concat('/', slug.split('/')),
       },
     })),
-    fallback: 'blocking',
   }
 }) satisfies GetStaticPaths
 
@@ -36,18 +36,20 @@ export const getStaticProps = (async (context) => {
     .select('title, description, content, type, layout')
     .eq(
       'slug',
-      join((context.params['slug'] as string[] | undefined) ?? [''], '/')
+      ((context.params['slug'] as string[] | undefined) ?? []).join('/')
     )
     .single()
 
   if (pages === null) {
     return {
+      revalidate: 1 * 60 * 60,
       notFound: true,
     }
   }
 
   if (pages.type === 'HTML') {
     return {
+      revalidate: 1 * 60 * 60,
       props: {
         pageConfig: pages,
       },
@@ -57,6 +59,7 @@ export const getStaticProps = (async (context) => {
   const renderedContent = await renderMarkdown(pages.content ?? '')
 
   return {
+    revalidate: 1 * 60 * 60,
     props: {
       pageConfig: merge(pages, { content: renderedContent.toString() }),
     },
