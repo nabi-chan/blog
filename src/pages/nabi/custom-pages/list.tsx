@@ -9,7 +9,7 @@ import {
 import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { isEmpty } from 'lodash'
+import { isEmpty } from 'lodash-es'
 import { supabase } from '@/supabase/server'
 import { AdminLayout } from '@/layouts/AdminLayout/AdminLayout'
 import { ListError } from '@/features/errors/ListError/ListError'

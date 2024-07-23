@@ -14,7 +14,7 @@ import {
 import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
-import { isEmpty, isNil } from 'lodash'
+import { isEmpty, isNil } from 'lodash-es'
 import assert from 'assert'
 import { AdminLayout } from '@/layouts/AdminLayout/AdminLayout'
 import { PageHeader } from '@/components/PageHeader'

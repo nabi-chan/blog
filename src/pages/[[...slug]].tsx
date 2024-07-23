@@ -3,7 +3,7 @@ import type {
   GetStaticProps,
   InferGetStaticPropsType,
 } from 'next'
-import { concat, merge } from 'lodash'
+import { concat, merge } from 'lodash-es'
 import type { ReactNode } from 'react'
 import assert from 'assert'
 import { supabase } from '@/supabase/server'

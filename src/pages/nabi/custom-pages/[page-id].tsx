@@ -10,7 +10,7 @@ import {
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
-import { toNumber } from 'lodash'
+import { toNumber } from 'lodash-es'
 import assert from 'assert'
 import { AdminLayout } from '@/layouts/AdminLayout/AdminLayout'
 import { PageHeader } from '@/components/PageHeader'

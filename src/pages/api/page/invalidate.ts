@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { isNull, toNumber } from 'lodash'
+import { isNull, toNumber } from 'lodash-es'
 import { supabase } from '@/supabase/server'
 
 export default async function handler(
