@@ -14,21 +14,21 @@
   },
   "dependencies": {
     "@channel.io/bezier-icons": "^0.24.0",
-    "@channel.io/bezier-react": "^2.2.1",
+    "@channel.io/bezier-react": "^2.2.2",
     "@ebay/nice-modal-react": "^1.2.13",
     "@github/markdown-toolbar-element": "^2.2.3",
     "@prisma/client": "5.13.0",
-    "@shikijs/rehype": "^1.10.3",
-    "@shikijs/transformers": "^1.10.3",
+    "@shikijs/rehype": "^1.11.0",
+    "@shikijs/transformers": "^1.11.0",
     "@supabase/supabase-js": "^2.44.4",
-    "@tanstack/react-query": "^5.51.4",
+    "@tanstack/react-query": "^5.51.11",
     "@vercel/analytics": "^1.3.1",
     "@vercel/speed-insights": "^1.0.12",
     "axios": "^1.7.2",
     "cuid": "^3.0.0",
     "date-fns": "^3.6.0",
     "formik": "^2.4.6",
-    "immutable": "^4.3.6",
+    "immutable": "^4.3.7",
     "lodash": "^4.17.21",
     "merge-refs": "^1.3.0",
     "next": "^14.2.5",
@@ -42,7 +42,7 @@
     "remark-github-beta-blockquote-admonitions": "^3.1.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.0",
-    "styled-components": "^6.1.11",
+    "styled-components": "^6.1.12",
     "unified": "^11.0.5"
   },
   "devDependencies": {
@@ -56,7 +56,7 @@
     "next-sitemap": "^4.2.3",
     "patch-package": "^8.0.0",
     "prisma": "^5.17.0",
-    "supabase": "^1.183.5",
-    "typescript": "^5.5.3"
+    "supabase": "^1.187.3",
+    "typescript": "^5.5.4"
   }
 }
