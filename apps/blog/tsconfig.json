@@ -18,6 +18,7 @@
       "Components/*": ["./src/components/*"],
       "Providers/*": ["./src/providers/*"],
       "Features/*": ["./src/features/*"],
+      "Server/*": ["./src/server/*"],
       "Hooks/*": ["./src/hooks/*"],
       "Libs/*": ["./src/libs/*"],
       "Types/*": ["./src/types/*"],
