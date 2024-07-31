@@ -1,0 +1,20 @@
+{
+  "name": "@nabi-chan/ghost",
+  "description": "Ghost",
+  "version": "5.88.2",
+  "private": true,
+  "scripts": {
+    "postinstall": "cp -rf current/content . && cd current && yarn install",
+    "dev": "ghost run --development --no-prompt",
+    "build": "ghost backup --no-prompt",
+    "start": "ghost start",
+    "cleanup": "rimraf content && rimraf current/node_modules",
+    "ghost:stop": "ghost stop",
+    "ghost:restart": "ghost restart",
+    "ghost:update": "ghost update"
+  },
+  "dependencies": {
+    "ghost-cli": "^1.26.0",
+    "rimraf": "^6.0.1"
+  }
+}
