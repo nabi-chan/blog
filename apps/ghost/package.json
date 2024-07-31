@@ -10,7 +10,7 @@
     "ghost:restart": "ghost restart",
     "ghost:stop": "ghost stop",
     "ghost:update": "ghost update",
-    "postinstall": "cp -rf current/content . && cd current && yarn install",
+    "postinstall": "cp -rf versions/5.88.2/content . && cd versions/5.88.2 && yarn install",
     "start": "ghost start"
   },
   "dependencies": {
