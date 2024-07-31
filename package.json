@@ -2,11 +2,10 @@
   "name": "@nabi-chan/blog",
   "private": true,
   "scripts": {
-    "build": "turbo build",
+    "build": "turbo build --env-mode=loose",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "postinstall": "turbo postinstall"
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "prettier": "^3.2.5",
