@@ -4,6 +4,9 @@
 # content
 content/*
 
+# backup
+backup/*
+
 # config.json
 config.*.json
 !config.development.json

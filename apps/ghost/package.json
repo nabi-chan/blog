@@ -6,6 +6,7 @@
   "scripts": {
     "postinstall": "cp -rf current/content . && cd current && yarn install",
     "dev": "ghost run --development --no-prompt",
+    "build": "ghost backup --no-prompt",
     "start": "ghost start",
     "cleanup": "ghost uninstall",
     "ghost:stop": "ghost stop",
