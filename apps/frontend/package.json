@@ -3,12 +3,12 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
     "postbuild": "next-sitemap",
-    "start": "next start",
+    "dev": "next dev",
     "lint": "next lint",
     "prettier": "prettier --write .",
+    "start": "next start",
     "supabase-typegen": "supabase gen types typescript --project-id 'gjhnwcqoaogfupxjanlh' --schema public > src/supabase/types.ts"
   },
   "dependencies": {
