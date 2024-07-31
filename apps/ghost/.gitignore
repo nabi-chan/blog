@@ -3,6 +3,7 @@
 
 # content
 content/*
+versions/*/content/*
 
 # backup
 backup/*
@@ -10,3 +11,7 @@ backup/*
 # config.json
 config.*.json
 !config.development.json
+
+# log
+*.log
+*.error
