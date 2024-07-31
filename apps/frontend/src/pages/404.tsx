@@ -26,9 +26,7 @@ export default function NotFoundPage() {
           >
             404
           </Text>
-          <Text typo="16">
-            여기가 어디죠?
-          </Text>
+          <Text typo="16">여기가 어디죠?</Text>
         </VStack>
 
         <ButtonGroup>

@@ -17,11 +17,14 @@ coverage
 # Vercel
 .vercel
 
+# next.js
+/.next/
+/out/
+
 # Build Outputs
 out
 build
 dist
-
 
 # Debug
 npm-debug.log*
