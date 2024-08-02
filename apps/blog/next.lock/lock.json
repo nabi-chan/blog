@@ -1,0 +1,6 @@
+{
+  "https://cdn.jsdelivr.net/npm/prismjs/plugins/autoloader/prism-autoloader.min.js": { "integrity": "sha512-SkmBfuA2hqjzEVpmnMt/LINrjop3GKWqsuLSSB3e7iBmYK7JuWw4ldmmxwD9mdm2IRTTi0OxSAfEGvgEi0i2Kw==", "contentType": "application/javascript; charset=utf-8" },
+  "https://cdn.jsdelivr.net/npm/prismjs/prism.min.js": { "integrity": "sha512-2D5f4z5gLOmnnO3tSHlTrwAitN8aTshlXFFM1HQfrAEW7IoYw5oE13StavDGEm049zbtHXMr/OPDM76yBPGpRw==", "contentType": "application/javascript; charset=utf-8" },
+  "https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.5.0/prism-atom-dark.min.css": { "integrity": "sha512-GZPS1oCebjx8g/ZkrTTvWirW+4wDkzIsilUQPXcZzuDpDzoH5brM2AojiFjo6ObIWeM68ZDostvdjaS9MNYCTg==", "contentType": "text/css; charset=utf-8" },
+  "version": 1
+}
