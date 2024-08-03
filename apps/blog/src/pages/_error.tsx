@@ -21,5 +21,5 @@ ErrorPage.getInitialProps = ({
   err: error = null,
 }: NextPageContext): ErrorPageProps => ({
   statusCode: first([response, error])?.statusCode ?? 500,
-  error,
+  error: error ? { name: error.name, message: error.message } : null,
 })
