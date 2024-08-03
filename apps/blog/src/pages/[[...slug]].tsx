@@ -12,6 +12,7 @@ import { unExpectedValueAssert } from 'Server/errors/UnExpectedValueAssertionErr
 import { Text } from '@channel.io/bezier-react'
 import { toPathParams, toSlugArray } from 'Features/ghost/utils/next'
 import { pickTag, pickAuthor } from 'Features/ghost/utils/ghost'
+import { withSeo } from 'Features/seo'
 
 export const getStaticPaths = (async () => {
   const posts = await content.posts.browse()
@@ -119,6 +120,6 @@ export const getStaticProps = (async (context) => {
 
 export type PageProps = InferGetStaticPropsType<typeof getStaticProps>
 
-export default function Page(props: PageProps) {
+export default withSeo(function Page(props: PageProps) {
   return <Text as="pre">{JSON.stringify(props, null, 2)}</Text>
-}
+})
