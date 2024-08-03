@@ -68,7 +68,7 @@ export const getStaticProps = (async (context) => {
       revalidate: 60 * 60,
       props: {
         isPost: !isEmpty(post),
-        banner: {
+        banner: _admin.announcement_content && {
           content: (_admin.announcement_content as string) ?? '',
           theme: (_admin.announcement_background as string) ?? '',
         },
