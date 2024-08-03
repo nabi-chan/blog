@@ -11,7 +11,7 @@ export const getServerSideProps = (async (context) => {
   const paths = [...posts, ...pages]
 
   const fields: ISitemapField[] = paths.map((page) => ({
-    loc: `${config.siteUrl}${page.slug.replace('index', '')}`,
+    loc: `${config.siteUrl}/${page.slug.replace('index', '')}`,
     lastmod: new Date(page.updated_at ?? +new Date()).toISOString(),
     changefreq: 'always',
   }))
