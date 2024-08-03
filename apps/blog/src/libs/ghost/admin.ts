@@ -2,7 +2,7 @@ import { TSGhostAdminAPI } from '@ts-ghost/admin-api'
 import assert from 'assert'
 
 export const admin = new TSGhostAdminAPI(
-  'http://127.0.0.1:4000',
+  process.env.GHOST_API_URL!,
   process.env.GHOST_ADMIN_KEY!,
   'v5.88.2'
 )
