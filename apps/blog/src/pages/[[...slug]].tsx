@@ -107,7 +107,11 @@ export const getStaticProps = (async (context) => {
         updated_at: pageOrPost.updated_at ?? '',
         tags: map(pageOrPost.tags, pickTag),
         author: pickAuthor(pageOrPost.primary_author),
-        content: pageOrPost.html ?? '',
+        content: (pageOrPost.html ?? '').replace(
+          process.env.GHOST_API_URL!,
+          ''
+        ),
+        reading_time: pageOrPost.reading_time ?? 0,
       },
     }
   } catch (e) {
