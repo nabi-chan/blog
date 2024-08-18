@@ -18,6 +18,7 @@ import { Box, VStack, Text } from '@channel.io/bezier-react'
 import { Content } from 'Features/ghost/components/viewer.styled'
 import { Navbar } from 'Components/NavBar'
 import { format } from 'date-fns'
+import { PageHeader } from 'Components/PageHeader'
 
 export const getStaticPaths = (async () => {
   const posts = await content.posts.browse()
@@ -143,22 +144,10 @@ export default withScript(
           padding={16}
         >
           {props.isPost && (
-            <VStack spacing={8}>
-              <Text
-                typo="24"
-                bold
-              >
-                {props.title}
-              </Text>
-              {props.description && (
-                <Text
-                  typo="14"
-                  color="txt-black-darker"
-                >
-                  {props.description}
-                </Text>
-              )}
-
+            <PageHeader
+              title={props.title}
+              description={props.description}
+            >
               <Text
                 typo="12"
                 color="txt-black-darker"
@@ -166,7 +155,7 @@ export default withScript(
                 {format(props.published_at, 'yyyy-MM-dd')}에 나비가 작성했어요.
                 다 읽는데 {props.reading_time}분이 걸려요.
               </Text>
-            </VStack>
+            </PageHeader>
           )}
           <Content>{parse(props.content)}</Content>
         </VStack>
