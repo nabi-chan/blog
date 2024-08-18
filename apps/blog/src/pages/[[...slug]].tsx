@@ -1,98 +1,172 @@
+import type { Params } from '@tryghost/content-api'
+import { isEmpty, isObject, map, noop } from 'lodash-es'
 import type {
-  GetStaticPaths,
   GetStaticProps,
   InferGetStaticPropsType,
+  GetStaticPaths,
 } from 'next'
-import { concat, merge } from 'lodash-es'
-import type { ReactNode } from 'react'
-import assert from 'assert'
-import { supabase } from '@/supabase/server'
-import { BaseLayout } from '@/layouts/BaseLayout/BaseLayout'
-import { renderMarkdown } from '@/features/Viewer/utils/renderMarkdown'
-import { Content } from '@/features/Viewer/components/Viewer'
-import { CustomPageLayout } from '@/features/custom-pages/components/CustomPageLayout'
+import parse from 'html-react-parser'
+import { Box, VStack, Text } from '@channel.io/bezier-react'
+import { format } from 'date-fns'
+import { admin, deserialize } from 'Libs/ghost/admin'
+import { content } from 'Libs/ghost/content'
+import { badRequestAssert } from 'Server/errors/BadRequestAssertionError'
+import { unExpectedValueAssert } from 'Server/errors/UnExpectedValueAssertionError'
+import { toPathParams, toSlugArray } from 'Features/ghost/utils/next'
+import { pickTag, pickAuthor } from 'Features/ghost/utils/ghost'
+import { withSeo } from 'Features/seo'
+import { withScript } from 'Features/ghost/hocs/withScript'
+import { Content } from 'Features/ghost/components/viewer.styled'
+import { Navbar } from 'Components/NavBar'
+import { PageHeader } from 'Components/PageHeader'
+import Prism from 'Features/ghost/prism'
 
 export const getStaticPaths = (async () => {
-  const { data: pages } = await supabase
-    .from('CustomPage')
-    .select('slug')
-    .throwOnError()
+  const posts = await content.posts.browse()
+  const pages = await content.pages.browse()
 
-  assert(pages, 'pages is empty, expected array')
+  const paths = [
+    ...posts.map(toSlugArray),
+    ...pages.map(toSlugArray).filter((v) => v?.[0] !== 'blog'),
+  ]
+
   return {
-    fallback: 'blocking',
-    paths: pages.map(({ slug }) => ({
-      params: {
-        slug: concat('/', slug.split('/')),
-      },
-    })),
+    paths: paths.map(toPathParams),
+    fallback: false,
   }
 }) satisfies GetStaticPaths
 
 export const getStaticProps = (async (context) => {
-  assert(context.params, 'context.params is empty, expected object')
-  const { data: pages } = await supabase
-    .from('CustomPage')
-    .select('title, description, content, type, layout')
-    .eq(
-      'slug',
-      ((context.params['slug'] as string[] | undefined) ?? []).join('/')
+  try {
+    unExpectedValueAssert(
+      typeof context.params?.slug !== 'string',
+      'slug should be array or undefined'
     )
-    .single()
 
-  if (pages === null) {
-    return {
-      revalidate: 1 * 60 * 60,
-      notFound: true,
+    const payload: Params & { slug: string } = {
+      include: ['authors', 'tags'],
+      slug: (context.params?.slug ?? ['index']).join('/'),
     }
-  }
 
-  if (pages.type === 'HTML') {
+    const _admin = deserialize(await admin.settings.fetch())
+    const settings = await content.settings.browse()
+
+    // prevent throwing error when content not found
+    const page = await content.pages.read(payload).catch(noop)
+    const post = await content.posts.read(payload).catch(noop)
+
+    const pageOrPost = page ?? post
+    badRequestAssert(
+      isObject(pageOrPost),
+      'not found page / post for slug : ' + payload.slug
+    )
+
+    const seo = {
+      title:
+        pageOrPost.meta_title ?? pageOrPost.title ?? settings.meta_title ?? '',
+      description:
+        pageOrPost.meta_description ??
+        pageOrPost.excerpt ??
+        settings.meta_description ??
+        '',
+      image: pageOrPost.feature_image ?? settings.cover_image ?? '',
+    }
+
     return {
-      revalidate: 1 * 60 * 60,
+      // cache for 1 hour
+      revalidate: 60 * 60,
       props: {
-        pageConfig: pages,
+        isPost: !isEmpty(post),
+        banner: _admin.announcement_content && {
+          content: (_admin.announcement_content as string) ?? '',
+          theme: (_admin.announcement_background as string) ?? '',
+        },
+        ghost_head: [pageOrPost.codeinjection_head, settings.codeinjection_head]
+          .filter((v) => !!v)
+          .join('\n'),
+        ghost_foot: [pageOrPost.codeinjection_foot, settings.codeinjection_foot]
+          .filter((v) => !!v)
+          .join('\n'),
+        seo: {
+          ...seo,
+          logo: settings.logo ?? '',
+          opengraph: {
+            sitename: settings.og_title ?? settings.title ?? '',
+            title: pageOrPost.og_title ?? seo.title ?? '',
+            description: pageOrPost.og_description ?? seo.description ?? '',
+            image: pageOrPost.og_image ?? seo.image ?? '',
+          },
+          twitter: {
+            title: pageOrPost.twitter_title ?? seo.title ?? '',
+            description:
+              pageOrPost.twitter_description ?? seo.description ?? '',
+            image: pageOrPost.twitter_image ?? seo.image ?? '',
+          },
+        },
+        navigation: settings.navigation ?? [],
+        title: pageOrPost.title ?? '',
+        description: pageOrPost.excerpt ?? '',
+        image: {
+          url: pageOrPost.feature_image ?? '',
+          alt: pageOrPost.feature_image_alt ?? '',
+          caption: pageOrPost.feature_image_caption ?? '',
+        },
+        published_at: pageOrPost.published_at ?? '',
+        updated_at: pageOrPost.updated_at ?? '',
+        tags: map(pageOrPost.tags, pickTag),
+        author: pickAuthor(pageOrPost.primary_author),
+        content: (pageOrPost.html ?? '').replace(
+          process.env.GHOST_API_URL!,
+          ''
+        ),
+        reading_time: pageOrPost.reading_time ?? 0,
       },
     }
-  }
-
-  const renderedContent = await renderMarkdown(pages.content ?? '')
-
-  return {
-    revalidate: 1 * 60 * 60,
-    props: {
-      pageConfig: merge(pages, { content: renderedContent.toString() }),
-    },
+  } catch (e) {
+    console.log(e)
+    return {
+      notFound: true,
+      revalidate: true,
+    }
   }
 }) satisfies GetStaticProps
 
-export default function Page({
-  pageConfig: { title, description, type, content },
-}: InferGetStaticPropsType<typeof getStaticProps>) {
-  return (
-    <BaseLayout
-      title={title}
-      description={description ?? undefined}
-    >
-      {type === 'MARKDOWN' && (
-        <Content dangerouslySetInnerHTML={{ __html: content ?? '' }} />
-      )}
-      {type === 'HTML' && (
-        <article dangerouslySetInnerHTML={{ __html: content ?? '' }} />
-      )}
-    </BaseLayout>
-  )
-}
+export type PageProps = InferGetStaticPropsType<typeof getStaticProps>
 
-Page.getLayout = (
-  page: ReactNode,
-  { pageConfig }: InferGetStaticPropsType<typeof getStaticProps>
-) => (
-  <CustomPageLayout
-    title={pageConfig.title}
-    description={pageConfig.description}
-    layout={pageConfig.layout}
-  >
-    {page}
-  </CustomPageLayout>
+export default withScript(
+  withSeo(function Page(props: PageProps) {
+    return (
+      <>
+        <Box padding={24}>
+          <Navbar
+            title={props.seo.opengraph.sitename}
+            navigation={props.navigation}
+          />
+          <VStack
+            maxWidth="var(--content-max-width, 72rem)"
+            marginHorizontal="auto"
+            spacing={16}
+            padding={16}
+          >
+            {props.isPost && (
+              <PageHeader
+                title={props.title}
+                description={props.description}
+              >
+                <Text
+                  typo="12"
+                  color="txt-black-darker"
+                >
+                  {format(props.published_at, 'yyyy-MM-dd')}에 나비가
+                  작성했어요. 다 읽는데 {props.reading_time}분이 걸려요.
+                </Text>
+              </PageHeader>
+            )}
+            <Content>{parse(props.content)}</Content>
+          </VStack>
+        </Box>
+        <Prism />
+      </>
+    )
+  })
 )

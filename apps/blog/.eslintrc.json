@@ -1,3 +1,6 @@
 {
-  "extends": ["@channel.io/eslint-config/next"]
+  "extends": ["@channel.io/eslint-config/next"],
+  "rules": {
+    "import/extensions": ["off"]
+  }
 }
