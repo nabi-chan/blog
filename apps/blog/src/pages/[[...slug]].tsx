@@ -24,7 +24,10 @@ export const getStaticPaths = (async () => {
   const posts = await content.posts.browse()
   const pages = await content.pages.browse()
 
-  const paths = [...posts.map(toSlugArray), ...pages.map(toSlugArray)]
+  const paths = [
+    ...posts.map(toSlugArray),
+    ...pages.map(toSlugArray).filter((v) => v?.[0] !== 'blog'),
+  ]
 
   return {
     paths: paths.map(toPathParams),
