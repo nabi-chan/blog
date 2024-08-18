@@ -14,7 +14,7 @@ export const withSeo =
       return [
         {
           name: 'description',
-          content: props.seo.description,
+          content: props.seo.description.replace(/\s+/g, ' '),
         },
         {
           name: 'canonical',
@@ -39,7 +39,7 @@ export const withSeo =
         },
         {
           property: 'og:description',
-          content: props.seo.opengraph.description,
+          content: props.seo.opengraph.description.replace(/\s+/g, ' '),
         },
         {
           property: 'og:image',
@@ -81,7 +81,7 @@ export const withSeo =
         },
         {
           name: 'twitter:description',
-          content: props.seo.twitter.description,
+          content: props.seo.twitter.description.replace(/\s+/g, ' '),
         },
         {
           name: 'twitter:url',
