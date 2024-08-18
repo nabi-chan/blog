@@ -1,7 +1,7 @@
-import { content } from 'Libs/ghost/content'
 import type { GetServerSideProps } from 'next'
 import type { ISitemapField } from 'next-sitemap'
 import { getServerSideSitemapLegacy } from 'next-sitemap'
+import { content } from 'Libs/ghost/content'
 import config from 'next-sitemap.config'
 
 export const getServerSideProps = (async (context) => {

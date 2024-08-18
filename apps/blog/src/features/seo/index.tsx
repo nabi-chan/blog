@@ -1,8 +1,8 @@
-import { env } from 'Constants/environment'
 import { merge } from 'lodash-es'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useMemo, type ComponentType } from 'react'
+import { env } from 'Constants/environment'
 import type { PageProps } from 'src/pages/[[...slug]]'
 
 export const withSeo =

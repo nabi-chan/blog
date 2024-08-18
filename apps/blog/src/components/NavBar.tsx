@@ -9,8 +9,8 @@ import {
   VStack,
 } from '@channel.io/bezier-react'
 import Link from 'next/link'
-import { useTheme } from 'Providers/ThemeProvider/useTheme'
 import { useRef, useState } from 'react'
+import { useTheme } from 'Providers/ThemeProvider/useTheme'
 
 interface NavbarProps {
   title: string

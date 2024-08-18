@@ -1,11 +1,5 @@
-import { admin, deserialize } from 'Libs/ghost/admin'
-import { content } from 'Libs/ghost/content'
 import { map, noop } from 'lodash-es'
 import type { GetStaticProps, InferGetStaticPropsType } from 'next'
-import { unExpectedValueAssert } from 'Server/errors/UnExpectedValueAssertionError'
-import { pickTag, pickAuthor } from 'Features/ghost/utils/ghost'
-import { withSeo } from 'Features/seo'
-import { withScript } from 'Features/ghost/hocs/withScript'
 import {
   Box,
   VStack,
@@ -14,12 +8,18 @@ import {
   LegacyIcon,
   Text,
 } from '@channel.io/bezier-react'
-import { Navbar } from 'Components/NavBar'
 import { format } from 'date-fns'
 import Link from 'next/link'
+import { useState } from 'react'
+import { admin, deserialize } from 'Libs/ghost/admin'
+import { content } from 'Libs/ghost/content'
+import { unExpectedValueAssert } from 'Server/errors/UnExpectedValueAssertionError'
+import { pickTag, pickAuthor } from 'Features/ghost/utils/ghost'
+import { withSeo } from 'Features/seo'
+import { withScript } from 'Features/ghost/hocs/withScript'
+import { Navbar } from 'Components/NavBar'
 import { PageHeader } from 'Components/PageHeader'
 import { TagCheckbox } from 'Features/ghost/components/TagCheckbox'
-import { useState } from 'react'
 
 export const getStaticProps = (async (context) => {
   try {

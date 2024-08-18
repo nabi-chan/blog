@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import type { ComponentType } from 'react'
-import type { PageProps } from 'src/pages/[[...slug]]'
 import parse from 'html-react-parser'
+import type { PageProps } from 'src/pages/[[...slug]]'
 
 export const withScript =
   <Props extends PageProps>(Component: ComponentType<Props>) =>
