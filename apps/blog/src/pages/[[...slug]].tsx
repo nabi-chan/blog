@@ -9,11 +9,13 @@ import type {
 } from 'next'
 import { badRequestAssert } from 'Server/errors/BadRequestAssertionError'
 import { unExpectedValueAssert } from 'Server/errors/UnExpectedValueAssertionError'
-import { Text } from '@channel.io/bezier-react'
 import { toPathParams, toSlugArray } from 'Features/ghost/utils/next'
 import { pickTag, pickAuthor } from 'Features/ghost/utils/ghost'
 import { withSeo } from 'Features/seo'
 import { withScript } from 'Features/ghost/hocs/withScript'
+import parse from 'html-react-parser'
+import { Box } from '@channel.io/bezier-react'
+import { Content } from 'Features/ghost/components/viewer.styled'
 
 export const getStaticPaths = (async () => {
   const posts = await content.posts.browse()
@@ -125,6 +127,16 @@ export type PageProps = InferGetStaticPropsType<typeof getStaticProps>
 
 export default withScript(
   withSeo(function Page(props: PageProps) {
-    return <Text as="pre">{JSON.stringify(props, null, 2)}</Text>
+    return (
+      <Box padding={24}>
+        <Box
+          maxWidth="var(--content-max-width, 72rem)"
+          marginHorizontal="auto"
+          padding={16}
+        >
+          <Content>{parse(props.content)}</Content>
+        </Box>
+      </Box>
+    )
   })
 )
