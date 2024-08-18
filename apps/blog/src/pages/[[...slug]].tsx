@@ -72,14 +72,12 @@ export const getStaticProps = (async (context) => {
           content: (_admin.announcement_content as string) ?? '',
           theme: (_admin.announcement_background as string) ?? '',
         },
-        ghost_head: [
-          pageOrPost.codeinjection_head,
-          settings.codeinjection_head,
-        ].join('\n'),
-        ghost_foot: [
-          pageOrPost.codeinjection_foot,
-          settings.codeinjection_foot,
-        ].join('\n'),
+        ghost_head: [pageOrPost.codeinjection_head, settings.codeinjection_head]
+          .filter((v) => !!v)
+          .join('\n'),
+        ghost_foot: [pageOrPost.codeinjection_foot, settings.codeinjection_foot]
+          .filter((v) => !!v)
+          .join('\n'),
         seo: {
           ...seo,
           logo: settings.logo ?? '',
