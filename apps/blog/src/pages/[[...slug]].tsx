@@ -19,6 +19,7 @@ import { withScript } from 'Features/ghost/hocs/withScript'
 import { Content } from 'Features/ghost/components/viewer.styled'
 import { Navbar } from 'Components/NavBar'
 import { PageHeader } from 'Components/PageHeader'
+import Prism from 'Features/ghost/prism'
 
 export const getStaticPaths = (async () => {
   const posts = await content.posts.browse()
@@ -135,34 +136,37 @@ export type PageProps = InferGetStaticPropsType<typeof getStaticProps>
 export default withScript(
   withSeo(function Page(props: PageProps) {
     return (
-      <Box padding={24}>
-        <Navbar
-          title={props.seo.opengraph.sitename}
-          navigation={props.navigation}
-        />
-        <VStack
-          maxWidth="var(--content-max-width, 72rem)"
-          marginHorizontal="auto"
-          spacing={16}
-          padding={16}
-        >
-          {props.isPost && (
-            <PageHeader
-              title={props.title}
-              description={props.description}
-            >
-              <Text
-                typo="12"
-                color="txt-black-darker"
+      <>
+        <Box padding={24}>
+          <Navbar
+            title={props.seo.opengraph.sitename}
+            navigation={props.navigation}
+          />
+          <VStack
+            maxWidth="var(--content-max-width, 72rem)"
+            marginHorizontal="auto"
+            spacing={16}
+            padding={16}
+          >
+            {props.isPost && (
+              <PageHeader
+                title={props.title}
+                description={props.description}
               >
-                {format(props.published_at, 'yyyy-MM-dd')}에 나비가 작성했어요.
-                다 읽는데 {props.reading_time}분이 걸려요.
-              </Text>
-            </PageHeader>
-          )}
-          <Content>{parse(props.content)}</Content>
-        </VStack>
-      </Box>
+                <Text
+                  typo="12"
+                  color="txt-black-darker"
+                >
+                  {format(props.published_at, 'yyyy-MM-dd')}에 나비가
+                  작성했어요. 다 읽는데 {props.reading_time}분이 걸려요.
+                </Text>
+              </PageHeader>
+            )}
+            <Content>{parse(props.content)}</Content>
+          </VStack>
+        </Box>
+        <Prism />
+      </>
     )
   })
 )
