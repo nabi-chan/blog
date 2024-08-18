@@ -16,6 +16,7 @@ import { withScript } from 'Features/ghost/hocs/withScript'
 import parse from 'html-react-parser'
 import { Box } from '@channel.io/bezier-react'
 import { Content } from 'Features/ghost/components/viewer.styled'
+import { Navbar } from 'Components/NavBar'
 
 export const getStaticPaths = (async () => {
   const posts = await content.posts.browse()
@@ -96,6 +97,7 @@ export const getStaticProps = (async (context) => {
             image: pageOrPost.twitter_image ?? seo.image ?? '',
           },
         },
+        navigation: settings.navigation ?? [],
         title: pageOrPost.title ?? '',
         description: pageOrPost.excerpt ?? '',
         image: {
@@ -129,6 +131,10 @@ export default withScript(
   withSeo(function Page(props: PageProps) {
     return (
       <Box padding={24}>
+        <Navbar
+          title={props.seo.opengraph.sitename}
+          navigation={props.navigation}
+        />
         <Box
           maxWidth="var(--content-max-width, 72rem)"
           marginHorizontal="auto"
