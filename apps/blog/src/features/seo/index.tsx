@@ -6,7 +6,8 @@ import { useMemo, type ComponentType } from 'react'
 import type { PageProps } from 'src/pages/[[...slug]]'
 
 export const withSeo =
-  (Component: ComponentType<PageProps>) => (props: PageProps) => {
+  <Props extends PageProps>(Component: ComponentType<Props>) =>
+  (props: Props) => {
     const { asPath } = useRouter()
 
     const canonical = `${env.homepageUrl ?? window.location.origin}${asPath}`

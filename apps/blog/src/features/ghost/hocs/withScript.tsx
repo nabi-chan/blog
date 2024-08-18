@@ -4,7 +4,8 @@ import type { PageProps } from 'src/pages/[[...slug]]'
 import parse from 'html-react-parser'
 
 export const withScript =
-  (Component: ComponentType<PageProps>) => (props: PageProps) => {
+  <Props extends PageProps>(Component: ComponentType<Props>) =>
+  (props: Props) => {
     return (
       <>
         <Head>{parse(props.ghost_head)}</Head>
