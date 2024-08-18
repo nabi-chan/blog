@@ -1,10 +1,13 @@
+import type { IconName } from '@channel.io/bezier-icons'
 import type { Nullable, Tag, Author } from '@tryghost/content-api'
 
 export const pickTag = (tag?: Nullable<Tag>) => ({
-  name: tag?.name ?? '',
+  id: tag?.id ?? '',
+  icon: (tag?.meta_title ?? 'page') as IconName,
+  internal: tag?.visibility === 'internal',
+  name: (tag?.name ?? '').replace(/_/g, ' ').replace(/^#/g, ''),
   slug: tag?.slug ?? '',
   description: tag?.description ?? '',
-  accent_color: tag?.accent_color ?? '',
 })
 
 export const pickAuthor = (author?: Nullable<Author>) => ({
