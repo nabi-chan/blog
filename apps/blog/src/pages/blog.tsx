@@ -105,7 +105,9 @@ export const getStaticProps = (async (context) => {
             created_at: post.published_at ?? post.created_at ?? '',
             tags: map(post.tags, pickTag),
           })),
-          tags: map(tags, pickTag).filter((tag) => tag.internal),
+          tags: map(tags, pickTag)
+            .filter((tag) => tag.internal)
+            .filter((tag) => tag.description !== ''),
         },
       },
     }
