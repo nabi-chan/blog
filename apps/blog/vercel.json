@@ -1,0 +1,16 @@
+{
+  "cleanUrls": true,
+  "framework": "nextjs",
+  "installCommand": "bun install",
+  "regions": ["icn1"],
+  "images": {
+    "sizes": [256, 640, 1080, 2048],
+    "remotePatterns": [
+      {
+        "protocol": "https",
+        "hostname": "images.unsplash.com"
+      }
+    ],
+    "formats": ["image/webp", "image/avif"]
+  }
+}
