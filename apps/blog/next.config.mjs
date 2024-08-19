@@ -15,6 +15,12 @@ const nextConfig = {
   experimental: {
     urlImports: ['https://cdnjs.cloudflare.com', 'https://cdn.jsdelivr.net'],
   },
+  rewrites: () => [
+    {
+      source: '/content/:slug*',
+      destination: `${process.env.GHOST_API_URL}/content/:slug*`,
+    },
+  ],
 }
 
 export default nextConfig
