@@ -14,8 +14,6 @@ const nextConfig = {
   },
   experimental: {
     urlImports: ['https://cdnjs.cloudflare.com', 'https://cdn.jsdelivr.net'],
-    useDeploymentId: true,
-    useDeploymentIdServerActions: true,
   },
   rewrites: () => [
     {
