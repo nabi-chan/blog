@@ -498,6 +498,7 @@ export const Content = styled(Box).attrs({
     color: rgba(0, 0, 0, 0.5);
     font-weight: 600;
     font-size: 1.3rem;
+    padding: 0.5rem 0;
   }
 
   figcaption strong {
@@ -521,16 +522,14 @@ export const Content = styled(Box).attrs({
   }
 
   .kg-image-card img {
+    width: 100%;
+    height: auto;
     margin: auto;
   }
 
   .kg-card-hascaption {
     display: grid;
     grid-template-columns: inherit;
-  }
-
-  .kg-card-hascaption img {
-    grid-column: wide-start / wide-end;
   }
 
   .kg-file-card,
