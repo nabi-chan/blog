@@ -20,5 +20,8 @@
   "packageManager": "bun@1.1.12",
   "engines": {
     "node": "20.16.0"
-  }
+  },
+  "trustedDependencies": [
+    "@vercel/speed-insights"
+  ]
 }
