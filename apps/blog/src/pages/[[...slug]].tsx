@@ -115,7 +115,7 @@ export const getStaticProps = (async (context) => {
         updated_at: pageOrPost.updated_at ?? '',
         tags: map(pageOrPost.tags, pickTag),
         author: pickAuthor(pageOrPost.primary_author),
-        content: (pageOrPost.html ?? '').replace(
+        content: (pageOrPost.html ?? '').replaceAll(
           process.env.GHOST_API_URL!,
           ''
         ),
