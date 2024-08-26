@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:lang(ko) {
+  word-break: keep-all;
+}
+
+.page-root {
+  @apply min-h-screen p-4;
+}
+
+.link {
+  @apply text-blue-500 underline-offset-4 transition-colors hover:text-blue-700 hover:underline;
+}
+
+.loading {
+  @apply h-5 w-2 bg-black;
+  animation: loading 1s infinite;
+}
+
+@keyframes loading {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/strict",
+    "plugin:@typescript-eslint/stylistic",
+    "plugin:import/typescript"
+  ],
+  "plugins": ["import", "simple-import-sort"],
+  "rules": {
+    "no-undef": "off",
+    "no-dupe-keys": "error",
+    "object-shorthand": ["error", "always"],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    "@typescript-eslint/consistent-type-imports": [
+      "warn",
+      { "prefer": "type-imports" }
+    ],
+    "@typescript-eslint/consistent-type-assertions": [
+      "warn",
+      { "assertionStyle": "as", "objectLiteralTypeAssertions": "allow" }
+    ],
+    "no-restricted-imports": [
+      "error",
+      { "paths": ["src"], "patterns": ["../*"] }
+    ],
+    "no-restricted-modules": [
+      "error",
+      { "paths": ["src"], "patterns": ["../*"] }
+    ],
+    "react/jsx-curly-brace-presence": [
+      "error",
+      { "props": "never", "children": "never" }
+    ],
+    "react/self-closing-comp": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+    "import/first": "error",
+    "import/newline-after-import": ["error", { "considerComments": true }],
+    "import/no-duplicates": "error",
+    "import/no-named-default": "error",
+    "simple-import-sort/exports": "error",
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          ["\u0000"],
+          [
+            "^node:",
+            "^@?w",
+            "^",
+            "^.",
+            "^node:.*\u0000$",
+            "^@?w.*\u0000$",
+            "\u0000$",
+            "^..*\u0000$"
+          ]
+        ]
+      }
+    ]
+  }
+}

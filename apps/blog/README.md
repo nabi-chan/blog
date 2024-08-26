@@ -1,1 +1,0 @@
-# `@nabi-chan/frontend`
