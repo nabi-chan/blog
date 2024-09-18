@@ -4,9 +4,9 @@ import { FiFile, FiGithub, FiRss } from "react-icons/fi"
 export function Footer() {
   return (
     <footer className="bg-background -mx-4 -mb-4 px-4">
-      <div className="max-w-content mx-auto flex w-full justify-end p-12">
+      <div className="max-w-content mx-auto flex w-full px-4 py-12 lg:px-12">
         <div className="flex flex-col gap-4">
-          <div className="flex justify-end gap-4 text-lg">
+          <div className="flex gap-4 text-lg">
             <Link href="https://github.com/nabi-chan" className="button">
               <FiGithub />
             </Link>

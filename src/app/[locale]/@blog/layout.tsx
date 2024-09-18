@@ -10,7 +10,7 @@ export default async function BlogLayout({ children }: PropsWithChildren) {
     <>
       <div className="page-root flex flex-col">
         <Header />
-        <main className="max-w-content mx-auto w-full flex-1 px-16">
+        <main className="max-w-content mx-auto w-full flex-1 px-4 md:px-16">
           {children}
         </main>
         <Footer />

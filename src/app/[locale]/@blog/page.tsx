@@ -9,23 +9,28 @@ function LargeCard() {
   const { fd } = createAirport(getLocale())
 
   return (
-    <article className="col-span-3 row-span-4 flex flex-col gap-6">
-      <figure className="bg-background relative h-[400px] w-full overflow-hidden rounded-2xl">
-        <Image src="" alt="" fill />
+    <article className="flex flex-col gap-6 lg:col-span-3 lg:row-span-4">
+      <figure className="relative h-auto w-full max-lg:aspect-video lg:h-full">
+        <Image
+          fill
+          src=""
+          alt=""
+          className="border-1 rounded-2xl border-slate-200 bg-slate-200"
+        />
       </figure>
-      <div className="flex flex-1 flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <h3 className="font-semibold">카테고리카테고리</h3>
-          <h2 className="line-clamp-2 whitespace-pre-wrap break-words text-3xl font-bold">
-            제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목
+      <div className="flex flex-col gap-4">
+        <div className="grid gap-2">
+          <h3 className="truncate font-semibold">
+            카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리
+          </h3>
+          <h2 className="line-clamp-2 !break-all text-2xl font-bold">
+            제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목
           </h2>
         </div>
-        <p className="line-clamp-3 font-semibold">
-          내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용
-          내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용
-          내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용
+        <p className="line-clamp-3 !break-all font-semibold">
+          내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용
         </p>
-        <span className="text-sm font-semibold text-gray-600">
+        <span className="text-xs font-semibold text-[#666]">
           {fd(new Date(), "YYYY. MM. DD.")}
         </span>
       </div>
@@ -37,18 +42,25 @@ function SmallCard() {
   const { fd } = createAirport(getLocale())
 
   return (
-    <article className="col-span-2 grid grid-cols-2 gap-6">
-      <figure className="bg-background relative overflow-hidden rounded-2xl">
-        <Image src="" alt="" fill />
+    <article className="grid auto-rows-auto gap-6 lg:col-span-2 lg:grid-cols-2 lg:gap-3">
+      <figure className="relative h-auto w-full max-lg:aspect-video lg:h-full">
+        <Image
+          fill
+          src=""
+          alt=""
+          className="border-1 rounded-2xl border-slate-200 bg-slate-200"
+        />
       </figure>
-      <div className="flex flex-col justify-between gap-6">
-        <div className="flex flex-col gap-1">
-          <h3 className="text-sm font-semibold">카테고리카테고리</h3>
-          <h2 className="line-clamp-3 break-words text-xl font-bold">
-            제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목
+      <div className="grid gap-8">
+        <div className="grid gap-2">
+          <h3 className="truncate font-semibold">
+            카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리카테고리
+          </h3>
+          <h2 className="line-clamp-2 !break-all text-2xl font-bold lg:text-xl">
+            제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목
           </h2>
         </div>
-        <span className="text-xs font-semibold text-gray-600">
+        <span className="text-xs font-semibold text-[#666]">
           {fd(new Date(), "YYYY. MM. DD.")}
         </span>
       </div>
@@ -64,12 +76,12 @@ export default async function Home() {
       <section className="flex flex-col items-center gap-4">
         <Image src="/api/assets/hero" alt="🐈" width={192} height={192} />
 
-        <h1 className="text-3xl font-bold">
+        <h1 className="text-center text-2xl font-bold lg:text-3xl">
           {t(blogHomeLS["blog-home.title"])}
         </h1>
         <p className="text-lg">{t(blogHomeLS["blog-home.description"])}</p>
       </section>
-      <section className="grid grid-cols-5 grid-rows-4 gap-x-8 gap-y-7">
+      <section className="grid auto-rows-auto gap-12 lg:grid-cols-5 lg:gap-x-8 lg:gap-y-7">
         <LargeCard />
 
         <SmallCard />
