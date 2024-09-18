@@ -25,4 +25,13 @@ export const globalLS = createLS({
   "not-found.goto.index": {
     ko: "메인으로",
   },
+  "nav.links.posts": {
+    ko: "글",
+  },
+  "nav.links.notes": {
+    ko: "토막글",
+  },
+  "nav.links.tags": {
+    ko: "태그",
+  },
 })

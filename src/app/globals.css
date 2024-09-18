@@ -19,6 +19,10 @@
   animation: loading 1s infinite;
 }
 
+.button {
+  @apply border-1 inline-block rounded-md border-gray-100 p-2 shadow-md transition-shadow hover:shadow-lg;
+}
+
 @keyframes loading {
   0% {
     opacity: 1;
