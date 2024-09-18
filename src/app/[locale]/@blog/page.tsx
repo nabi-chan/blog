@@ -74,7 +74,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col gap-16 py-16">
       <section className="flex flex-col items-center gap-4">
-        <Image src="/api/assets/hero" alt="🐈" width={192} height={192} />
+        <Image src="/api/assets/icon" alt="🐈" width={192} height={192} />
 
         <h1 className="text-center text-2xl font-bold lg:text-3xl">
           {t(blogHomeLS["blog-home.title"])}
