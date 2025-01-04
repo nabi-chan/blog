@@ -4,6 +4,7 @@ import { HttpStatusCode } from 'axios'
 import { BadRequestAssertionError } from './errors/BadRequestAssertionError'
 import { UnExpectedValueAssertionError } from './errors/UnExpectedValueAssertionError'
 import { ServerError } from './errors/ServerError'
+import { NotFoundAssertionError } from './errors/NotFoundAssertionError'
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
 
@@ -14,6 +15,11 @@ router.use((_, res, next) => {
     // 잘못된 값
     if (error instanceof BadRequestAssertionError) {
       return res.status(HttpStatusCode.BadRequest).end(error.message)
+    }
+
+    // 요청한 내용을 찾을 수 없음
+    if (error instanceof NotFoundAssertionError) {
+      return res.status(HttpStatusCode.NotFound).end(error.message)
     }
 
     // 예상했으나 오류인 값
