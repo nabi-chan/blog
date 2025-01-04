@@ -124,13 +124,13 @@ export type PageProps = InferGetStaticPropsType<typeof getStaticProps>
 
 export default withScript(
   withSeo(function Page(props: PageProps) {
-    const [selectedTags, setSelectedTags] = useState<string[]>([
-      props.posts.tags[0].slug,
-    ])
+    const [selectedTags, setSelectedTags] = useState<string[]>(() => {
+      return props.posts.tags.map((tag) => tag.slug)
+    })
 
-    const filteredPosts = props.posts.list.filter((post) =>
-      post.tags.some((tag) => selectedTags.includes(tag.slug))
-    )
+    const filteredPosts = props.posts.list.filter((post) => {
+      return post.tags.some((tag) => selectedTags.includes(tag.slug))
+    })
 
     const isCategoryNotSelected = selectedTags.length === 0
     const isEmptyPosts = filteredPosts.length === 0
