@@ -8,9 +8,9 @@ import { NotFoundAssertionError } from './errors/NotFoundAssertionError'
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
 
-router.use((_, res, next) => {
+router.use(async (_, res, next) => {
   try {
-    return next()
+    return await next()
   } catch (error) {
     // 잘못된 값
     if (error instanceof BadRequestAssertionError) {
