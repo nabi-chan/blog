@@ -3,13 +3,13 @@ import { HttpStatusCode } from 'axios'
 export class ServerError extends Error {
   name = 'ServerError'
 
-  status: HttpStatusCode = HttpStatusCode.InternalServerError
+  statusCode: HttpStatusCode = HttpStatusCode.InternalServerError
   message: string = ''
 
-  constructor(status: HttpStatusCode, message: string) {
+  constructor(statusCode: HttpStatusCode, message?: string) {
     super()
 
-    this.status = status
-    this.message = message
+    this.statusCode = statusCode
+    this.message = message ?? 'Unexpected Server Error'
   }
 }

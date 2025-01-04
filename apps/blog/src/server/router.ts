@@ -29,7 +29,7 @@ router.use(async (_, res, next) => {
 
     // 기타 서버 오류
     if (error instanceof ServerError) {
-      return res.status(error.status).end(error.message)
+      return res.status(error.statusCode).end(error.message)
     }
 
     // 진짜 예상 못한 오류
