@@ -1,7 +1,7 @@
 import { HttpStatusCode } from 'axios'
-import { redirect } from 'Features/short-links/redirect'
 import get from 'lodash-es/get'
 import type { GetServerSidePropsContext } from 'next'
+import { redirect } from 'Features/short-links/redirect'
 import { NotFoundAssertionError } from 'Server/errors/NotFoundAssertionError'
 import { ServerError } from 'Server/errors/ServerError'
 
