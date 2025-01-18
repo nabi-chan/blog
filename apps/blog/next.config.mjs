@@ -17,6 +17,10 @@ const nextConfig = {
   },
   rewrites: () => [
     {
+      source: '/about',
+      destination: '/s/cv',
+    },
+    {
       source: '/content/:slug*',
       destination: `${process.env.GHOST_API_URL}/content/:slug*`,
     },
