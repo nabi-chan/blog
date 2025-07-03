@@ -13,30 +13,25 @@ import {
   Text,
   Title,
 } from "@mantine/core"
-import { useMdxComponent } from "react-router-mdx/client"
-import { loadMdx } from "react-router-mdx/server"
-import * as v from "valibot"
+import { runSync } from "@mdx-js/mdx"
+import { MDXProvider } from "@mdx-js/react"
+import { loadMdx } from "~/utils/mdx.server"
+import * as runtime from "react/jsx-runtime"
 import type { Route } from "./+types/post"
 
-const LoadMDXSchema = v.object({
-  __raw: v.string(),
-  attributes: v.object({
-    title: v.string(),
-    icon: v.optional(v.string()),
-    description: v.optional(v.string()),
-    tags: v.optional(v.array(v.string())),
-  }),
-})
-
 export async function loader({ request }: Route.LoaderArgs) {
-  return v.parse(LoadMDXSchema, await loadMdx(request))
+  const pathname = new URL(request.url).pathname
+  return await loadMdx("posts", pathname.replace(/^\/p\//, ""))
 }
 
 export function meta({ data }: Route.MetaArgs) {
   return [{ title: data?.attributes.title }]
 }
 
-const components: Parameters<typeof useMdxComponent>[0] = {
+type MDXContent = ReturnType<typeof runSync>["default"]
+type MDXComponents = Parameters<MDXContent>[0]["components"]
+
+const components: MDXComponents = {
   h1: (props) => <Title mt="lg" component="h1" order={2} {...props} />,
   h2: (props) => <Title mt="md" component="h2" order={3} {...props} />,
   h3: (props) => <Title mt="md" component="h3" order={4} {...props} />,
@@ -64,11 +59,15 @@ const components: Parameters<typeof useMdxComponent>[0] = {
 }
 
 export default function Page({ loaderData }: Route.ComponentProps) {
-  const Component = useMdxComponent(components)
+  const { default: Component } = runSync(loaderData.__raw, {
+    ...runtime,
+    baseUrl: import.meta.url,
+  })
+
   return (
     <>
       <Box component="header">
-        <Title order={1}>{loaderData?.attributes.title}</Title>
+        <Title order={1}>{loaderData.attributes?.title}</Title>
         {loaderData.attributes.description && (
           <Text mt={4} c="dimmed">
             {loaderData.attributes.description}
@@ -85,13 +84,15 @@ export default function Page({ loaderData }: Route.ComponentProps) {
         )}
       </Box>
       <Divider my="lg" />
-      <Stack
-        gap="0.375em"
-        style={{
-          whiteSpace: "pre-wrap",
-        }}>
-        <Component />
-      </Stack>
+      <MDXProvider>
+        <Stack
+          gap="0.375em"
+          style={{
+            whiteSpace: "pre-wrap",
+          }}>
+          <Component components={components} />
+        </Stack>
+      </MDXProvider>
     </>
   )
 }

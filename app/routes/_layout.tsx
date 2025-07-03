@@ -1,4 +1,5 @@
 import {
+  Anchor,
   AppShell,
   Badge,
   Burger,
@@ -10,27 +11,17 @@ import {
   Title,
 } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
+import { loadAllMdxAttributes } from "~/utils/mdx.server"
 import { Link, Outlet } from "react-router"
-import { loadAllMdx } from "react-router-mdx/server"
-import * as v from "valibot"
 import type { Route } from "./+types/_layout"
-
-const LoadAllMDXSchema = v.array(
-  v.object({
-    slug: v.string(),
-    path: v.string(),
-    title: v.string(),
-    icon: v.optional(v.string()),
-    description: v.optional(v.string()),
-    tags: v.optional(v.array(v.string())),
-  }),
-)
 
 export async function loader({ request }: Route.LoaderArgs) {
   const pathname = new URL(request.url).pathname
   return {
-    slug: pathname.match(/^\/p\//) ? pathname.replace(/^\/p\//, "") : null,
-    posts: v.parse(LoadAllMDXSchema, await loadAllMdx()),
+    slug: pathname.match(/^\/(p|note)/)
+      ? pathname.replace(/^\/(p|note)\//, "")
+      : null,
+    posts: await loadAllMdxAttributes("posts"),
   }
 }
 
@@ -45,7 +36,7 @@ export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
 
 export default function Layout({ loaderData }: Route.ComponentProps) {
   const [collapsed, { toggle }] = useDisclosure(
-    "collapsed" in loaderData ? loaderData.collapsed : !!loaderData.slug,
+    "collapsed" in loaderData ? loaderData.collapsed : loaderData.slug !== null,
     {
       onOpen: () => localStorage.setItem("navbar", "display"),
       onClose: () => localStorage.setItem("navbar", "hidden"),
@@ -66,7 +57,12 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
         },
       }}>
       <AppShell.Header p="md" pos="fixed">
-        <Burger opened={!collapsed} onClick={toggle} size="sm" />
+        <Group justify="space-between">
+          <Burger opened={!collapsed} onClick={toggle} size="sm" />
+          <Anchor component={Link} to="/note">
+            Note
+          </Anchor>
+        </Group>
         <Link to="/">
           <Title order={3} component="h1" pos="absolute" top="25%" left="50%">
             🦋
