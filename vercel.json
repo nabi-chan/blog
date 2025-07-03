@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/s/:slug",
+      "destination": "https://s.nabi.kim/s/:slug",
+      "statusCode": 302
+    }
+  ]
+}
