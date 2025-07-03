@@ -1,5 +1,11 @@
 import { compile } from "@mdx-js/mdx"
 import { route } from "@react-router/dev/routes"
+import rehypeShiki from "@shikijs/rehype"
+import {
+  transformerMetaHighlight,
+  transformerNotationDiff,
+  transformerNotationHighlight,
+} from "@shikijs/transformers"
 import glob from "fast-glob"
 import { readFile } from "fs/promises"
 import { resolve } from "path"
@@ -38,6 +44,20 @@ async function getMdxCode(folder: string, path: string) {
     {
       outputFormat: "function-body",
       remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
+      rehypePlugins: [
+        [
+          rehypeShiki,
+          {
+            theme: "one-light",
+            inline: "tailing-curly-colon",
+            transformers: [
+              transformerNotationDiff({ matchAlgorithm: "v3" }),
+              transformerMetaHighlight(),
+              transformerNotationHighlight(),
+            ],
+          },
+        ],
+      ],
     },
   ).then((result) => String(result))
 }

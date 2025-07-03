@@ -1,7 +1,6 @@
 import "./root.css"
 import "@sun-typeface/suit/fonts/static/woff2/SUIT.css"
 import "@mantine/core/styles.css"
-import "@mantine/code-highlight/styles.css"
 import "@mantine/spotlight/styles.css"
 
 import { theme } from "./themes/mantine"

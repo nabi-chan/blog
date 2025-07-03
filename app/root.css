@@ -23,3 +23,26 @@ ol {
 .footnotes {
   white-space: normal;
 }
+
+.shiki {
+  display: inline-block;
+  box-shadow: var(--mantine-shadow-xs);
+}
+
+span.shiki {
+  border-radius: var(--mantine-radius-md);
+  padding: 2px 8px;
+}
+
+pre.shiki .line {
+  display: inline-block;
+  margin: 0 calc(var(--mantine-spacing-lg) * -1);
+  padding: 0 var(--mantine-spacing-lg);
+  width: calc(100% + calc(var(--mantine-spacing-lg) * 2));
+}
+
+p > code {
+  box-shadow: var(--mantine-shadow-xs);
+  border-radius: var(--mantine-radius-md);
+  padding: 2px 8px;
+}

@@ -1,6 +1,8 @@
 import { Anchor } from "./anchor"
 import {
   Blockquote,
+  Box,
+  Card,
   Code,
   Divider,
   Image,
@@ -30,8 +32,24 @@ const components: MDXComponents = {
   ol: (props) => <List type="ordered" {...props} />,
   li: (props) => <List.Item {...props} />,
   blockquote: (props) => <Blockquote {...props} />,
-  code: (props) => <Code color="gray.3" {...props} />,
-  pre: (props) => <pre {...props} />,
+  pre: ({ className, ...props }) => (
+    <Box
+      {...props}
+      {...(className?.includes("shiki") ? { m: 0, p: "lg", bdrs: "md" } : {})}
+      className={className}
+      component="pre"
+    />
+  ),
+  span: ({ className, ...props }) => (
+    <Box
+      {...props}
+      {...(className?.includes("highlighted") ? { bg: "yellow.1" } : {})}
+      {...(className?.includes("diff remove") ? { bg: "red.1" } : {})}
+      {...(className?.includes("diff add") ? { bg: "green.1" } : {})}
+      className={className}
+      component="span"
+    />
+  ),
   strong: (props) => <strong {...props} />,
   em: (props) => <em {...props} />,
   img: (props) => <Image {...props} />,

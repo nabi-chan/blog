@@ -11,7 +11,6 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
-    "@mantine/code-highlight": "^8.1.2",
     "@mantine/core": "^8.1.2",
     "@mantine/hooks": "^8.1.2",
     "@mantine/spotlight": "^8.1.2",
@@ -19,6 +18,8 @@
     "@mdx-js/react": "^3.1.0",
     "@react-router/node": "^7.5.3",
     "@react-router/serve": "^7.5.3",
+    "@shikijs/rehype": "^3.7.0",
+    "@shikijs/transformers": "^3.7.0",
     "@sun-typeface/suit": "^2.0.5",
     "@vercel/react-router": "^1.1.2",
     "dayjs": "^1.11.13",
