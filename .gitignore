@@ -1,0 +1,12 @@
+# Dependencies
+/node_modules
+
+# Build
+/build
+
+# Docusaurus
+.docusaurus
+.cache-loader
+
+# Environment variables
+.env*.local
