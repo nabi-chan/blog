@@ -14,3 +14,8 @@ p {
   text-wrap: pretty;
   word-break: keep-all;
 }
+
+ul,
+ol {
+  white-space: normal;
+}
