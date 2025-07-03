@@ -68,13 +68,7 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
       <AppShell.Header p="md" pos="fixed">
         <Burger opened={!collapsed} onClick={toggle} size="sm" />
         <Link to="/">
-          <Title
-            order={3}
-            component="h1"
-            ff="Tossface"
-            pos="absolute"
-            top="25%"
-            left="50%">
+          <Title order={3} component="h1" pos="absolute" top="25%" left="50%">
             🦋
           </Title>
         </Link>
@@ -90,7 +84,7 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
                 bg={item.slug === loaderData.slug ? "gray.1" : "none"}
                 to={`/p/${item.slug}`}>
                 <Text lineClamp={2} size="lg">
-                  <Text mr={6} size="xl" component="span" ff="Tossface">
+                  <Text mr={6} size="xl" component="span">
                     {item.icon ?? "📄"}
                   </Text>
                   <Text fw={600} component="span">
