@@ -1,5 +1,5 @@
+import { Anchor } from "./anchor"
 import {
-  Anchor,
   Blockquote,
   Code,
   Divider,
@@ -25,7 +25,7 @@ const components: MDXComponents = {
   h5: (props) => <Title mt="sm" component="h5" order={6} {...props} />,
   h6: (props) => <Text component="h6" fw="bold" {...props} />,
   p: (props) => <Text component="p" {...props} />,
-  a: (props) => <Anchor target="_blank" rel="noopener noreferrer" {...props} />,
+  a: (props) => <Anchor {...props} />,
   ul: (props) => <List {...props} />,
   ol: (props) => <List type="ordered" {...props} />,
   li: (props) => <List.Item {...props} />,
