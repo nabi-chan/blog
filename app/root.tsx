@@ -1,7 +1,9 @@
+import "./root.css"
 import "@mantine/core/styles.css"
 import "@mantine/code-highlight/styles.css"
 import "@mantine/spotlight/styles.css"
 
+import { theme } from "./themes/mantine"
 import {
   ColorSchemeScript,
   mantineHtmlProps,
@@ -28,7 +30,7 @@ export function Layout({ children }: React.PropsWithChildren) {
         <Links />
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider theme={theme}>{children}</MantineProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
