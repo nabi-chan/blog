@@ -1,0 +1,41 @@
+---
+title: Supabase로 url-shotter 만들기
+description: 별다줄
+tags:
+  - supabase
+  - utils
+---
+
+```typescript
+/* .server/libs/supabase.ts */
+import { createClient } from "@supabase/supabase-js"
+import assert from "assert"
+import type { Database } from "~/.server/types/supabase"
+
+assert(
+  process.env.VITE_PUBLIC_SUPABASE_URL,
+  "Missing env var: VITE_PUBLIC_SUPABASE_URL",
+)
+assert(process.env.SERVICE_KEY, "Missing env var: SERVICE_KEY")
+
+export const supabase = createClient<Database>(
+  process.env.VITE_PUBLIC_SUPABASE_URL,
+  process.env.SERVICE_KEY,
+)
+
+/* routes/short-link.ts */
+import { supabase } from "~/.server/libs/supabase"
+import { redirect } from "react-router"
+import type { Route } from "./+types/short-link"
+
+export async function loader({ params }: Route.LoaderArgs) {
+  const { data } = await supabase
+    .from("short_links")
+    .select("destination")
+    .eq("slug", params.slug)
+    .single()
+
+  if (!data) throw redirect("/404")
+  return redirect(data.destination)
+}
+```
