@@ -13,7 +13,7 @@ import { useDisclosure } from "@mantine/hooks"
 import { Link, Outlet } from "react-router"
 import { loadAllMdx } from "react-router-mdx/server"
 import * as v from "valibot"
-import type { Route } from "./+types/layout"
+import type { Route } from "./+types/_layout"
 
 const LoadAllMDXSchema = v.array(
   v.object({

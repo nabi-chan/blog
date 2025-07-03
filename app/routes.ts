@@ -3,8 +3,8 @@ import { routes } from "react-router-mdx/server"
 import type { RouteConfig } from "@react-router/dev/routes"
 
 export default [
-  layout("routes/layout.tsx", [
-    index("routes/home/page.tsx"),
-    ...routes("routes/post/page.tsx"),
+  layout("routes/_layout.tsx", [
+    index("routes/home.tsx"),
+    ...routes("routes/post.tsx"),
   ]),
 ] satisfies RouteConfig
