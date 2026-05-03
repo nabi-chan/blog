@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Enviorments
+.env*
+!.env.template
+
+# Build
+.next/
+dist/
+*.tsbuildinfo
+
+# Temp files
+src/content/content-version.ts

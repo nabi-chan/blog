@@ -1,0 +1,40 @@
+{
+  "name": "nabi-blog",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "portless run next dev",
+    "build": "next build",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@base-ui/react": "latest",
+    "@shikijs/rehype": "latest",
+    "es-hangul": "latest",
+    "gray-matter": "latest",
+    "hast-util-to-string": "latest",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "rehype-raw": "latest",
+    "rehype-sanitize": "latest",
+    "rehype-stringify": "latest",
+    "remark-gfm": "latest",
+    "remark-parse": "latest",
+    "remark-rehype": "latest",
+    "unified": "latest",
+    "unist-util-visit": "latest"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "portless": "latest",
+    "postcss": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest"
+  },
+  "packageManager": "pnpm@10.32.1"
+}
