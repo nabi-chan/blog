@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Comments } from "@/src/components/Comments";
-import { MarkdownContent } from "@/src/components/MarkdownContent";
+import { MarkdownCards } from "@/src/components/MarkdownContent";
 import { TableOfContents } from "@/src/components/TableOfContents";
 import { formatDisplayDate } from "@/src/content/date";
 import { getEntries, getEntry } from "@/src/content/loader";
@@ -55,16 +55,20 @@ export default async function NotePage({ params }: Props) {
             {formatDisplayDate(note.dateTime)}
           </time>
         </header>
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
+        <div
+          className={`grid gap-8 lg:items-start ${note.showToc ? "lg:grid-cols-[minmax(0,1fr)_280px]" : ""}`}
+        >
           <div className="min-w-0">
-            <div className="memo-card rotate-0">
-              <MarkdownContent html={note.html} />
+            <MarkdownCards html={note.html} />
+            {note.comment ? (
+              <Comments entryKind="notes" entrySlug={note.slug} />
+            ) : null}
+          </div>
+          {note.showToc ? (
+            <div className="order-first lg:sticky lg:top-8 lg:order-none lg:self-start">
+              <TableOfContents items={note.toc} />
             </div>
-            <Comments entryKind="notes" entrySlug={note.slug} />
-          </div>
-          <div className="order-first lg:sticky lg:top-8 lg:order-none lg:self-start">
-            <TableOfContents items={note.toc} />
-          </div>
+          ) : null}
         </div>
       </article>
     </main>

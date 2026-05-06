@@ -21,6 +21,8 @@ export type Entry = EntrySummary & {
   html: string;
   excerpt: string;
   toc: TocItem[];
+  showToc: boolean;
+  comment: boolean;
   previous?: EntrySummary;
   next?: EntrySummary;
   seriesPrevious?: EntrySummary;
@@ -28,9 +30,24 @@ export type Entry = EntrySummary & {
   seriesEntries?: EntrySummary[];
 };
 
+export type PageEntry = {
+  slug: string;
+  segments: string[];
+  title: string;
+  description: string;
+  url: string;
+  html: string;
+  excerpt: string;
+  toc: TocItem[];
+  showToc: boolean;
+  comment: boolean;
+};
+
 export type EntryFrontmatter = {
   title?: unknown;
   description?: unknown;
   date?: unknown;
   series?: unknown;
+  comment?: unknown;
+  toc?: unknown;
 };

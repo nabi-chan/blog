@@ -493,6 +493,7 @@ select {
   font-size: 1.2em;
   line-height: 2.05;
   color: var(--ink);
+  overflow: hidden;
 }
 
 .markdown-body *:first-child {
@@ -500,7 +501,7 @@ select {
 }
 
 .markdown-body > * + * {
-  margin-top: 1.25em;
+  margin-top: 0.25em;
 }
 
 .markdown-body h1 + p,

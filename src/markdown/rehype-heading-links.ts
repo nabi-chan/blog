@@ -39,8 +39,10 @@ function hasHeadingAnchor(node: HastElement): boolean {
   });
 }
 
-export function rehypeHeadingLinks() {
+export function rehypeHeadingLinks({ enabled = true } = {}) {
   return (tree: any) => {
+    if (!enabled) return;
+
     visit(tree, "element", (node: HastElement) => {
       if (!isHeading(node.tagName)) return;
       if (typeof node.properties?.id !== "string") return;

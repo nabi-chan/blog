@@ -15,6 +15,7 @@ import { remarkToc } from "./remark-toc";
 
 const schema: SanitizeSchema = {
   ...defaultSchema,
+  tagNames: [...(defaultSchema.tagNames ?? []), "style"],
   attributes: {
     ...defaultSchema.attributes,
     code: [
@@ -23,11 +24,13 @@ const schema: SanitizeSchema = {
     ],
     span: [...(defaultSchema.attributes?.span || []), ["style"], ["className"]],
     pre: [...(defaultSchema.attributes?.pre || []), ["className"], ["style"]],
+    div: [...(defaultSchema.attributes?.div || []), "style"],
     h2: [...(defaultSchema.attributes?.h2 || []), "id"],
     h3: [...(defaultSchema.attributes?.h3 || []), "id"],
     h4: [...(defaultSchema.attributes?.h4 || []), "id"],
     h5: [...(defaultSchema.attributes?.h5 || []), "id"],
     h6: [...(defaultSchema.attributes?.h6 || []), "id"],
+    img: [...(defaultSchema.attributes?.img || []), "style", "className"],
     a: [...(defaultSchema.attributes?.a || []), "target", "rel"],
     input: [
       ...(defaultSchema.attributes?.input || []),
@@ -37,6 +40,13 @@ const schema: SanitizeSchema = {
     ],
   },
 };
+
+function normalizeDivider(markdown: string): string {
+  return markdown.replace(
+    /<divider(?:\s[^>]*)?\/>|<divider(?:\s[^>]*)?><\/divider>/gi,
+    '<span class="markdown-divider"></span>',
+  );
+}
 
 function extractText(markdown: string): string {
   const tree = unified().use(remarkParse).use(remarkGfm).parse(markdown);
@@ -53,7 +63,9 @@ function extractText(markdown: string): string {
 
 export async function renderMarkdown(
   markdown: string,
+  { headingLinks = true }: { headingLinks?: boolean } = {},
 ): Promise<{ html: string; toc: TocItem[]; excerpt: string }> {
+  const normalizedMarkdown = normalizeDivider(markdown);
   const file = await unified()
     .use(remarkParse)
     .use(remarkGfm)
@@ -63,9 +75,9 @@ export async function renderMarkdown(
     .use(rehypeSanitize, schema)
     .use(rehypeShiki, { theme: "catppuccin-latte" })
     .use(rehypeExternalLinks)
-    .use(rehypeHeadingLinks)
+    .use(rehypeHeadingLinks, { enabled: headingLinks })
     .use(rehypeStringify)
-    .process(markdown);
+    .process(normalizedMarkdown);
 
   const text = extractText(markdown);
   const excerpt = text.length > 120 ? `${text.slice(0, 240).trim()}...` : text;

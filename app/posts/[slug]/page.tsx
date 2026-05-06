@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Comments } from "@/src/components/Comments";
 import { EntryNavigation } from "@/src/components/EntryNavigation";
-import { MarkdownContent } from "@/src/components/MarkdownContent";
+import { MarkdownCards } from "@/src/components/MarkdownContent";
 import { SeriesNavigation } from "@/src/components/SeriesNavigation";
 import { TableOfContents } from "@/src/components/TableOfContents";
 import { formatDisplayDate } from "@/src/content/date";
@@ -57,31 +57,33 @@ export default async function PostPage({ params }: Props) {
             {formatDisplayDate(post.dateTime)}
           </time>
         </header>
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
-          <div className="min-w-0">
+        <div
+          className={`grid gap-8 lg:items-start ${post.showToc ? "lg:grid-cols-[minmax(0,1fr)_280px]" : ""}`}
+        >
+          <div className="min-w-0 space-y-8">
             <SeriesNavigation
               title={post.series}
               currentSlug={post.slug}
               entries={post.seriesEntries}
             />
-            <div className="mt-8 memo-card rotate-0">
-              <MarkdownContent html={post.html} />
-            </div>
-            <Comments entryKind="posts" entrySlug={post.slug} />
+            <MarkdownCards html={post.html} />
+            {post.comment ? (
+              <Comments entryKind="posts" entrySlug={post.slug} />
+            ) : null}
             {post.seriesPrevious || post.seriesNext ? (
-              <div className="mt-8">
-                <EntryNavigation
-                  previous={post.seriesPrevious}
-                  next={post.seriesNext}
-                  previousLabel="이전 편"
-                  nextLabel="다음 편"
-                />
-              </div>
+              <EntryNavigation
+                previous={post.seriesPrevious}
+                next={post.seriesNext}
+                previousLabel="이전 편"
+                nextLabel="다음 편"
+              />
             ) : null}
           </div>
-          <div className="order-first lg:sticky lg:top-8 lg:order-none lg:self-start">
-            <TableOfContents items={post.toc} />
-          </div>
+          {post.showToc ? (
+            <div className="order-first lg:sticky lg:top-8 lg:order-none lg:self-start">
+              <TableOfContents items={post.toc} />
+            </div>
+          ) : null}
         </div>
       </article>
     </main>

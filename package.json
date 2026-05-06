@@ -4,8 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "node scripts/ensure-content-version.mjs",
     "dev": "portless run next dev",
+    "prebuild": "node scripts/ensure-content-version.mjs",
     "build": "next build",
+    "precheck": "node scripts/ensure-content-version.mjs",
     "check": "tsc --noEmit",
     "db:migrate": "supabase db push",
     "db:reset": "supabase db reset"

@@ -1,6 +1,4 @@
-import type { EntryKind } from "@/src/content/types";
-
-export type CommentEntryKind = EntryKind;
+export type CommentEntryKind = "posts" | "notes" | "pages";
 
 export type Comment = {
   id: string;

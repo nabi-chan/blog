@@ -3,12 +3,55 @@ import path from "node:path";
 import matter from "gray-matter";
 import { renderMarkdown } from "@/src/markdown/render";
 import { contentVersion } from "./content-version";
-import type { Entry, EntryFrontmatter, EntryKind, EntrySummary } from "./types";
+import type {
+  Entry,
+  EntryFrontmatter,
+  EntryKind,
+  EntrySummary,
+  PageEntry,
+} from "./types";
 import { compareEntryDate, parseSeoulDate } from "./date";
 
 const CONTENT_ROOT = path.join(process.cwd(), "content");
-let cache: Promise<{ posts: Entry[]; notes: Entry[] }> | undefined;
+const CONTENT_VERSION_FILE = path.join(
+  process.cwd(),
+  "src/content/content-version.ts",
+);
+const RESERVED_PAGE_SEGMENTS = new Set([
+  "_not-found",
+  "feed.xml",
+  "notes",
+  "opengraph-image",
+  "posts",
+  "sitemap.xml",
+]);
+
+let cache:
+  | Promise<{ posts: Entry[]; notes: Entry[]; pages: PageEntry[] }>
+  | undefined;
 let cachedContentVersion = contentVersion;
+let watchingContent = false;
+
+function touchContentVersion() {
+  const nextVersion = new Date().toISOString();
+  fs.writeFileSync(
+    CONTENT_VERSION_FILE,
+    `export const contentVersion = "${nextVersion}";\n`,
+  );
+}
+
+function watchContentInDevelopment() {
+  if (process.env.NODE_ENV !== "development" || watchingContent) return;
+  if (!fs.existsSync(CONTENT_ROOT)) return;
+
+  watchingContent = true;
+  fs.watch(CONTENT_ROOT, { recursive: true }, (_eventType, filename) => {
+    if (!filename || !filename.endsWith(".md")) return;
+    touchContentVersion();
+  });
+}
+
+watchContentInDevelopment();
 
 function warn(message: string) {
   console.warn(`[content] ${message}`);
@@ -24,6 +67,10 @@ function slugFromFile(file: string): string {
 
 function entryUrl(kind: EntryKind, slug: string): string {
   return `/${kind}/${slug}/`;
+}
+
+function pageUrl(slug: string): string {
+  return `/${slug}/`;
 }
 
 function summary(entry: Entry): EntrySummary {
@@ -49,6 +96,29 @@ function listMarkdownFiles(kind: EntryKind): string[] {
     .map((file) => path.join(dir, file));
 }
 
+function listMarkdownFilesRecursive(dir: string): string[] {
+  if (!fs.existsSync(dir)) return [];
+
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const file = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) return listMarkdownFilesRecursive(file);
+    return entry.isFile() && entry.name.endsWith(".md") ? [file] : [];
+  });
+}
+
+function entryCommentEnabled(data: EntryFrontmatter): boolean {
+  return data.comment !== false;
+}
+
+function pageCommentEnabled(data: EntryFrontmatter): boolean {
+  return data.comment === true;
+}
+
+function tocEnabled(data: EntryFrontmatter): boolean {
+  return data.toc !== false;
+}
+
 function normalizeFrontmatter(
   kind: EntryKind,
   slug: string,
@@ -58,6 +128,8 @@ function normalizeFrontmatter(
   description?: string;
   dateTime: string;
   series?: string;
+  comment: boolean;
+  showToc: boolean;
 } {
   if (!isString(data.title)) {
     warn(`${kind}/${slug}: title이 없어 문서를 무시합니다.`);
@@ -94,6 +166,51 @@ function normalizeFrontmatter(
       kind === "posts" && isString(data.series)
         ? data.series.trim()
         : undefined,
+    comment: entryCommentEnabled(data),
+    showToc: tocEnabled(data),
+  };
+}
+
+function pageSlugFromFile(file: string): { segments: string[]; slug: string } {
+  const pagesRoot = path.join(CONTENT_ROOT, "pages");
+  const relative = path.relative(pagesRoot, file);
+  const withoutExt = relative.slice(0, -path.extname(relative).length);
+  const parts = withoutExt.split(path.sep).filter(Boolean);
+  const segments = parts.at(-1) === "index" ? parts.slice(0, -1) : parts;
+
+  return {
+    segments,
+    slug: segments.join("/"),
+  };
+}
+
+function isReservedPagePath(segments: string[]): boolean {
+  const first = segments[0];
+
+  return !first || RESERVED_PAGE_SEGMENTS.has(first);
+}
+
+function normalizePageFrontmatter(
+  slug: string,
+  data: EntryFrontmatter,
+): null | {
+  title: string;
+  description?: string;
+  comment: boolean;
+  showToc: boolean;
+} {
+  if (!isString(data.title)) {
+    warn(`pages/${slug}: title이 없어 문서를 무시합니다.`);
+    return null;
+  }
+
+  return {
+    title: data.title.trim(),
+    description: isString(data.description)
+      ? data.description.trim()
+      : undefined,
+    comment: pageCommentEnabled(data),
+    showToc: tocEnabled(data),
   };
 }
 
@@ -110,7 +227,9 @@ async function loadKind(kind: EntryKind): Promise<Entry[]> {
       );
       if (!frontmatter) return null;
 
-      const rendered = await renderMarkdown(parsed.content);
+      const rendered = await renderMarkdown(parsed.content, {
+        headingLinks: frontmatter.showToc,
+      });
       const description = frontmatter.description || rendered.excerpt;
 
       const entry: Entry = {
@@ -123,7 +242,9 @@ async function loadKind(kind: EntryKind): Promise<Entry[]> {
         url: entryUrl(kind, slug),
         html: rendered.html,
         toc: rendered.toc,
+        showToc: frontmatter.showToc,
         excerpt: rendered.excerpt,
+        comment: frontmatter.comment,
         ...(frontmatter.series ? { series: frontmatter.series } : {}),
       };
 
@@ -134,6 +255,50 @@ async function loadKind(kind: EntryKind): Promise<Entry[]> {
   return entries
     .filter((entry): entry is Entry => entry !== null)
     .sort(compareEntryDate);
+}
+
+async function loadPages(): Promise<PageEntry[]> {
+  const pagesRoot = path.join(CONTENT_ROOT, "pages");
+  const entries = await Promise.all(
+    listMarkdownFilesRecursive(pagesRoot).map(
+      async (file): Promise<PageEntry | null> => {
+        const { segments, slug } = pageSlugFromFile(file);
+        if (isReservedPagePath(segments)) {
+          warn(
+            `pages/${slug || "index"}: 기존 라우트와 중복되어 문서를 무시합니다.`,
+          );
+          return null;
+        }
+
+        const source = fs.readFileSync(file, "utf8");
+        const parsed = matter(source);
+        const frontmatter = normalizePageFrontmatter(
+          slug,
+          parsed.data as EntryFrontmatter,
+        );
+        if (!frontmatter) return null;
+
+        const rendered = await renderMarkdown(parsed.content, {
+          headingLinks: frontmatter.showToc,
+        });
+
+        return {
+          slug,
+          segments,
+          title: frontmatter.title,
+          description: frontmatter.description || rendered.excerpt,
+          url: pageUrl(slug),
+          html: rendered.html,
+          toc: rendered.toc,
+          showToc: frontmatter.showToc,
+          excerpt: rendered.excerpt,
+          comment: frontmatter.comment,
+        };
+      },
+    ),
+  );
+
+  return entries.filter((entry): entry is PageEntry => entry !== null);
 }
 
 function attachNavigation(entries: Entry[]): Entry[] {
@@ -180,20 +345,36 @@ function attachNavigation(entries: Entry[]): Entry[] {
 }
 
 export async function getContent() {
+  if (process.env.NODE_ENV === "development") {
+    const [posts, notes, pages] = await Promise.all([
+      loadKind("posts"),
+      loadKind("notes"),
+      loadPages(),
+    ]);
+
+    return {
+      posts: attachNavigation(posts),
+      notes: attachNavigation(notes),
+      pages,
+    };
+  }
+
   if (cachedContentVersion !== contentVersion) {
     cache = undefined;
     cachedContentVersion = contentVersion;
   }
 
   cache ||= (async () => {
-    const [posts, notes] = await Promise.all([
+    const [posts, notes, pages] = await Promise.all([
       loadKind("posts"),
       loadKind("notes"),
+      loadPages(),
     ]);
 
     return {
       posts: attachNavigation(posts),
       notes: attachNavigation(notes),
+      pages,
     };
   })();
 
@@ -208,6 +389,16 @@ export async function getEntries(kind: EntryKind): Promise<Entry[]> {
 export async function getAllEntries(): Promise<Entry[]> {
   const content = await getContent();
   return [...content.posts, ...content.notes].sort(compareEntryDate);
+}
+
+export async function getPages(): Promise<PageEntry[]> {
+  const content = await getContent();
+  return content.pages;
+}
+
+export async function getPage(slug: string): Promise<PageEntry | undefined> {
+  const pages = await getPages();
+  return pages.find((page) => page.slug === slug);
 }
 
 export async function getEntry(
