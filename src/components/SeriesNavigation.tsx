@@ -8,14 +8,10 @@ export function SeriesNavigation({
   title,
   currentSlug,
   entries,
-  previous,
-  next,
 }: {
   title?: string;
   currentSlug: string;
   entries?: EntrySummary[];
-  previous?: EntrySummary;
-  next?: EntrySummary;
 }) {
   if (!title || !entries || entries.length <= 1) return null;
 
@@ -53,25 +49,6 @@ export function SeriesNavigation({
               );
             })}
           </ol>
-          <div className="mt-5 grid gap-3 md:grid-cols-2">
-            {previous ? (
-              <Link className="paper-button focus-ring" href={previous.url}>
-                이전 편: {previous.title}
-              </Link>
-            ) : (
-              <span />
-            )}
-            {next ? (
-              <Link
-                className="paper-button focus-ring md:text-right"
-                href={next.url}
-              >
-                다음 편: {next.title}
-              </Link>
-            ) : (
-              <span />
-            )}
-          </div>
         </Collapsible.Panel>
       </Collapsible.Root>
     </section>

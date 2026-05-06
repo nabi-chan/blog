@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Comments } from "@/src/components/Comments";
+import { EntryNavigation } from "@/src/components/EntryNavigation";
 import { MarkdownContent } from "@/src/components/MarkdownContent";
 import { SeriesNavigation } from "@/src/components/SeriesNavigation";
 import { TableOfContents } from "@/src/components/TableOfContents";
@@ -58,19 +59,25 @@ export default async function PostPage({ params }: Props) {
         </header>
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
           <div className="min-w-0">
-            <div className="memo-card rotate-0">
+            <SeriesNavigation
+              title={post.series}
+              currentSlug={post.slug}
+              entries={post.seriesEntries}
+            />
+            <div className="mt-8 memo-card rotate-0">
               <MarkdownContent html={post.html} />
             </div>
-            <div className="mt-8 space-y-7">
-              <SeriesNavigation
-                title={post.series}
-                currentSlug={post.slug}
-                entries={post.seriesEntries}
-                previous={post.seriesPrevious}
-                next={post.seriesNext}
-              />
-            </div>
             <Comments entryKind="posts" entrySlug={post.slug} />
+            {post.seriesPrevious || post.seriesNext ? (
+              <div className="mt-8">
+                <EntryNavigation
+                  previous={post.seriesPrevious}
+                  next={post.seriesNext}
+                  previousLabel="이전 편"
+                  nextLabel="다음 편"
+                />
+              </div>
+            ) : null}
           </div>
           <div className="order-first lg:sticky lg:top-8 lg:order-none lg:self-start">
             <TableOfContents items={post.toc} />

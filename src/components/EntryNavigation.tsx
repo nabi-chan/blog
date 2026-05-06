@@ -4,16 +4,20 @@ import type { EntrySummary } from "@/src/content/types";
 export function EntryNavigation({
   previous,
   next,
+  previousLabel = "이전 글",
+  nextLabel = "다음 글",
 }: {
   previous?: EntrySummary;
   next?: EntrySummary;
+  previousLabel?: string;
+  nextLabel?: string;
 }) {
   if (!previous && !next) return null;
 
   return (
     <nav className="grid gap-4 md:grid-cols-2" aria-label="이전 다음 글">
-      <NavButton label="이전 글" entry={previous} align="left" />
-      <NavButton label="다음 글" entry={next} align="right" />
+      <NavButton label={previousLabel} entry={previous} align="left" />
+      <NavButton label={nextLabel} entry={next} align="right" />
     </nav>
   );
 }
