@@ -45,6 +45,9 @@ export default function RootLayout({
               <Link className="nav-pill focus-ring" href={routes.notes}>
                 토막글
               </Link>
+              <Link className="nav-pill focus-ring" href="/about">
+                자기소개
+              </Link>
             </nav>
           </header>
           {children}
