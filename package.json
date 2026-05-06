@@ -6,11 +6,14 @@
   "scripts": {
     "dev": "portless run next dev",
     "build": "next build",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "db:migrate": "supabase db push",
+    "db:reset": "supabase db reset"
   },
   "dependencies": {
     "@base-ui/react": "latest",
     "@shikijs/rehype": "latest",
+    "@supabase/supabase-js": "^2.105.3",
     "es-hangul": "latest",
     "gray-matter": "latest",
     "hast-util-to-string": "latest",

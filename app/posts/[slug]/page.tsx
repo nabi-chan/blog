@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Comments } from "@/src/components/Comments";
 import { MarkdownContent } from "@/src/components/MarkdownContent";
 import { SeriesNavigation } from "@/src/components/SeriesNavigation";
 import { TableOfContents } from "@/src/components/TableOfContents";
@@ -69,6 +70,7 @@ export default async function PostPage({ params }: Props) {
                 next={post.seriesNext}
               />
             </div>
+            <Comments entryKind="posts" entrySlug={post.slug} />
           </div>
           <div className="order-first lg:sticky lg:top-8 lg:order-none lg:self-start">
             <TableOfContents items={post.toc} />

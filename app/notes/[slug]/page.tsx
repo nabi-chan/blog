@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Comments } from "@/src/components/Comments";
 import { MarkdownContent } from "@/src/components/MarkdownContent";
 import { TableOfContents } from "@/src/components/TableOfContents";
 import { formatDisplayDate } from "@/src/content/date";
@@ -59,6 +60,7 @@ export default async function NotePage({ params }: Props) {
             <div className="memo-card rotate-0">
               <MarkdownContent html={note.html} />
             </div>
+            <Comments entryKind="notes" entrySlug={note.slug} />
           </div>
           <div className="order-first lg:sticky lg:top-8 lg:order-none lg:self-start">
             <TableOfContents items={note.toc} />
