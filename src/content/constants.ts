@@ -2,3 +2,6 @@
 export const DESCRIPTION_MAX = 160
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 export const TAG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+// 본문 최대 폭(px). 이미지 sizes 와 디자인(prose 폭)이 같이 쓴다
+export const PROSE_MAX_WIDTH = 720
+export const IMAGE_VARIANT_WIDTHS = [720, 1440]

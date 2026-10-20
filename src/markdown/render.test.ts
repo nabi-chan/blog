@@ -1,3 +1,6 @@
+import { mkdtempSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { renderMarkdown } from './render'
 
@@ -33,5 +36,51 @@ describe('renderMarkdown', () => {
     expect(r.html).not.toContain('<script')
     expect(r.html).not.toContain('<b>')
     expect(r.html).not.toContain('<div>')
+  })
+})
+
+describe('renderMarkdown 본문 기능 통합', () => {
+  const PIXEL = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+
+  it('Callout·Figure·글 옆 이미지·링크를 한 번에 처리한다', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'render-'))
+    writeFileSync(join(dir, 'a.png'), Buffer.from(PIXEL, 'base64'))
+    const filePath = join(dir, 'index.en.md')
+    const r = await renderMarkdown(
+      [
+        '> [!TIP]',
+        '> 내용',
+        '',
+        '> 그냥 인용',
+        '',
+        '> [!FOO]',
+        '> 모르는 종류',
+        '',
+        '![그림](./a.png "캡션")',
+        '',
+        '문장 안 ![작은](./a.png) 이미지',
+        '',
+        '![외부](https://example.com/x.png)',
+        '',
+        '[다른 글](/posts/both) [외부](https://example.com)',
+      ].join('\n'),
+      { filePath, slug: 'x', locale: 'en', enSlugs: new Set(['both']) },
+    )
+    expect(r.html).toMatch(/<aside class="callout" data-callout="tip" role="note">\s*<p class="callout-title">Tip<\/p>/)
+    expect(r.html).toContain('<blockquote>\n<p>그냥 인용</p>')
+    expect(r.html).toContain('[!FOO]')
+    expect(r.html).toMatch(
+      /<figure><picture><source type="image\/webp" srcset="\/content-assets\/x\/a\.[0-9a-f]{8}\.1w\.webp 1w" sizes="\(max-width: 752px\) calc\(100vw - 32px\), 720px"><img src="\/content-assets\/x\/a\.[0-9a-f]{8}\.png" alt="그림" width="1" height="1" loading="eager" fetchpriority="high" decoding="async"><\/picture><figcaption>캡션<\/figcaption><\/figure>/,
+    )
+    expect(r.html).toMatch(/문장 안 <picture>.*<img src="\/content-assets\/x\/a\.[0-9a-f]{8}\.png" alt="작은" width="1" height="1" loading="lazy" fetchpriority="low"/)
+    expect(r.html).toContain('src="https://example.com/x.png"')
+    expect(r.html).toContain('href="/en/posts/both"')
+    expect(r.html).toMatch(/href="https:\/\/example\.com" target="_blank" rel="noopener"/)
+    expect(r.assets).toEqual(
+      expect.arrayContaining([
+        { kind: 'copy', from: join(dir, 'a.png'), to: expect.stringMatching(/public\/content-assets\/x\/a\.[0-9a-f]{8}\.png$/) },
+        { kind: 'webp', from: join(dir, 'a.png'), to: expect.stringMatching(/a\.[0-9a-f]{8}\.1w\.webp$/), width: 1 },
+      ]),
+    )
   })
 })

@@ -16,6 +16,18 @@ export const CHECKS: SmokeCheck[] = [
     contains: ['lang="ko"', 'kitchen-sink-ko', 'data-rehype-pretty-code', '<nav'],
   },
   { path: '/en/posts/how-this-blog-is-built', status: 200, contains: ['lang="en"', 'kitchen-sink-en'] },
+  {
+    path: '/posts/how-this-blog-is-built',
+    status: 200,
+    contains: [
+      'data-callout="tip"',
+      '<figcaption',
+      'src="/content-assets/how-this-blog-is-built/diagram.',
+      '<source type="image/webp"',
+      'fetchpriority="high"',
+    ],
+  },
+  { path: '/en/posts/how-this-blog-is-built', status: 200, contains: ['href="/en/posts/how-this-blog-is-built#'] },
   { path: '/posts/how-this-blog-is-built/', status: 307, location: '/posts/how-this-blog-is-built' },
   { path: '/posts/does-not-exist', status: 404 },
   { path: '/en/posts/does-not-exist', status: 404 },

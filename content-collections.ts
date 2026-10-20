@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto'
+import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { type Context, type WriterHook, defineCollection, defineConfig } from '@content-collections/core'
 import { z } from 'zod'
@@ -5,6 +7,7 @@ import { DESCRIPTION_MAX, SLUG_PATTERN, TAG_PATTERN } from './src/content/consta
 import { parseKstDate } from './src/content/date'
 import { resolveEnPost } from './src/content/resolve-en-post'
 import { computeSourceHash } from './src/content/source-hash'
+import { writeAssets } from './src/markdown/assets'
 import { renderMarkdown } from './src/markdown/render'
 
 type CacheFn = Context['cache']
@@ -20,17 +23,31 @@ function slugOf(directory: string): string {
 
 type RenderInput = { markdown: string; filePath: string; slug: string; locale: 'ko' | 'en'; enSlugs: string[] }
 
-// 렌더 결과는 입력(본문·언어·영어 번역본 목록)이 같으면 캐시에서 가져온다
-function render(cache: CacheFn, input: RenderInput) {
-  const key = { ...input, enSlugs: [...input.enSlugs].sort() }
-  return cache(key, (value) =>
+// 글 폴더의 이미지 등 본문 외 파일 내용을 요약한다. 이미지만 바뀌어도 캐시를 다시 만들게 하려는 것이다
+function siblingFingerprint(postDir: string): string {
+  const hash = createHash('sha256')
+  for (const name of readdirSync(postDir).sort()) {
+    if (/^index\.[a-z]+\.md$/.test(name)) continue
+    hash.update(name).update(readFileSync(join(postDir, name)))
+  }
+  return hash.digest('hex')
+}
+
+// 렌더 결과는 입력(본문·언어·영어 번역본 목록·글 폴더 파일)이 같으면 캐시에서 가져온다.
+// 이미지 파일 쓰기는 캐시와 상관없이 매번 한다 (빌드 전에 public/content-assets 를 비우기 때문)
+async function render(cache: CacheFn, input: RenderInput) {
+  const filePath = join('content/posts', input.filePath)
+  const key = { ...input, enSlugs: [...input.enSlugs].sort(), siblings: siblingFingerprint(join('content/posts', input.slug)) }
+  const result = await cache(key, (value) =>
     renderMarkdown(value.markdown, {
-      filePath: join('content/posts', value.filePath),
+      filePath,
       slug: value.slug,
       locale: value.locale,
       enSlugs: new Set(value.enSlugs),
     }),
   )
+  await writeAssets(result.assets)
+  return result
 }
 
 const koPosts = defineCollection({
