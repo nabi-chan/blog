@@ -36,7 +36,7 @@
    - 누구나 작성자명 + 내용 + 비밀번호로 쓰고, 비밀번호로 수정·삭제한다.
    - 은솔은 Cloudflare Access 세션으로 구분한다.
    - 대댓글은 없다.
-5. 조회수: 글별(같은 방문자는 하루 1회) + 사이트 전체 PV [은솔].
+5. 조회수: 글별 + 사이트 오늘·전체. 모두 같은 방문자는 하루 1회만 센다 [은솔].
 6. SEO/GEO: jihoon-blog 를 참고해 메타, 구조화 데이터, sitemap, robots, RSS, llms.txt 등 [은솔].
 7. 다국어: 한국어(기본, 접두사 없음) + 영어(`/en/...`), 이번에 전부 구현 [은솔].
 8. 에이전트 커맨드: write-post, refine-post, translate-post, audit [은솔]. 문체 가이드는 은솔 예전 글 기반 [은솔].
@@ -460,7 +460,7 @@ comments(
 ```sql
 post_views(slug TEXT PRIMARY KEY, count INTEGER NOT NULL)
 site_views(id INTEGER PRIMARY KEY CHECK (id = 1), count INTEGER NOT NULL)
-site_daily_views(day TEXT PRIMARY KEY, count INTEGER NOT NULL)  -- 0002, KST 날짜별 PV
+site_daily_views(day TEXT PRIMARY KEY, count INTEGER NOT NULL)  -- 0002, KST 날짜별 방문자 수
 view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 ```
 
@@ -484,7 +484,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
   - **목표는 CLS 0** 이다.
 - 표시 위치 [은솔]
   - Post 메타(날짜 옆, 구분선)에 글별 조회수
-  - Lobby(`/`, `/en`) 맨 위에 사이트 오늘·전체 PV
+  - Lobby(`/`, `/en`) 맨 위에 사이트 오늘·전체 조회수(방문자 하루 1회). 응답 전에는 스켈레톤을 최소 0.5초 보여 준다 [은솔]
   - 푸터에는 두지 않는다.
 
 ### 4.9 SEO / GEO
@@ -593,7 +593,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
   - vite dev 와 wrangler 가 같은 `.wrangler/state` 를 쓴다.
 - **타입**
   - `wrangler types` 로 `worker-configuration.d.ts` 를 만든다.
-  - 바인딩은 `import { env } from 'cloudflare:workers'` 로 읽고, 모듈 최상단에서는 읽지 않는다.
+  - 바인딩은 `fetch`·`scheduled` 인자의 `env` 로 읽고, 모듈 최상단에서는 읽지 않는다 (계획 2 구현).
 - **우회 경로를 막는다** (계획 2 조사)
   - `workers.dev` 와 미리보기 URL 로 들어오면 Access 를 거치지 않는다. 커스텀 도메인을 붙인 뒤 `workers_dev: false`, `preview_urls: false` 로 끈다.
   - `/admin` 과 `/api/*` 는 프리렌더 대상에서 뺀다. 정적 에셋이 Worker 보다 먼저 응답하기 때문에, 프리렌더되면 Worker 코드가 실행되지 않는다.
@@ -821,7 +821,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 - **Access JWT 검증**: 서명, aud, 만료, 이메일이 하나라도 틀리면 은솔로 인정되지 않는다. 단위 테스트로 확인한다.
 - **조회수**
   - 같은 방문자가 새로고침해도 글별 수는 하루 1회만 오른다.
-  - 사이트 PV 는 페이지 이동마다 오른다.
+  - 사이트 오늘·전체 조회수도 같은 방문자는 하루 1회만 오른다. 새로고침·페이지 이동·목차 이동으로는 오르지 않는다.
   - D1 이 끊기면 503 이 나고, 화면 높이는 변하지 않는다.
 - **SEO 산출물**
   - sitemap, robots, RSS, llms.txt, llms-full.txt, `.md` 원문, OG 이미지가 빌드 산출물에 있다.
@@ -886,7 +886,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 - 댓글과 조회수
   - 언어와 무관하게 slug 단위로 공유
   - 댓글 길이 제한, 실제 삭제, Turnstile 지연 로드, PBKDF2 + pepper
-  - 사이트 PV 는 중복을 거르지 않음
+  - 사이트 조회수도 방문자 하루 1회 [은솔이 PV 에서 바꿈]
 - Markdown 파이프라인
   - 글 데이터는 서버 전용이고 서버 함수로만 읽는다. 언어는 항상 입력으로 넘긴다
   - 원본 HTML 태그는 허용하지 않는다

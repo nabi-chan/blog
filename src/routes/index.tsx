@@ -26,7 +26,7 @@ function Lobby() {
   const views = useViewCounts()
   return (
     <main className="lobby">
-      {/* 사이트 PV. 레이블은 프리렌더하고 숫자는 브라우저가 채운다 */}
+      {/* 사이트 오늘·전체 조회수(방문자 하루 1회). 레이블은 프리렌더하고 숫자는 브라우저가 채운다 */}
       <p className="lobby-views meta-list">
         <ViewCount label={m.lobby_views_today()} value={views.today} failed={views.failed} />
         <ViewCount label={m.lobby_views_total()} value={views.site} failed={views.failed} />

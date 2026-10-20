@@ -21,5 +21,5 @@ export type ApiErrorCode =
 
 export type MeDto = { owner: boolean; turnstileSiteKey: string }
 
-// site 는 전체 PV, today 는 KST 오늘 PV, post 는 글별(같은 방문자 하루 1회) 조회수
+// site 는 전체, today 는 KST 오늘, post 는 글별 조회수. 모두 같은 방문자는 하루 1회만 센다
 export type ViewCountsDto = { site: number; today: number; post?: number }
