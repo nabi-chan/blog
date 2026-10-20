@@ -28,7 +28,7 @@ pnpm dev                         # http://localhost:3000
 | `pnpm check` | Paraglide 컴파일 + Content Collections 빌드 + 타입 검사 |
 | `pnpm test` | vitest + 커버리지(함수 100%, 줄 90%) |
 | `pnpm audit:repo` | 저장소 점검(아래). `--build`, `--live [--base-url <url>]` |
-| `pnpm content:check [--post <slug>]` | 글 검사: 번역 구조, 빠진 태그·용어, 깨진 내부 링크, 낡은 번역 |
+| `pnpm content:check [--post <slug>]` | 글 검사: 번역 구조, 빠진 태그·용어, 깨진 내부 링크, 낡은 번역. 볼드 깨짐·맞춤법은 경고만 |
 | `pnpm content:rehash --post <slug>` | 번역에 영향 없는 ko 수정 뒤 en 의 `sourceHash` 만 갱신 |
 | `pnpm build` / `pnpm preview` | 프로덕션 빌드 / workerd 로 미리보기(:4173) |
 | `pnpm smoke <url>` | 주요 경로·산출물·메타 URL 200 확인 |
