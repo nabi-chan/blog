@@ -100,7 +100,7 @@
 - Paraglide + TanStack Start 공식 가이드는 있지만 Cloudflare Workers 와 프리렌더 조합은 언급이 없다. 가장 먼저 검증한다 (7).
 - **Workers 무료 플랜 기준으로 설계한다** [이로하]. 유료 플랜인지 배포 때 확인한다.
   - 요청당 CPU 10ms
-  - Worker 압축 후 3MB
+  - Worker 크기는 압축 전 64 MiB 다. 2026-09-04 에 "압축 후 3MB" 한도가 없어지고 모든 플랜이 이 값으로 바뀌었다.
 - WebCrypto PBKDF2 는 Workers 에서 반복 횟수 상한(100,000)이 있고, CPU 한도 안에 들어야 한다 (4.7).
 - **Cloudflare Access 쿠키의 성질** (공식 문서)
   - 경로 속성을 끄면(기본값) `CF_Authorization` 쿠키가 호스트 단위로 잡혀서 같은 호스트의 다른 경로 요청에도 실린다.
@@ -364,8 +364,14 @@ translationStatus: machine   # machine | reviewed
   - 서명: `https://<team>.cloudflareaccess.com/cdn-cgi/access/certs` (JWKS 캐시)
   - `aud`(애플리케이션 AUD 태그), `iss`, `exp`
   - 이메일 클레임이 허용된 은솔 이메일과 같은지
-  - 팀 도메인, AUD, 허용 이메일은 Worker 변수로 둔다.
-- **화면 상태**: `GET /api/me` 가 `{ owner: boolean }` 을 돌려준다. 페이지가 프리렌더라서 브라우저가 물어본다.
+  - 팀 도메인, AUD, 허용 이메일은 Worker 변수로 둔다. 하나라도 비어 있으면 은솔로 인정하지 않는다(fail closed).
+  - **한계** (계획 2 조사)
+    - 공식 문서는 쿠키보다 `Cf-Access-Jwt-Assertion` 헤더 검증을 권한다. 그런데 이 헤더는 Access 가 지키는 경로(`/admin`)에만 붙는다.
+    - 그래서 다른 경로에서 쿠키 JWT 를 직접 검증하면, 로그아웃이나 세션 취소가 이 Worker 에는 토큰 만료(`exp`) 전까지 반영되지 않는다.
+    - 대응: Access 세션 시간을 짧게 잡는다 [배포 때].
+- **화면 상태**: `GET /api/me` 가 `{ owner: boolean, turnstileSiteKey: string }` 을 돌려준다.
+  - 페이지가 프리렌더라서 브라우저가 물어본다.
+  - Turnstile 사이트 키도 Worker 변수라서 같은 응답에 싣는다.
 - **은솔 댓글**
   - 비밀번호와 Turnstile 없이 작성하고, **"글쓴이" 배지**를 단다.
   - 은솔은 모든 댓글을 수정·삭제할 수 있다.
@@ -382,7 +388,11 @@ translationStatus: machine   # machine | reviewed
   - 위젯 스크립트는 댓글 영역이 화면에 들어올 때 불러온다 [이로하].
   - 로컬은 공식 테스트 키를 쓴다.
 - **시도 제한**: 비밀번호 실패를 방문자(IP 해시)별로 제한한다(예: 10분에 5회). 넘으면 429 를 돌려준다.
-  - 구현은 Workers Rate Limiting 바인딩이 플랜에서 쓸 수 있으면 그걸 쓰고, 안 되면 D1 테이블로 한다 (빌더 재량).
+  - 구현은 **D1 테이블**로 한다(계획 2 조사).
+    - Workers Rate Limiting 바인딩은 주기를 10초나 60초로만 잡을 수 있다.
+    - 카운터가 위치(colo)마다 따로 도는 근사치라서 이 용도에 맞지 않는다.
+  - 여러 IP 로 댓글 하나를 대입하는 경우를 막기 위해 댓글별 한도도 같이 둔다.
+  - 판정은 PBKDF2 보다 먼저 한다.
 - **CSRF**: 쓰기 API 는 `Origin` 헤더가 사이트 origin 과 같을 때만 받는다 [이로하].
 
 **비밀번호 저장** [이로하]
@@ -451,7 +461,13 @@ site_views(id INTEGER PRIMARY KEY CHECK (id = 1), count INTEGER NOT NULL)
 view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 ```
 
-- `INSERT OR IGNORE` 로 중복을 판정하고, 새로 들어갔을 때만 `post_views` 를 `ON CONFLICT DO UPDATE SET count = count + 1` 로 올린다. 이 둘은 D1 batch 로 묶는다.
+- 새로 온 방문자일 때만 `post_views` 를 올리고, 이 판정과 기록은 D1 batch 하나로 묶는다(트랜잭션).
+  - batch 안에서는 앞 문장의 `changes` 를 보고 다음 문장을 고를 수 없다.
+  - 그래서 조건을 SQL 안에 넣는다.
+    1. `INSERT INTO post_views ... SELECT ... WHERE NOT EXISTS (SELECT 1 FROM view_dedupe ...) ON CONFLICT DO UPDATE SET count = count + 1`
+    2. `INSERT OR IGNORE INTO view_dedupe`
+  - 이 순서가 실제 D1 에서 의도대로 도는 것을 확인했다(계획 2 조사).
+- D1 무료 쓰기 한도는 하루 10만 행이다. 인덱스 갱신과 DELETE 도 쓰기로 센다. `view_dedupe` 는 `WITHOUT ROWID` 로 만든다.
 - **`view_dedupe` 는 계속 쌓이니까 Cron Trigger 로 하루 한 번 이틀 지난 행을 지운다.** 핸들러는 `src/server.ts` 에 둔다.
 
 **응답과 표시**
@@ -571,6 +587,11 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 - **타입**
   - `wrangler types` 로 `worker-configuration.d.ts` 를 만든다.
   - 바인딩은 `import { env } from 'cloudflare:workers'` 로 읽고, 모듈 최상단에서는 읽지 않는다.
+- **우회 경로를 막는다** (계획 2 조사)
+  - `workers.dev` 와 미리보기 URL 로 들어오면 Access 를 거치지 않는다. 커스텀 도메인을 붙인 뒤 `workers_dev: false`, `preview_urls: false` 로 끈다.
+  - `/admin` 과 `/api/*` 는 프리렌더 대상에서 뺀다. 정적 에셋이 Worker 보다 먼저 응답하기 때문에, 프리렌더되면 Worker 코드가 실행되지 않는다.
+- **D1 은 `wrangler d1 create` 로 만들고 `database_id` 를 커밋한다.**
+  - 자동 생성은 쓰지 않는다. deploy 가 마이그레이션을 적용하지 않고, ID 가 설정 파일에 다시 써지면 로컬 DB 도 바뀌기 때문이다.
 - **D1 은 ORM 없이 wrangler SQL 마이그레이션만 쓴다** [이로하].
   - 마이그레이션은 **추가만 하는 방향**으로 쓴다. CI 가 마이그레이션을 먼저 적용하고 배포하기 때문에, 그 사이에는 이전 코드가 새 스키마 위에서 돈다.
 
@@ -885,6 +906,8 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 ## 10. 배포 때 물어볼 것
 
 - Cloudflare Access 로그인 방식(이메일 OTP / GitHub 등)과 허용할 이메일
+  - 저장소가 공개라서, 허용 이메일을 `vars`(커밋됨)에 둘지 시크릿으로 둘지도 같이 묻는다.
+  - Access 세션 시간도 정한다. 짧을수록 로그아웃이 빨리 반영된다(4.7 한계).
 - Cloudflare API 토큰 생성과 GitHub 시크릿 등록 (은솔이 직접)
 - Turnstile 위젯 생성 권한이 없을 때의 대시보드 작업
 - Lobby 한 줄 소개와 소셜 링크 (정해지면 언제든 `src/site.ts` 와 메시지에 반영)
