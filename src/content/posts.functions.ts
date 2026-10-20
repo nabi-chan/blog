@@ -6,3 +6,7 @@ import { queries } from './posts.server'
 export const listPostsFn = createServerFn({ method: 'GET' })
   .validator((data: { locale: Locale }) => data)
   .handler(({ data }) => queries.listPosts(data.locale))
+
+export const getPostFn = createServerFn({ method: 'GET' })
+  .validator((data: { locale: Locale; slug: string }) => data)
+  .handler(({ data }) => queries.getPostPage(data.locale, data.slug))

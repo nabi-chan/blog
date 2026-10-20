@@ -10,6 +10,15 @@ export const CHECKS: SmokeCheck[] = [
   { path: '/en/', status: 307, location: '/en' },
   { path: '/fr/posts', status: 404 },
   { path: '/EN/posts', status: 404 },
+  {
+    path: '/posts/how-this-blog-is-built',
+    status: 200,
+    contains: ['lang="ko"', 'kitchen-sink-ko', 'data-rehype-pretty-code', '<nav'],
+  },
+  { path: '/en/posts/how-this-blog-is-built', status: 200, contains: ['lang="en"', 'kitchen-sink-en'] },
+  { path: '/posts/how-this-blog-is-built/', status: 307, location: '/posts/how-this-blog-is-built' },
+  { path: '/posts/does-not-exist', status: 404 },
+  { path: '/en/posts/does-not-exist', status: 404 },
   // 깨진 퍼센트 인코딩은 Workers 정적 에셋 계층이 Worker 앞에서 400 으로 끊는다 (500 이 아니면 된다)
   { path: '/posts/%E0', status: 400 },
 ]

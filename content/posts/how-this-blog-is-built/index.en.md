@@ -1,10 +1,22 @@
 ---
 title: "How this blog is built"
 description: "Notes on building this blog with TanStack Start and Cloudflare Workers."
-sourceHash: "8ca1ab04521e246040b8a2aa2786c0c2459a56dbd8748810a10d632515d9f814"
+sourceHash: "f57aba4f0ec0c89267ef45f2a85696247282367ce643fac19003b98a8fbdea5c"
 translationStatus: machine
 ---
 
 kitchen-sink-en
 
 The body will be rewritten in plan 4.
+
+## Structure
+
+### Rendering
+
+```ts
+const greeting = 'Hello'
+```
+
+## Wrapping up
+
+A placeholder paragraph.
