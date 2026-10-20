@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { markdownAlternate, prefersMarkdown } from './markdown-negotiation'
+import { discoveryLinks, markdownAlternate, prefersMarkdown } from './markdown-negotiation'
 
 describe('prefersMarkdown', () => {
   it('Accept 에 text/markdown 이 있고 HTML 보다 낮지 않으면 Markdown 을 준다', () => {
@@ -30,5 +30,22 @@ describe('markdownAlternate', () => {
 
   it('그 밖의 경로는 대상이 아니다', () => {
     for (const path of ['/posts', '/en/posts', '/261020.md', '/api/me', '/en/', '/2610201', '/assets/a.js']) expect(markdownAlternate(path)).toBeNull()
+  })
+})
+
+describe('discoveryLinks', () => {
+  it('홈은 Markdown 원문(llms.txt)·RSS·sitemap 을, 글은 .md 원문을 Link 헤더로 알린다', () => {
+    expect(discoveryLinks('/')).toBe(
+      '</llms.txt>; rel="alternate"; type="text/markdown", </rss.xml>; rel="alternate"; type="application/rss+xml", </sitemap.xml>; rel="sitemap"',
+    )
+    expect(discoveryLinks('/en')).toBe(
+      '</en/llms.txt>; rel="alternate"; type="text/markdown", </en/rss.xml>; rel="alternate"; type="application/rss+xml", </sitemap.xml>; rel="sitemap"',
+    )
+    expect(discoveryLinks('/261020')).toBe('</261020.md>; rel="alternate"; type="text/markdown"')
+    expect(discoveryLinks('/en/261020')).toBe('</en/261020.md>; rel="alternate"; type="text/markdown"')
+  })
+
+  it('홈·글이 아니면 없다', () => {
+    expect(discoveryLinks('/posts')).toBeNull()
   })
 })

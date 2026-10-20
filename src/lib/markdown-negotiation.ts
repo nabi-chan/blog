@@ -28,3 +28,14 @@ export function markdownAlternate(pathname: string): string | null {
   const slug = english ? pathname.slice(4) : pathname.slice(1)
   return SLUG_PATTERN.test(slug) ? `${english ? '/en/' : '/'}${slug}.md` : null
 }
+
+const markdownLink = (path: string) => `<${path}>; rel="alternate"; type="text/markdown"`
+
+// HTML 응답에 다는 Link 헤더(RFC 8288). HTML 을 읽지 않는 에이전트도 원문·피드·sitemap 을 찾게 한다
+export function discoveryLinks(pathname: string): string | null {
+  const alternate = markdownAlternate(pathname)
+  if (alternate === null) return null
+  if (!alternate.endsWith('/llms.txt')) return markdownLink(alternate)
+  const prefix = pathname === '/en' ? '/en' : ''
+  return [markdownLink(alternate), `<${prefix}/rss.xml>; rel="alternate"; type="application/rss+xml"`, '</sitemap.xml>; rel="sitemap"'].join(', ')
+}

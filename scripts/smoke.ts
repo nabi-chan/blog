@@ -54,6 +54,16 @@ export const CHECKS: SmokeCheck[] = [
   { path: '/', headers: { accept: 'text/html,application/xhtml+xml,*/*;q=0.8' }, status: 200, contains: ['<html'] },
   // 없는 글은 Markdown 으로 물어도 404 다 (TanStack 은 HTML 이 아닌 요청에 406 을 낸다)
   { path: '/261099', headers: { accept: 'text/markdown' }, status: 404 },
+  // 없는 주소는 HTML 이 아닌 형식으로 물어도 404 다 (406 이 아니다)
+  { path: '/.well-known/api-catalog', headers: { accept: 'application/linkset+json' }, status: 404 },
+  { path: '/does-not-exist', headers: { accept: 'application/json' }, status: 404 },
+  // 홈은 HTTP Link 헤더로 Markdown 원문·RSS·sitemap 을 알린다 (RFC 8288)
+  {
+    path: '/',
+    headers: { accept: 'text/html' },
+    status: 200,
+    responseHeaders: { link: '</llms.txt>; rel="alternate"; type="text/markdown", </rss.xml>; rel="alternate"; type="application/rss+xml", </sitemap.xml>; rel="sitemap"' },
+  },
   { path: '/rss.xml', status: 200, contains: ['<rss'] },
   { path: '/en/rss.xml', status: 200, contains: ['<rss'] },
   { path: '/llms.txt', status: 200 },

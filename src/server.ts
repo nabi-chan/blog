@@ -4,7 +4,7 @@ import { createApiContext } from '~/api/context'
 import { safeReturnPath } from '~/api/http'
 import { routeApi } from '~/api/router'
 import { postIndex } from '~/content/posts.server'
-import { markdownAlternate, prefersMarkdown } from '~/lib/markdown-negotiation'
+import { discoveryLinks, markdownAlternate, prefersMarkdown } from '~/lib/markdown-negotiation'
 import { withSecurityHeaders } from '~/lib/security-headers'
 import { isMalformedPath } from '~/lib/url-guard'
 import { paraglideMiddleware } from '~/paraglide/server'
@@ -46,6 +46,8 @@ async function negotiate(req: Request, env: Env): Promise<Response | null> {
   if (alternate === null) return asset
   const html = new Response(asset.body, asset)
   html.headers.append('vary', 'Accept')
+  const links = discoveryLinks(url.pathname)
+  if (links !== null && asset.ok) html.headers.set('link', links)
   return html
 }
 
@@ -70,5 +72,19 @@ function respond(req: Request, env: Env): Promise<Response> {
       }),
     )
   }
-  return paraglideMiddleware(req, () => handler.fetch(req))
+  return renderPage(req)
+}
+
+// TanStack 은 HTML 을 받지 않는 요청(Accept: application/json 등)에 경로와 상관없이 406 을 낸다.
+// 없는 주소라면 404 가 맞으므로, 406 일 때만 HTML 로 다시 물어서 404 인지 확인한다
+async function renderPage(req: Request): Promise<Response> {
+  const response = await paraglideMiddleware(req, () => handler.fetch(req))
+  // 본문이 있는 요청은 다시 보낼 수 없으니 GET·HEAD 만 확인한다
+  if (response.status !== 406 || (req.method !== 'GET' && req.method !== 'HEAD')) return response
+  const headers = new Headers(req.headers)
+  headers.set('accept', 'text/html')
+  const probeRequest = new Request(req, { headers })
+  const probe = await paraglideMiddleware(probeRequest, () => handler.fetch(probeRequest))
+  if (probe.status !== 404) return response
+  return new Response('Not Found', { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8' } })
 }
