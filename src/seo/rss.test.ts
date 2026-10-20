@@ -68,6 +68,16 @@ describe('buildRss', () => {
     expect(buildRss({ locale: 'ko', title: 'eunsol', description: 'd', items: [] })).not.toContain('lastBuildDate')
   })
 
+  it('lastBuildDate 는 글 순서와 상관없이 가장 늦은 수정일이다', () => {
+    const xml = buildRss({
+      locale: 'ko',
+      title: 'eunsol',
+      description: 'd',
+      items: [item('261021', { date: '2026-10-21T12:00:00+09:00' }), item('261020', { updated: '2026-10-23T09:00:00+09:00' })],
+    })
+    expect(xml).toContain('<lastBuildDate>Fri, 23 Oct 2026 00:00:00 GMT</lastBuildDate>')
+  })
+
   it('lastBuildDate 는 가장 최근 글의 수정일이다', () => {
     const xml = buildRss({ locale: 'ko', title: 'eunsol', description: 'd', items: [item('261020', { updated: '2026-10-22T09:00:00+09:00' })] })
     expect(xml).toContain('<lastBuildDate>Thu, 22 Oct 2026 00:00:00 GMT</lastBuildDate>')
