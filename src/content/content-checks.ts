@@ -139,13 +139,16 @@ export function collectContentProblems(
     .filter((result) => result.problems.length > 0)
 }
 
-// 렌더된 HTML 에 글자 그대로 나오는 본문 문장 하나 (audit --build 의 본문 유출 검사용).
-// 최상위 문단 중 인라인 문법 없이 글자만 있고, HTML 이스케이프 글자가 없는 첫 문단을 고른다
+// 렌더된 HTML 에 글자 그대로 나오는 본문 문장 한 줄 (audit --build 의 본문 유출 검사용).
+// 최상위 문단 중 인라인 문법 없이 글자만 있는 문단에서, HTML 이스케이프 글자가 없는 첫 줄을 고른다.
+// 한 줄만 고르는 건 번들의 JS 문자열 안에서 줄바꿈이 \n 으로 바뀌기 때문이다
 export function plainTextMarker(markdown: string): string | undefined {
   for (const node of parse(markdown).children) {
     if (node.type !== 'paragraph' || !node.children.every((child) => child.type === 'text')) continue
-    const text = toString(node).trim()
-    if ([...text].length >= 12 && !/[&<>"']/.test(text)) return text
+    for (const line of toString(node).split('\n')) {
+      const text = line.trim()
+      if ([...text].length >= 12 && !/[&<>"']/.test(text)) return text
+    }
   }
   return undefined
 }

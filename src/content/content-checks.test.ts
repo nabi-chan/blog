@@ -104,6 +104,10 @@ describe('plainTextMarker', () => {
     expect(plainTextMarker(markdown)).toBe('본문은 미리 만들어 두고 서빙합니다.')
   })
 
+  it('여러 줄 문단이면 한 줄만 고른다 (서버 번들의 JS 문자열 안에서는 줄바꿈이 \\n 으로 바뀐다)', () => {
+    expect(plainTextMarker('예전 버전은 모두 비우고 다시 만들었습니다.\n이 글에는 고른 것을 적었습니다.\n')).toBe('예전 버전은 모두 비우고 다시 만들었습니다.')
+  })
+
   it('HTML 에서 이스케이프되는 글자가 있거나 너무 짧은 문단은 고르지 않는다', () => {
     expect(plainTextMarker('짧음\n\nA & B 는 같지 않습니다 그렇죠\n')).toBeUndefined()
   })
