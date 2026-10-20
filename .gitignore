@@ -1,0 +1,11 @@
+node_modules
+dist
+.wrangler
+.content-collections
+src/paraglide
+public/content-assets
+.dev.vars
+.audit-report.json
+project.inlang/cache
+coverage
+.superpowers
