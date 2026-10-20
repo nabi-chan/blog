@@ -1,6 +1,6 @@
 // 프리뷰(또는 배포) URL 에 요청을 보내 응답을 검사하는 스모크 스크립트
 // 사용법: node scripts/smoke.ts <baseUrl>
-import { checkResponse, type SmokeCheck } from '../src/lib/smoke.ts'
+import { checkResponse, extractMetaUrls, type SmokeCheck } from '../src/lib/smoke.ts'
 
 export const CHECKS: SmokeCheck[] = [
   { path: '/', status: 200, contains: ['<html', 'lang="ko"', 'href="/261020"'] },
@@ -78,7 +78,23 @@ export const CHECKS: SmokeCheck[] = [
   { path: '/', status: 200, contains: ['class="lobby-views meta-list"', '오늘', 'data-state="loading"'] },
   { path: '/en', status: 200, contains: ['Today', 'Total'] },
   { path: '/en/261020', status: 200, contains: ['Comments', 'Views'], notContains: ['site-footer'] },
+  // SEO·GEO 산출물 (계획 3)
+  { path: '/sitemap.xml', status: 200, contains: ['<urlset', '/261020</loc>', 'hreflang="en"'] },
+  { path: '/robots.txt', status: 200, contains: ['Disallow: /api/', 'User-agent: ClaudeBot', 'Sitemap: https://nabichan.me/sitemap.xml'] },
+  { path: '/rss.xml', status: 200, contains: ['<rss', 'content:encoded', 'https://nabichan.me/261020'] },
+  { path: '/en/rss.xml', status: 200, contains: ['https://nabichan.me/en/261020'] },
+  { path: '/llms.txt', status: 200, contains: ['https://nabichan.me/261020.md'] },
+  { path: '/en/llms.txt', status: 200, contains: ['https://nabichan.me/en/261020.md'] },
+  { path: '/llms-full.txt', status: 200, contains: ['URL: https://nabichan.me/261020', 'URL: https://nabichan.me/en/261020'] },
+  { path: '/261020.md', status: 200, contains: ['https://nabichan.me/content-assets/'], notContains: ['title:'] },
+  { path: '/en/261020.md', status: 200 },
+  { path: '/og/ko/261020.png', status: 200 },
+  { path: '/261020', status: 200, count: { '<title': 1 }, contains: ['application/ld+json', 'rel="canonical"'] },
+  { path: '/does-not-exist', status: 404, count: { '<title': 1 }, contains: ['noindex'] },
 ]
+
+// 메타·sitemap 에 실린 주소는 리다이렉트 없이 200 이어야 한다 (스펙 4.1)
+const META_PAGES = ['/', '/en', '/posts', '/en/posts', '/261020', '/en/261020']
 
 async function main(baseUrl: string) {
   const failures: string[] = []
@@ -97,6 +113,18 @@ async function main(baseUrl: string) {
       }),
     )
   }
+  const metaUrls = new Set<string>()
+  for (const path of META_PAGES) {
+    for (const url of extractMetaUrls(await (await fetch(new URL(path, baseUrl))).text())) metaUrls.add(url)
+  }
+  const sitemap = await (await fetch(new URL('/sitemap.xml', baseUrl))).text()
+  for (const [, url] of sitemap.matchAll(/(?:<loc>|href=")(https:\/\/nabichan\.me[^<"]*)/g)) metaUrls.add(url)
+  for (const url of metaUrls) {
+    const local = new URL(url.replace('https://nabichan.me', ''), baseUrl)
+    const res = await fetch(local, { redirect: 'manual' })
+    if (res.status !== 200) failures.push(`메타 주소 ${url}: 200 기대, 실제 ${res.status}`)
+  }
+  console.log(`메타 주소 ${metaUrls.size}개 확인`)
   const passed = CHECKS.length - new Set(failures.map((f) => f.split(':')[0])).size
   console.log(`${passed}/${CHECKS.length} 통과`)
   if (failures.length > 0) {

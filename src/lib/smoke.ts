@@ -4,6 +4,8 @@ export type SmokeCheck = {
   contains?: string[]
   notContains?: string[]
   location?: string
+  // 문자열이 정확히 몇 번 나와야 하는지 (예: <title 은 한 번)
+  count?: Record<string, number>
   // GET 이 아닌 요청(API 확인)에 쓴다
   method?: string
   headers?: Record<string, string>
@@ -26,6 +28,10 @@ export function checkResponse(check: SmokeCheck, res: SmokeResponse): string[] {
   if (check.location !== undefined && !(res.location ?? '').endsWith(check.location)) {
     failures.push(`${check.path}: Location 이 "${check.location}" 으로 끝나야 합니다 (실제 ${res.location})`)
   }
+  for (const [text, expected] of Object.entries(check.count ?? {})) {
+    const actual = res.body.split(text).length - 1
+    if (actual !== expected) failures.push(`${check.path}: "${text}" 가 ${expected}번 있어야 합니다 (실제 ${actual}번)`)
+  }
   for (const text of check.contains ?? []) {
     if (!res.body.includes(text)) failures.push(`${check.path}: "${text}" 가 없습니다`)
   }
@@ -33,4 +39,20 @@ export function checkResponse(check: SmokeCheck, res: SmokeResponse): string[] {
     if (res.body.includes(text)) failures.push(`${check.path}: "${text}" 가 있으면 안 됩니다`)
   }
   return failures
+}
+
+const attr = (tag: string, name: string) => new RegExp(`\\s${name}="([^"]*)"`, 'i').exec(tag)?.[1]
+
+// 메타에 실린 주소(canonical·alternate 링크, OG·Twitter 이미지). 스모크가 전부 200 인지 확인한다
+export function extractMetaUrls(html: string): string[] {
+  const urls: string[] = []
+  for (const [tag] of html.matchAll(/<(?:link|meta)\b[^>]*>/gi)) {
+    const rel = attr(tag, 'rel')
+    const href = attr(tag, 'href')
+    if ((rel === 'canonical' || rel === 'alternate') && href) urls.push(href)
+    const key = attr(tag, 'property') ?? attr(tag, 'name')
+    const content = attr(tag, 'content')
+    if ((key === 'og:image' || key === 'twitter:image') && content) urls.push(content)
+  }
+  return urls
 }

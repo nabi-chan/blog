@@ -5,9 +5,9 @@ import tailwindcss from '@tailwindcss/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import { shouldPrerender } from './src/lib/prerender.ts'
+import { SEO_PAGES, markdownPagePaths, shouldPrerender } from './src/lib/prerender.ts'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   server: { port: 3000 },
   resolve: { tsconfigPaths: true },
   plugins: [
@@ -27,8 +27,13 @@ export default defineConfig({
         // ?tag=·#헤딩 링크(같은 페이지), /api/·/admin(Worker 가 처리)은 프리렌더하지 않는다
         filter: ({ path }) => shouldPrerender(path),
       },
-      pages: [{ path: '/' }, { path: '/en' }],
+      // 링크 크롤링으로 닿지 않는 SEO·GEO 산출물과 글별 .md 원문은 직접 넣는다
+      pages: [
+        { path: '/' },
+        { path: '/en' },
+        ...[...SEO_PAGES, ...markdownPagePaths('content/posts', { production: mode === 'production' })].map((path) => ({ path })),
+      ],
     }),
     viteReact(),
   ],
-})
+}))

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { checkResponse } from './smoke'
+import { checkResponse, extractMetaUrls } from './smoke'
 
 const ok = { status: 200, location: null, body: '' }
 
@@ -36,5 +36,36 @@ describe('checkResponse', () => {
     expect(
       checkResponse({ path: '/en/', status: 307, location: '/en' }, { status: 307, location: '/fr', body: '' }),
     ).toEqual(['/en/: Location 이 "/en" 으로 끝나야 합니다 (실제 /fr)'])
+  })
+})
+
+describe('checkResponse 의 count', () => {
+  it('문자열이 정확히 그 횟수만큼 있어야 한다', () => {
+    const res = { status: 200, location: null, body: '<title>a</title><title>b</title>' }
+    expect(checkResponse({ path: '/', status: 200, count: { '<title': 1 } }, res)).toEqual(['/: "<title" 가 1번 있어야 합니다 (실제 2번)'])
+    expect(checkResponse({ path: '/', status: 200, count: { '<title': 2 } }, res)).toEqual([])
+  })
+})
+
+describe('extractMetaUrls', () => {
+  it('canonical·alternate 링크와 OG·Twitter 이미지 주소를 뽑고 본문 링크는 뽑지 않는다', () => {
+    const html = [
+      '<link rel="canonical" href="https://nabichan.me/261020"/>',
+      '<link rel="alternate" hrefLang="en" href="https://nabichan.me/en/261020"/>',
+      '<link rel="alternate" type="text/markdown" href="/261020.md"/>',
+      '<link rel="alternate" type="application/rss+xml" title="eunsol" href="/rss.xml"/>',
+      '<link rel="stylesheet" href="/assets/app.css"/>',
+      '<meta property="og:image" content="https://nabichan.me/og/ko/261020.png"/>',
+      '<meta name="twitter:image" content="https://nabichan.me/og/ko/261020.png"/>',
+      '<a href="/posts">글</a>',
+    ].join('')
+    expect(extractMetaUrls(html)).toEqual([
+      'https://nabichan.me/261020',
+      'https://nabichan.me/en/261020',
+      '/261020.md',
+      '/rss.xml',
+      'https://nabichan.me/og/ko/261020.png',
+      'https://nabichan.me/og/ko/261020.png',
+    ])
   })
 })
