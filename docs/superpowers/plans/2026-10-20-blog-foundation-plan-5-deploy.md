@@ -11,7 +11,10 @@
 - 보안 헤더는 한 곳(`src/lib/security-headers.ts`)에서 정한다.
   - 정적 에셋 응답: `public/_headers`. 내용은 테스트가 lib 과 같은지 확인한다.
   - Worker 응답(API, 404, 리다이렉트, 서버 함수): `src/server.ts` 가 감싼다.
-- 대시보드 작업과 비밀값 입력은 은솔이 한다. 이로하는 넣을 값과 순서를 준비하고, 결과는 밖에서(curl, dig, wrangler) 확인한다.
+- Cloudflare 작업은 이로하가 CLI 로 한다(은솔 결정, 2026-10-20).
+  - wrangler 로그인(OAuth)으로: D1, Turnstile 위젯(`wrangler turnstile widget`), 시크릿, 배포, 커스텀 도메인
+  - wrangler 로그인이 요청할 수 없는 권한(Access, DNS, 리다이렉트 규칙)은 은솔이 만든 임시 API 토큰 하나로 API 를 부른다.
+  - 결과는 밖에서(curl, dig, wrangler) 다시 확인한다.
 
 **Tech Stack:** 기존 그대로 + GitHub Actions(`actions/checkout`, `pnpm/action-setup`, `actions/setup-node`)
 
@@ -26,9 +29,10 @@
 
 - **메일 레코드(MX, SPF·DKIM·DMARC 등 TXT)는 건드리지 않는다.** `nabi.kim` 은 웹 레코드만 바꾼다. 바꾸기 전에 레코드 전체를 백업하고, 바꾼 것만 보고한다.
 - **비밀값은 출력하지도, 커밋하지도 않는다.**
-  - `TURNSTILE_SECRET_KEY` 는 은솔이 `! pnpm exec wrangler secret put TURNSTILE_SECRET_KEY` 로 직접 넣는다.
+  - `TURNSTILE_SECRET_KEY` 는 `wrangler turnstile widget get <sitekey> --json` 출력에서 시크릿만 골라 `wrangler secret put` 으로 바로 넘긴다. 파일이나 화면에 남기지 않는다.
   - `COMMENT_PEPPER`, `VIEW_SALT_SECRET` 은 `openssl rand -base64 32 | pnpm exec wrangler secret put <NAME>` 으로 넣는다. 값은 화면에 나오지 않는다.
 - **Cloudflare API 토큰은 은솔이 만들고, GitHub 시크릿도 은솔이 등록한다**(`! gh secret set ...`).
+  - 임시 토큰은 은솔이 클립보드에 복사한 뒤 `! mkdir -p ~/.agent-temp/cf-deploy && pbpaste > ~/.agent-temp/cf-deploy/token && chmod 600 ~/.agent-temp/cf-deploy/token` 으로 저장한다. 이로하는 `$(cat …)` 로만 읽고 출력하지 않는다. Task 6 이 끝나면 은솔이 폐기한다.
 - 개발 서버가 떠 있으면 빌드하지 않는다(AGENTS.md). 빌드 전에 dev 서버를 끄고, 끝나면 다시 띄운다.
 - `database_id` 는 `wrangler d1 create` 로 받아 커밋한다. 자동 생성은 쓰지 않는다(스펙 4.11).
 - 커스텀 도메인을 붙이면서 `workers_dev: false`, `preview_urls: false` 로 우회 경로를 막는다.
@@ -310,7 +314,11 @@ git commit  # feat: main push 배포 워크플로와 배포된 CSS 를 보는 �
 
 ### Task 4: Cloudflare 리소스 준비
 
-[은솔] 표시가 붙은 단계는 은솔이 대시보드에서 한다. 이로하는 넣을 값을 먼저 정리해 보여 준다.
+[은솔] 표시가 붙은 단계만 은솔이 한다. 나머지는 이로하가 CLI 로 한다.
+
+임시 토큰 권한(은솔이 만든다. 계정 `cat-house`, zone `nabichan.me`·`nabi.kim` 한정)
+- Account: Access: Apps and Policies Edit, Access: Organizations, Identity Providers, and Groups Edit
+- Zone: Zone Read, DNS Edit, Single Redirect(대시보드 이름이 Dynamic Redirect 일 수 있다) Edit
 
 **Files:**
 - Modify: `wrangler.jsonc`
@@ -330,22 +338,21 @@ Run: `pnpm exec wrangler d1 create eunsol-blog`
 
 Expected: 미적용 마이그레이션 없음
 
-- [ ] **Step 3: [은솔] Turnstile 위젯**
-  - 대시보드 → Turnstile → 위젯 추가
-    - 이름: `nabichan.me`
-    - 호스트 이름: `nabichan.me`
-    - 모드: Managed
-  - 사이트 키(공개 값)를 이로하에게 준다. 시크릿 키는 Task 5 Step 3 에서 은솔이 직접 넣는다.
+- [ ] **Step 3: Turnstile 위젯**
 
-- [ ] **Step 4: [은솔] Cloudflare Access**
-  - Zero Trust 팀이 없으면 무료 플랜으로 만든다. 팀 이름은 은솔이 정한다.
+Run: `pnpm exec wrangler turnstile widget create nabichan.me --domain nabichan.me --mode managed --json | node -e "process.stdin.on('data',d=>console.log(JSON.parse(d).sitekey))"`
+Expected: 사이트 키 한 줄만 나온다(공개 값). 시크릿은 출력하지 않고, Task 5 Step 3 에서 위젯 API 로 다시 받아 넘긴다.
+
+- [ ] **Step 4: Cloudflare Access (임시 토큰으로 API)**
+  - Zero Trust 조직이 이미 있는지 `GET /accounts/{id}/access/organizations` 로 본다.
+    - 없으면 [은솔] 대시보드에서 Zero Trust 를 무료 플랜으로 시작한다. 팀 이름은 은솔이 정한다. 결제 수단 등록처럼 API 로 못 하는 단계가 있다.
   - 로그인 방식: One-time PIN(이메일 OTP)
   - 애플리케이션: Self-hosted
     - 도메인: `nabichan.me`, 경로: `admin`
     - 세션 시간: 24시간
     - 쿠키 경로 속성: 끔(기본값). SameSite: Lax
-  - 정책: Allow, Emails = 은솔이 정한 허용 이메일 한 개
-  - 팀 도메인(`<team>.cloudflareaccess.com`)과 애플리케이션 AUD 태그를 이로하에게 준다.
+  - 정책: Allow, Emails = 은솔에게 받은 허용 이메일 한 개
+  - 만든 뒤 팀 도메인(`<team>.cloudflareaccess.com`)과 애플리케이션 AUD 태그를 API 응답에서 읽는다.
 
 - [ ] **Step 5: `wrangler.jsonc` 를 운영 값으로**
   - `vars`
@@ -384,7 +391,7 @@ Expected: `nabichan.me` 커스텀 도메인이 붙었다는 출력이 나온다.
   - 이로하:
     - `openssl rand -base64 32 | pnpm exec wrangler secret put COMMENT_PEPPER`
     - `VIEW_SALT_SECRET` 도 같은 방법으로 넣는다.
-  - [은솔]: `! pnpm exec wrangler secret put TURNSTILE_SECRET_KEY`
+  - `pnpm exec wrangler turnstile widget get <sitekey> --json | node -e "process.stdin.on('data',d=>process.stdout.write(JSON.parse(d).secret))" | pnpm exec wrangler secret put TURNSTILE_SECRET_KEY`
   - Run: `pnpm exec wrangler secret list`
   - Expected: 이름 세 개만 보이고 값은 보이지 않는다.
 
@@ -425,10 +432,7 @@ Expected: 전부 0
 
 ### Task 6: `www.nabichan.me`·`nabi.kim` 리다이렉트
 
-DNS 와 리다이렉트 규칙은 은솔이 만든 **임시 토큰**으로 이로하가 바꾼다.
-- 권한: 두 zone 한정 Zone Read, DNS Edit, Single Redirect(Dynamic Redirect) Edit
-- 은솔이 토큰을 `~/.agent-temp/cf-deploy/token`(권한 600)에 저장한다. 이로하는 `$(cat …)` 로만 읽고 출력하지 않는다.
-- 이 Task 가 끝나면 은솔이 토큰을 폐기하고, 이로하는 파일을 지운다.
+DNS 와 리다이렉트 규칙은 Task 4 의 임시 토큰으로 이로하가 바꾼다. 이 Task 가 끝나면 은솔이 토큰을 폐기하고, 이로하는 파일을 지운다.
 
 - [ ] **Step 1: 백업**
   - API 로 두 zone 의 DNS 레코드 전체를 `~/.agent-temp/cf-deploy/<zone>-records-before.json` 에 저장한다.
