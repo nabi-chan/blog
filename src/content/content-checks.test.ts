@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { brokenInternalLinks, collectContentProblems, headingAnchors, messageKeyDiff, missingTagLabels, missingTerms, plainTextMarker } from './content-checks'
+import {
+  brokenBold,
+  brokenInternalLinks,
+  collectContentProblems,
+  collectContentWarnings,
+  headingAnchors,
+  messageKeyDiff,
+  missingTagLabels,
+  missingTerms,
+  plainTextMarker,
+  spellingWarnings,
+} from './content-checks'
 
 describe('missingTagLabels / missingTerms', () => {
   it('표에 없는 키를 낸다', () => {
@@ -114,5 +125,55 @@ describe('plainTextMarker', () => {
 
   it('Callout·디렉티브 안 문단은 고르지 않는다 (렌더 때 글자가 바뀔 수 있다)', () => {
     expect(plainTextMarker('> [!TIP]\n> 처음 오셨다면 여기부터 보세요 그렇습니다\n')).toBeUndefined()
+  })
+})
+
+describe('brokenBold', () => {
+  it('볼드가 구두점으로 끝나고 바로 글자가 붙어 풀린 자리를 줄 번호와 함께 낸다', () => {
+    expect(brokenBold('첫 줄\n\n**설정(config)**에서 바꿉니다.')).toEqual(['본문 3행 볼드가 풀림: **설정(config)**에서 바꿉니다.'])
+    expect(brokenBold('**"저장"**을 누릅니다.')).toEqual(['본문 1행 볼드가 풀림: **"저장"**을 누릅니다.'])
+  })
+
+  it('제대로 걸린 볼드와 코드 안의 별표는 넘어간다', () => {
+    expect(brokenBold('**설정**(config)에서, **저장**을 누릅니다.')).toEqual([])
+    expect(brokenBold('`**a(b)**c` 는 코드입니다.\n\n```md\n**a(b)**c\n```')).toEqual([])
+  })
+})
+
+describe('spellingWarnings', () => {
+  it('영문·코드·링크 뒤에 띄어 쓴 조사를 낸다', () => {
+    expect(spellingWarnings('JavaScript 에는 본문이 없습니다.\n`pnpm build` 를 돌리고 [TanStack Start](https://tanstack.com) 로 만듭니다.')).toEqual([
+      '본문 1행 영문·코드 뒤 조사는 붙여 씁니다: "JavaScript 에는"',
+      '본문 2행 영문·코드 뒤 조사는 붙여 씁니다: "`pnpm build` 를"',
+      '본문 2행 영문·코드 뒤 조사는 붙여 씁니다: "Start 로"',
+    ])
+  })
+
+  it('의존 명사 수·것·김에 를 붙여 쓴 곳을 낸다', () => {
+    expect(spellingWarnings('할수 있고 볼수없습니다.\n\n하는것과 가는김에')).toEqual([
+      '본문 1행 띄어 씁니다: "할수"',
+      '본문 1행 띄어 씁니다: "볼수"',
+      '본문 3행 띄어 씁니다: "하는것"',
+      '본문 3행 띄어 씁니다: "가는김에"',
+    ])
+  })
+
+  it('맞게 쓴 말과 코드 안의 글자는 넘어간다', () => {
+    const ok = ['API 이름', '3 가지', '1 이상', 'D1은', '이것은', '날것', '고양이였다', '할 수 있다', '수수료']
+    expect(spellingWarnings(ok.join('\n\n'))).toEqual([])
+    expect(spellingWarnings('`할수 있다` 와\n\n```sh\necho JavaScript 에는\n```')).toEqual(['본문 1행 영문·코드 뒤 조사는 붙여 씁니다: "`할수 있다` 와"'])
+  })
+})
+
+describe('collectContentWarnings', () => {
+  it('ko 는 맞춤법과 볼드를, en 은 볼드만 보고 경고가 있는 글만 낸다', () => {
+    const post = (slug: string, koBody: string, enBody?: string) => ({
+      slug,
+      ko: { title: 't', description: 'd', body: koBody, tags: [] },
+      en: enBody === undefined ? undefined : { body: enBody, sourceHash: 'h' },
+    })
+    expect(
+      collectContentWarnings([post('261020', 'D1 은 좋습니다.', '**bold(x)**s and D1 은'), post('261021', '괜찮은 글입니다.')]),
+    ).toEqual([{ slug: '261020', warnings: ['ko 본문 1행 영문·코드 뒤 조사는 붙여 씁니다: "D1 은"', 'en 본문 1행 볼드가 풀림: **bold(x)**s and D1 은'] }])
   })
 })

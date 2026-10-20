@@ -1,11 +1,12 @@
 // 글 단위 콘텐츠 검사. 커맨드(write-post·translate-post)와 audit:repo 가 쓴다
 // 사용법: node scripts/content-check.ts [--post <slug>] [--no-build]
 // 보는 것: 번역 구조, 빠진 태그 표시 이름·용어, 깨진 내부 링크, 낡은 번역, 그리고 content-collections build(스키마·slug)
+// 볼드 깨짐·맞춤법은 경고만 하고 실패로 치지 않는다
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { parse } from 'yaml'
-import { type ContentPostInput, collectContentProblems } from '../src/content/content-checks.ts'
+import { type ContentPostInput, collectContentProblems, collectContentWarnings } from '../src/content/content-checks.ts'
 import { splitFrontmatter } from '../src/content/rehash.ts'
 
 const POSTS_DIR = 'content/posts'
@@ -37,13 +38,19 @@ if (only !== undefined && !slugs.includes(only)) {
 }
 const tagKeys = ((parse(readFileSync('content/tags.yaml', 'utf8')) as { tags: Array<{ key: string }> }).tags ?? []).map((tag) => tag.key)
 const termKeys = ((parse(readFileSync('content/glossary.yaml', 'utf8')) as { terms: Array<{ key: string }> }).terms ?? []).map((term) => term.key)
-const results = collectContentProblems({ posts: slugs.map(readPost), tagKeys, termKeys }).filter((result) => only === undefined || result.slug === only)
+const posts = slugs.map(readPost)
+const results = collectContentProblems({ posts, tagKeys, termKeys }).filter((result) => only === undefined || result.slug === only)
+const warnings = collectContentWarnings(posts).filter((result) => only === undefined || result.slug === only)
 
 let failed = false
 for (const { slug, problems } of results) {
   failed = true
   console.log(`${slug}`)
   for (const problem of problems) console.log(`  - ${problem}`)
+}
+for (const { slug, warnings: lines } of warnings) {
+  console.log(`${slug} (경고)`)
+  for (const line of lines) console.log(`  - ${line}`)
 }
 
 // 스키마·slug·하루 한 편은 Content Collections 가 판정한다. 낡은 번역은 위에서 따로 본다.

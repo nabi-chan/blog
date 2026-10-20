@@ -1,6 +1,6 @@
 // scripts/content-check.ts 가 Node 로 바로 불러서 패키지와 상대 경로(.ts)만 import 한다
 import GithubSlugger from 'github-slugger'
-import type { Definition, Heading, Link, Root } from 'mdast'
+import type { Definition, Heading, Link, Root, Text } from 'mdast'
 import { toString } from 'mdast-util-to-string'
 import remarkDirective from 'remark-directive'
 import remarkGfm from 'remark-gfm'
@@ -151,4 +151,68 @@ export function plainTextMarker(markdown: string): string | undefined {
     }
   }
   return undefined
+}
+
+// 본문 글자로 남은 ** 는 볼드가 풀린 자리다. 볼드가 구두점으로 끝나는데 바로 글자가 붙으면 CommonMark 가 닫는 ** 로 보지 않는다
+export function brokenBold(markdown: string): string[] {
+  const lines = markdown.split('\n')
+  const found = new Set<number>()
+  visit(parse(markdown), 'text', (node: Text) => {
+    const index = node.value.indexOf('**')
+    if (index === -1 || !node.position) return
+    found.add(node.position.start.line + (node.value.slice(0, index).match(/\n/g)?.length ?? 0))
+  })
+  return [...found].map((line) => `본문 ${line}행 볼드가 풀림: ${lines[line - 1].trim()}`)
+}
+
+type InlineNode = { type: string; value?: string; children?: InlineNode[] }
+
+// 문단 글자를 이어 붙인다. 인라인 코드는 백틱째 남기고, 링크·:term 은 보이는 글자만 남긴다
+const inlineText = (node: InlineNode): string => {
+  if (node.type === 'inlineCode') return `\`${node.value}\``
+  if (node.type === 'text') return node.value ?? ''
+  if (node.type === 'break') return '\n'
+  return (node.children ?? []).map(inlineText).join('')
+}
+
+const PARTICLE_AFTER_LATIN = /[^\s]*[A-Za-z0-9)\]`] (?:에서|에는|으로|까지|부터|보다|처럼|은|는|이|가|을|를|에|로|와|과|의|도|만)(?=[\s.,!?:;)'"]|$)/g
+const BOUND_SU = /[가-힣]수(?= ?[있없])/g
+const BOUND_GEOT = /[가-힣]*(?:는|은|던|을)(?:것|김에)/g
+const RIEUL = 8
+const finalConsonant = (syllable: string) => (syllable.charCodeAt(0) - 0xac00) % 28
+
+// 문체 가이드 4절 맞춤법 표 중 기계로 잘못 짚을 일이 적은 것만 본다. 코드 안 글자는 보지 않는다
+export function spellingWarnings(markdown: string): string[] {
+  const warnings: string[] = []
+  visit(parse(markdown), (node) => {
+    if ((node.type !== 'paragraph' && node.type !== 'heading' && node.type !== 'tableCell') || !node.position) return
+    const text = inlineText(node as InlineNode)
+    const masked = text.replace(/`[^`]*`/g, (code) => `\`${'x'.repeat(code.length - 2)}\``)
+    const hits: Array<{ index: number; message: string }> = []
+    for (const match of masked.matchAll(PARTICLE_AFTER_LATIN)) {
+      hits.push({ index: match.index, message: `영문·코드 뒤 조사는 붙여 씁니다: "${text.slice(match.index, match.index + match[0].length)}"` })
+    }
+    for (const match of masked.matchAll(BOUND_SU)) {
+      if (finalConsonant(match[0]) === RIEUL) hits.push({ index: match.index, message: `띄어 씁니다: "${match[0]}"` })
+    }
+    for (const match of masked.matchAll(BOUND_GEOT)) hits.push({ index: match.index, message: `띄어 씁니다: "${match[0]}"` })
+    const start = node.position.start.line
+    for (const { index, message } of hits.sort((a, b) => a.index - b.index)) {
+      warnings.push(`본문 ${start + (text.slice(0, index).match(/\n/g)?.length ?? 0)}행 ${message}`)
+    }
+  })
+  return warnings
+}
+
+// 막지는 않는 경고. ko 는 맞춤법과 볼드, en 은 볼드만 본다
+export function collectContentWarnings(posts: ContentPostInput[]): Array<{ slug: string; warnings: string[] }> {
+  return posts
+    .map((post) => ({
+      slug: post.slug,
+      warnings: [
+        ...[...brokenBold(post.ko.body), ...spellingWarnings(post.ko.body)].map((line) => `ko ${line}`),
+        ...(post.en ? brokenBold(post.en.body).map((line) => `en ${line}`) : []),
+      ],
+    }))
+    .filter((result) => result.warnings.length > 0)
 }

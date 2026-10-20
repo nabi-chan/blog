@@ -5,7 +5,7 @@ import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from '
 import { join } from 'node:path'
 import { gzipSync } from 'node:zlib'
 import { parse } from 'yaml'
-import { type ContentPostInput, collectContentProblems, messageKeyDiff, plainTextMarker } from '../src/content/content-checks.ts'
+import { type ContentPostInput, collectContentProblems, collectContentWarnings, messageKeyDiff, plainTextMarker } from '../src/content/content-checks.ts'
 import { splitFrontmatter } from '../src/content/rehash.ts'
 import { computeSourceHash } from '../src/content/source-hash.ts'
 import { compareStructure, translationStructure } from '../src/content/translation-structure.ts'
@@ -76,6 +76,12 @@ function baseChecks() {
     content.length === 0
       ? { id: 'content', status: 'PASS', message: `콘텐츠 (글 ${slugs.length}편)` }
       : { id: 'content', status: 'FAIL', message: '콘텐츠 문제', details: content.flatMap(({ slug, problems }) => problems.map((line) => `${slug}: ${line}`)) },
+  )
+  const style = collectContentWarnings(posts.map((post) => post.input))
+  results.push(
+    style.length === 0
+      ? { id: 'style', status: 'PASS', message: '볼드 깨짐·맞춤법 경고 없음' }
+      : { id: 'style', status: 'WARN', message: '볼드 깨짐·맞춤법 경고', details: style.flatMap(({ slug, warnings }) => warnings.map((line) => `${slug}: ${line}`)) },
   )
 
   results.push(
