@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
-/* 슬라이스 CSS 는 원래 한 파일에 있던 순서대로 불러온다. 같은 우선순위 규칙의 순서를 지키기 위해서다 */
+/* @import 순서가 캐스케이드 순서다. 전역 다음에 슬라이스 CSS 를 둔다.
+   같은 요소를 고르는 규칙끼리는 예전 layout.css·prose.css 안의 순서를 지켰다(겹치지 않는 블록은 자리가 바뀌었다) */
 @import "./fonts.css";
 @import "./tokens.css";
 @import "./base.css";

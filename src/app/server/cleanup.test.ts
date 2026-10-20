@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { ATTEMPT_WINDOW_SECONDS, recordFailure } from '~/shared/api/index.server'
 import { cleanup } from './cleanup'
 import { createTestDb } from '~/shared/api/index.testing'
-import { recordView } from '~/features/view-count/index.server'
+import { recordView } from '~/features/view-count/index.testing'
 
 let db: D1Database
 let dispose: () => Promise<void>

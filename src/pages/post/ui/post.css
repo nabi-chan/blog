@@ -88,7 +88,7 @@
 /* 글 본문과 목차 배치. 콘텐츠 폭이 1080px 이상(화면 1200px 이상)이면 본문(1080px 일 때 800px, 넓어지면 함께 늘어남)
    + 목차 280px, 그보다 좁으면 본문이 전체 폭을 쓰고 목차는 본문 위 접기 블록이다.
    본문과 목차 사이 간격은 목차 칸의 왼쪽 여백뿐이다.
-   constants.ts 의 SPLIT_MIN_VIEWPORT·BODY_MAX_WIDTH(이미지 sizes)와 같은 값이다 */
+   src/shared/config/content.ts 의 SPLIT_MIN_VIEWPORT·BODY_MAX_WIDTH(이미지 sizes)와 같은 값이다 */
 .post-aside {
   display: none;
 }

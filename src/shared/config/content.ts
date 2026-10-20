@@ -5,7 +5,7 @@ export const SLUG_PATTERN = /^(\d{6})(?:-[a-z0-9]+(?:-[a-z0-9]+)*)?$/
 export const TAG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 // 콘텐츠 폭 = min(1200px, CONTENT_VW vw) (tokens.css 의 --content-width). 이미지 sizes 가 쓴다
 export const CONTENT_VW = 90
-// 화면이 이 폭 이상이면(콘텐츠 폭 1080px 이상) 글을 본문 + 목차 280px 로 나눈다. CSS(prose.css)와 같은 값이다.
+// 화면이 이 폭 이상이면(콘텐츠 폭 1080px 이상) 글을 본문 + 목차 280px 로 나눈다. CSS(src/pages/post/ui/post.css)와 같은 값이다.
 // 본문은 콘텐츠 폭 1080px 일 때 800px 이고, 콘텐츠 폭이 1200px 까지 늘면 920px 까지 늘어난다
 export const SPLIT_MIN_VIEWPORT = 1200
 export const BODY_MAX_WIDTH = 920
