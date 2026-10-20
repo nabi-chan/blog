@@ -31,6 +31,15 @@ export function formatDate(iso: string, locale: Locale): string {
   }).format(new Date(iso))
 }
 
+// 댓글 시각. 브라우저에서만 그리므로 hydration 차이는 없다
+export function formatDateTime(iso: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(locale === 'ko' ? 'ko-KR' : 'en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'Asia/Seoul',
+  }).format(new Date(iso))
+}
+
 // parseKstDate 결과는 +09:00 오프셋을 가지므로 앞 네 자리가 곧 KST 연도다
 export function kstYear(iso: string): number {
   return Number(iso.slice(0, 4))

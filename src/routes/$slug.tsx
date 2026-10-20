@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
 import { useRef } from 'react'
 import { TermTooltips } from '~/components/TermTooltips'
+import { CommentSection } from '~/components/comments/CommentSection'
 import { ViewCount, useViewCounts } from '~/components/ViewCounts'
 import { Toc } from '~/components/Toc'
 import { WidgetMounter } from '~/components/WidgetMounter'
@@ -58,6 +59,7 @@ function Post() {
             <div ref={body} className="prose" dangerouslySetInnerHTML={{ __html: html }} />
             <TermTooltips container={body} terms={terms} />
             <WidgetMounter container={body} />
+            <CommentSection slug={post.slug} />
           </div>
           <aside className="post-aside">
             <Toc items={toc} title={m.post_toc()} variant="side" activeId={activeId} />

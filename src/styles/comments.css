@@ -1,0 +1,207 @@
+/* 댓글. 목록 자리와 Turnstile 자리는 높이를 잡아 둬서 늦게 채워져도 덜 흔들리게 한다 */
+.comments {
+  margin-top: 5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+.comments-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.comments-count {
+  color: var(--muted);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.comments-list {
+  min-height: 6rem;
+}
+
+.comments-list ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.comments-status {
+  margin: 0;
+  padding: 1.25rem 0;
+  color: var(--muted);
+}
+
+.comment {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.comment-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.75rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.comment-author {
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.comment-badge {
+  padding: 0 0.5rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.comment-body {
+  margin: 0.5rem 0 0;
+  white-space: pre-wrap;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.comment-actions button,
+.comment-cancel {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.comment-actions button:hover,
+.comment-cancel:hover {
+  color: var(--ink);
+}
+
+.comment-form,
+.comment-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.comment-form {
+  margin-top: 2.5rem;
+}
+
+.comment-panel {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  background: var(--wash);
+  border-radius: 8px;
+}
+
+.comment-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 1rem;
+}
+
+.comment-field {
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.comment-field input,
+.comment-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.comment-field textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+.comment-field input:focus-visible,
+.comment-field textarea:focus-visible {
+  border-color: var(--ink);
+  outline: none;
+}
+
+.comment-hint {
+  font-size: 0.78rem;
+}
+
+.comment-confirm {
+  margin: 0;
+  color: var(--ink);
+}
+
+.turnstile {
+  min-height: 65px;
+}
+
+.comment-error {
+  margin: 0;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--ink);
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+.comment-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.comment-submit {
+  justify-self: start;
+  padding: 0.6rem 1.1rem;
+  border: 0;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.comment-submit:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.comments-auth {
+  margin: 1.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 599px) {
+  .comment-form-row {
+    grid-template-columns: 1fr;
+  }
+}
