@@ -293,6 +293,7 @@ async function liveChecks() {
   }
   const home = await fetch(new URL('/', base))
   const api = await fetch(new URL('/api/me', base))
+  const notFound = await fetch(new URL('/does-not-exist', base))
   const sitemap = await (await fetch(new URL('/sitemap.xml', base))).text()
 
   const metaUrls = new Set<string>()
@@ -328,6 +329,7 @@ async function liveChecks() {
       headers: [
         { path: '/', headers: home.headers },
         { path: '/api/me', headers: api.headers },
+        { path: '/does-not-exist', headers: notFound.headers },
       ],
       sitemapUrls: sitemapUrls(sitemap),
       draftSlugs: postList()

@@ -4,6 +4,7 @@ import {
   brokenInternalLinks,
   collectContentProblems,
   collectContentWarnings,
+  externalImages,
   headingAnchors,
   messageKeyDiff,
   missingTagLabels,
@@ -55,6 +56,20 @@ describe('brokenInternalLinks', () => {
 
   it('한글 앵커가 퍼센트 인코딩돼 있어도 찾는다', () => {
     expect(brokenInternalLinks({ slug: '261020', locale: 'ko', markdown: '[a](/261020#%EA%B5%AC%EC%84%B1)' }, site)).toEqual([])
+  })
+})
+
+describe('externalImages', () => {
+  it('글 폴더 밖(http·https·//)을 가리키는 이미지 주소를 고른다. 링크와 글 옆 이미지는 넘어간다', () => {
+    const markdown = '![a](https://x.com/a.png) ![b](./b.png) ![c](//cdn.x/c.png) ![d][r] [링크](https://z.com)\n\n[r]: http://y/d.png\n'
+    expect(externalImages(markdown)).toEqual(['https://x.com/a.png', '//cdn.x/c.png', 'http://y/d.png'])
+  })
+
+  it('collectContentProblems 가 ko·en 외부 이미지를 문제로 낸다', () => {
+    const post = { slug: '261020', ko: { title: 't', description: 'd', body: '![a](https://x.com/a.png)\n', tags: [] } }
+    expect(collectContentProblems({ posts: [post], tagKeys: [], termKeys: [] })).toEqual([
+      { slug: '261020', problems: ['ko 외부 이미지는 CSP 가 막습니다. 파일을 글 폴더에 두세요: https://x.com/a.png'] },
+    ])
   })
 })
 

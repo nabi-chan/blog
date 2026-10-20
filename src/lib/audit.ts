@@ -90,10 +90,14 @@ export function median(values: number[]): number {
   return sorted.length % 2 === 1 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2
 }
 
-const SECURITY_HEADER_NAMES = Object.keys(SECURITY_HEADERS).map((name) => name.toLowerCase())
-
+// 빠졌거나 값이 다른 보안 헤더. 값은 security-headers.ts 와 글자까지 같아야 한다 (대시보드 규칙이 바꿔도 잡는다)
 export function securityHeaderGaps(headers: Headers): string[] {
-  return SECURITY_HEADER_NAMES.filter((name) => !headers.has(name))
+  return Object.entries(SECURITY_HEADERS).flatMap(([name, value]) => {
+    const key = name.toLowerCase()
+    const actual = headers.get(key)
+    if (actual === null) return [key]
+    return actual === value ? [] : [`${key} (값이 다름)`]
+  })
 }
 
 export type LiveInput = {

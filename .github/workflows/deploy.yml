@@ -11,11 +11,11 @@ permissions:
   contents: read
 jobs:
   deploy:
+    # 수동 실행도 main 일 때만 운영에 배포한다
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       # push 직전 커밋(IndexNow 용). 수동 실행이면 비어 있고, 새 브랜치면 0 이 40개다
       BEFORE: ${{ github.event.before }}
     steps:
@@ -30,10 +30,17 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: 점검 (게이트)
         run: pnpm audit:repo --build
+      # Cloudflare 토큰은 이 두 단계에만 준다 (설치·빌드·preview 단계에는 보이지 않게)
       - name: 원격 D1 마이그레이션
         run: pnpm exec wrangler d1 migrations apply DB --remote
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       - name: 배포
         run: pnpm exec wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       - name: 배포 스모크
         run: pnpm smoke https://nabichan.me
       - name: 바뀐 글 IndexNow

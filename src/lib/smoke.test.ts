@@ -102,6 +102,17 @@ describe('checkResponse 의 locationIncludes', () => {
   })
 })
 
+describe('checkResponse 의 responseHeaders', () => {
+  it('응답 헤더 값이 같아야 하고, 빠지거나 다르면 실패를 낸다', () => {
+    const check = { path: '/', status: 200, responseHeaders: { 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer' } }
+    expect(checkResponse(check, { ...ok, headers: new Headers({ 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer' }) })).toEqual([])
+    expect(checkResponse(check, { ...ok, headers: new Headers({ 'referrer-policy': 'origin' }) })).toEqual([
+      '/: X-Content-Type-Options 헤더가 "nosniff" 여야 합니다 (실제 없음)',
+      '/: Referrer-Policy 헤더가 "no-referrer" 여야 합니다 (실제 origin)',
+    ])
+  })
+})
+
 describe('extractStylesheets', () => {
   it('stylesheet 링크의 주소만 문서 순서대로 고른다', () => {
     const html = '<link rel="preload" href="/fonts/a.woff2"/><link rel="stylesheet" href="/assets/app-abc.css"/><link href="/assets/b.css" rel="stylesheet">'

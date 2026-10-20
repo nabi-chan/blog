@@ -1,6 +1,6 @@
 // scripts/content-check.ts 가 Node 로 바로 불러서 패키지와 상대 경로(.ts)만 import 한다
 import GithubSlugger from 'github-slugger'
-import type { Definition, Heading, Link, Root, Text } from 'mdast'
+import type { Definition, Heading, Image, ImageReference, Link, Root, Text } from 'mdast'
 import { toString } from 'mdast-util-to-string'
 import remarkDirective from 'remark-directive'
 import remarkGfm from 'remark-gfm'
@@ -106,6 +106,23 @@ export function messageKeyDiff(ko: Record<string, unknown>, en: Record<string, u
   return { onlyKo: [...koKeys].filter((key) => !enKeys.has(key)), onlyEn: [...enKeys].filter((key) => !koKeys.has(key)) }
 }
 
+const EXTERNAL_IMAGE = /^(https?:)?\/\//i
+
+// CSP 의 img-src 는 'self' 와 data: 만 허용한다(src/lib/security-headers.ts). 외부 주소 이미지는 브라우저가 막는다
+export function externalImages(markdown: string): string[] {
+  const tree = parse(markdown)
+  const definitions = new Map<string, string>()
+  visit(tree, 'definition', (node: Definition) => {
+    definitions.set(node.identifier, node.url)
+  })
+  const urls: string[] = []
+  visit(tree, ['image', 'imageReference'], (node) => {
+    const url = node.type === 'image' ? (node as Image).url : definitions.get((node as ImageReference).identifier)
+    if (url && EXTERNAL_IMAGE.test(url)) urls.push(url)
+  })
+  return urls
+}
+
 export type ContentPostInput = {
   slug: string
   ko: { title: string; description: string; body: string; tags: string[]; draft?: boolean }
@@ -134,6 +151,9 @@ export function collectContentProblems(
       const terms = missingTerms([...koStructure.terms, ...(enStructure?.terms ?? [])], input.termKeys.map((key) => ({ key })))
       if (terms.length > 0) problems.push(`용어집에 없는 :term: ${terms.join(', ')}`)
       for (const line of brokenInternalLinks({ slug: post.slug, locale: 'ko', markdown: post.ko.body, draft: post.ko.draft }, site)) problems.push(`ko 링크 ${line}`)
+      for (const [locale, body] of [['ko', post.ko.body], ['en', post.en?.body ?? '']] as const) {
+        for (const url of externalImages(body)) problems.push(`${locale} 외부 이미지는 CSP 가 막습니다. 파일을 글 폴더에 두세요: ${url}`)
+      }
       if (post.en && enStructure) {
         for (const line of brokenInternalLinks({ slug: post.slug, locale: 'en', markdown: post.en.body, draft: post.ko.draft }, site)) problems.push(`en 링크 ${line}`)
         if (translation && computeSourceHash(post.ko) !== post.en.sourceHash) {

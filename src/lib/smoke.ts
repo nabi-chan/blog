@@ -13,10 +13,12 @@ export type SmokeCheck = {
   // GET 이 아닌 요청(API 확인)에 쓴다
   method?: string
   headers?: Record<string, string>
+  // 응답에 이 값 그대로 있어야 하는 헤더 (보안 헤더 확인)
+  responseHeaders?: Readonly<Record<string, string>>
   body?: string
 }
 
-export type SmokeResponse = { status: number; location: string | null; body: string }
+export type SmokeResponse = { status: number; location: string | null; body: string; headers?: Headers }
 
 const isRedirect = (status: number) => status >= 300 && status < 400
 
@@ -34,6 +36,10 @@ export function checkResponse(check: SmokeCheck, res: SmokeResponse): string[] {
   }
   if (check.locationIncludes !== undefined && !(res.location ?? '').includes(check.locationIncludes)) {
     failures.push(`${check.path}: Location 에 "${check.locationIncludes}" 이 있어야 합니다 (실제 ${res.location})`)
+  }
+  for (const [name, value] of Object.entries(check.responseHeaders ?? {})) {
+    const actual = res.headers?.get(name) ?? null
+    if (actual !== value) failures.push(`${check.path}: ${name} 헤더가 "${value}" 여야 합니다 (실제 ${actual ?? '없음'})`)
   }
   for (const [text, expected] of Object.entries(check.count ?? {})) {
     const actual = res.body.split(text).length - 1

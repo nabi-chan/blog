@@ -121,6 +121,8 @@ pnpm dev                         # http://localhost:3000
   - `nabi.kim`, `www.nabi.kim` → `https://nabichan.me/`. 경로를 버린다.
   - `nabi.kim` 의 MX·TXT 는 메일(`hello@nabi.kim`)용이라 건드리지 않는다.
 - CSP 는 `src/lib/security-headers.ts` 에서만 고치고 `public/_headers` 를 다시 만든다(테스트가 둘이 같은지 본다). Cloudflare 가 끼워 넣는 Web Analytics 비콘을 허용해 두었다.
+  - 이미지는 같은 출처와 `data:` 만 된다. 글에 외부 이미지 주소를 쓰면 `content:check` 가 문제로 잡는다.
+  - 스모크와 `audit:repo --live` 가 정적 응답·Worker 응답·404 의 헤더 값을 lib 과 글자까지 비교한다.
 
 ### 첫 글 공개 때 한 번
 

@@ -2,6 +2,7 @@
 // 사용법: node scripts/smoke.ts <baseUrl>
 import { checkResponse, extractMetaUrls, extractStylesheets, type SmokeCheck, type SmokePost, sitemapPosts } from '../src/lib/smoke.ts'
 import { sitemapUrls } from '../src/lib/indexnow.ts'
+import { SECURITY_HEADERS } from '../src/lib/security-headers.ts'
 
 // 글이 있든 없든 늘 맞아야 하는 것
 export const CHECKS: SmokeCheck[] = [
@@ -41,6 +42,10 @@ export const CHECKS: SmokeCheck[] = [
   { path: '/llms.txt', status: 200 },
   { path: '/en/llms.txt', status: 200 },
   { path: '/llms-full.txt', status: 200 },
+  // 보안 헤더는 정적 응답(_headers), Worker 응답, Worker 404 모두 같은 값이어야 한다
+  { path: '/', status: 200, responseHeaders: SECURITY_HEADERS },
+  { path: '/api/me', status: 200, responseHeaders: SECURITY_HEADERS },
+  { path: '/does-not-exist', status: 404, responseHeaders: SECURITY_HEADERS },
 ]
 
 // sitemap 에서 고른 실제 글 하나로 글 페이지와 산출물을 본다.
@@ -122,6 +127,7 @@ async function main(baseUrl: string) {
         status: res.status,
         location: res.headers.get('location'),
         body: await res.text(),
+        headers: res.headers,
       }),
     )
   }

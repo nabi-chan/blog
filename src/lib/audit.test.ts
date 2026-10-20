@@ -14,6 +14,7 @@ import {
   summarize,
   translationResults,
 } from './audit'
+import { SECURITY_HEADERS } from './security-headers'
 
 describe('summarize', () => {
   it('FAIL 이 하나라도 있으면 exitCode 1 이다', () => {
@@ -109,12 +110,14 @@ describe('median', () => {
 })
 
 describe('securityHeaderGaps', () => {
-  it('없는 보안 헤더를 낸다', () => {
+  it('빠진 헤더와 값이 다른 헤더를 낸다', () => {
     expect(securityHeaderGaps(new Headers())).toEqual(['strict-transport-security', 'x-content-type-options', 'referrer-policy', 'content-security-policy'])
     expect(securityHeaderGaps(new Headers({ 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'strict-origin' }))).toEqual([
       'strict-transport-security',
+      'referrer-policy (값이 다름)',
       'content-security-policy',
     ])
+    expect(securityHeaderGaps(new Headers({ ...SECURITY_HEADERS }))).toEqual([])
   })
 })
 
@@ -124,12 +127,7 @@ describe('liveResults', () => {
     headers: [
       {
         path: '/',
-        headers: new Headers({
-          'strict-transport-security': 'max-age=1',
-          'x-content-type-options': 'nosniff',
-          'referrer-policy': 'strict-origin',
-          'content-security-policy': "default-src 'self'",
-        }),
+        headers: new Headers({ ...SECURITY_HEADERS }),
       },
     ],
     sitemapUrls: ['https://nabichan.me/261020'],
