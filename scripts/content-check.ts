@@ -6,8 +6,12 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { parse } from 'yaml'
-import { type ContentPostInput, collectContentProblems, collectContentWarnings } from '../src/content/content-checks.ts'
-import { splitFrontmatter } from '../src/content/rehash.ts'
+import {
+  type ContentPostInput,
+  collectContentProblems,
+  collectContentWarnings,
+  splitFrontmatter,
+} from '../src/entities/post/index.scripts.ts'
 
 const POSTS_DIR = 'content/posts'
 const args = process.argv.slice(2)

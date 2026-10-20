@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { queries } from '~/content/posts.server'
+import { queries } from '~/entities/post/index.server'
 import { getLocale } from '~/shared/i18n'
 
 // 글별 Markdown 원문 (/<slug>.md, /en/<slug>.md). frontmatter 없이 본문만, 이미지는 절대 URL 이다 (스펙 4.9)

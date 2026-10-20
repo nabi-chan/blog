@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { FeedItem } from '~/content/post-queries'
+import type { FeedItem } from '~/entities/post'
 import { absolutizeHtml, buildRss } from './rss'
 
 const PAGE = 'https://nabichan.me/261020'

@@ -1,4 +1,4 @@
-import type { PostIndex } from '~/content/post-index'
+import type { PostIndex } from '~/entities/post'
 import type { Locale } from '~/shared/i18n'
 import { escapeXml } from './text'
 import { pageUrl } from './url'

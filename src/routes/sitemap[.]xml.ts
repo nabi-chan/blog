@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { postIndex } from '~/content/posts.server'
+import { postIndex } from '~/entities/post/index.server'
 import { getLocale } from '~/shared/i18n'
 import { buildSitemap, sitemapEntries } from '~/seo/sitemap'
 

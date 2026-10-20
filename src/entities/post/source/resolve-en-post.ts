@@ -1,4 +1,4 @@
-import type { PostMeta } from './post-index'
+import type { PostMeta } from '../model/post-index'
 import { computeSourceHash } from './source-hash'
 
 export type KoSource = {

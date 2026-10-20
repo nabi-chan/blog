@@ -4,7 +4,7 @@ import { toString } from 'mdast-util-to-string'
 import { visit } from 'unist-util-visit'
 import type { VFile } from 'vfile'
 import type { Locale } from '~/shared/i18n'
-import { TAG_PATTERN } from '../shared/config'
+import { TAG_PATTERN } from '../../../shared/config'
 
 export type GlossaryEntry = { name: string; definition: string }
 export type Glossary = Record<string, Record<Locale, GlossaryEntry>>

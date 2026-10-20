@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { queries } from '~/content/posts.server'
+import { queries } from '~/entities/post/index.server'
 import { getLocale, m } from '~/shared/i18n'
 import { buildRss } from '~/seo/rss'
 import { site } from '~/shared/config'

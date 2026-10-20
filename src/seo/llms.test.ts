@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { FeedItem } from '~/content/post-queries'
+import type { FeedItem } from '~/entities/post'
 import { buildLlmsFull, buildLlmsTxt } from './llms'
 
 const item = (slug: string, locale: 'ko' | 'en', extra: Partial<FeedItem['post']> = {}): FeedItem => ({

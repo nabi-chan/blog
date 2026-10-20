@@ -1,5 +1,5 @@
 import type { Locale } from '~/shared/i18n'
-import { localizePath } from '~/markdown/link'
+import { localizePath } from '~/entities/post'
 import { site } from '~/shared/config'
 
 // 메타·sitemap·피드에 싣는 URL 은 전부 사이트 주소 기준 절대 URL 이다 (스펙 4.9)

@@ -3,8 +3,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parse } from 'yaml'
-import { replaceSourceHash, splitFrontmatter } from '../src/content/rehash.ts'
-import { computeSourceHash } from '../src/content/source-hash.ts'
+import { computeSourceHash, replaceSourceHash, splitFrontmatter } from '../src/entities/post/index.scripts.ts'
 
 const index = process.argv.indexOf('--post')
 const slug = index === -1 ? undefined : process.argv[index + 1]

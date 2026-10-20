@@ -5,11 +5,31 @@ import { existsSync, openSync, readFileSync, readdirSync, statSync, writeFileSyn
 import { join } from 'node:path'
 import { gzipSync } from 'node:zlib'
 import { parse } from 'yaml'
-import { type ContentPostInput, collectContentProblems, collectContentWarnings, messageKeyDiff, plainTextMarker } from '../src/content/content-checks.ts'
-import { splitFrontmatter } from '../src/content/rehash.ts'
-import { computeSourceHash } from '../src/content/source-hash.ts'
-import { compareStructure, translationStructure } from '../src/content/translation-structure.ts'
-import { type AuditResult, type TranslationState, budgetResults, extractMetaUrls, formatResult, leakedPostText, liveResults, migrationCheck, pendingMigrations, sitemapUrls, summarize, translationResults } from '../src/shared/tooling/index.ts'
+import {
+  type ContentPostInput,
+  collectContentProblems,
+  collectContentWarnings,
+  compareStructure,
+  computeSourceHash,
+  messageKeyDiff,
+  plainTextMarker,
+  splitFrontmatter,
+  translationStructure,
+} from '../src/entities/post/index.scripts.ts'
+import {
+  type AuditResult,
+  type TranslationState,
+  budgetResults,
+  extractMetaUrls,
+  formatResult,
+  leakedPostText,
+  liveResults,
+  migrationCheck,
+  pendingMigrations,
+  sitemapUrls,
+  summarize,
+  translationResults,
+} from '../src/shared/tooling/index.ts'
 
 const args = process.argv.slice(2)
 const POSTS_DIR = 'content/posts'

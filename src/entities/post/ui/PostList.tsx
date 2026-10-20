@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { formatCompactDate, formatDate } from '~/shared/lib/date'
-import { type PostMeta, groupByYear as group } from '~/content/post-index'
+import { type PostMeta, groupByYear as group } from '../model/post-index'
 import { type Locale, m } from '~/shared/i18n'
 
 function Item({ post, locale }: { post: PostMeta; locale: Locale }) {

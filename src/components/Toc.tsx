@@ -1,4 +1,4 @@
-import type { TocItem } from '~/markdown/rehype-toc'
+import type { TocItem } from '~/entities/post'
 
 function TocList({ items, activeId }: { items: TocItem[]; activeId: string | null }) {
   return (

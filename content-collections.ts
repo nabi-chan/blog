@@ -2,14 +2,20 @@ import { join } from 'node:path'
 import { type Context, type WriterHook, defineCollection, defineConfig } from '@content-collections/core'
 import { z } from 'zod'
 import { DESCRIPTION_MAX, TAG_PATTERN, site } from './src/shared/config'
-import { folderFingerprint } from './src/content/fingerprint'
+import {
+  type Glossary,
+  absolutizeMarkdownImages,
+  computeSourceHash,
+  countWords,
+  folderFingerprint,
+  localizeMarkdownLinks,
+  renderMarkdown,
+  resolveEnPost,
+  sameDayConflicts,
+  validateSlug,
+  writeAssets,
+} from './src/entities/post/index.build'
 import { parseKstDate } from './src/shared/lib/date'
-import { resolveEnPost } from './src/content/resolve-en-post'
-import { sameDayConflicts, validateSlug } from './src/content/slug'
-import { computeSourceHash } from './src/content/source-hash'
-import { absolutizeMarkdownImages, countWords, localizeMarkdownLinks } from './src/markdown/agent-markdown'
-import { writeAssets } from './src/markdown/assets'
-import { type Glossary, renderMarkdown } from './src/markdown/render'
 import { postCard, writeOgImage } from './src/shared/og'
 import { widgetNames } from './src/widgets/names'
 

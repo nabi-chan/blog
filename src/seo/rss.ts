@@ -1,4 +1,4 @@
-import type { FeedItem } from '~/content/post-queries'
+import type { FeedItem } from '~/entities/post'
 import type { Locale } from '~/shared/i18n'
 import { escapeXml } from './text'
 import { pageUrl } from './url'

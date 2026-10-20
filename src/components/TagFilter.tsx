@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import type { TagRef } from '~/content/post-queries'
+import type { TagRef } from '~/entities/post'
 import { localizeHref, m } from '~/shared/i18n'
 import { applyTagSelection, tagFilterCss } from '~/lib/tag-filter'
 

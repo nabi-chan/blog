@@ -1,4 +1,4 @@
-import { SLUG_PATTERN } from '../shared/config'
+import { SLUG_PATTERN } from '../../../shared/config'
 
 const yymmdd = (dateIso: string) => `${dateIso.slice(2, 4)}${dateIso.slice(5, 7)}${dateIso.slice(8, 10)}`
 

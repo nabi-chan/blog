@@ -1,8 +1,8 @@
 // Content Collections 생성물을 조회 로직에 연결만 한다 (로직은 post-queries.ts)
 import { allEnPosts, allGlossaries, allKoPosts, allLobbyIntros, allTagLabels } from 'content-collections'
 import type { Locale } from '~/shared/i18n'
-import { type PostMeta, createPostIndex } from './post-index'
-import { type BodyKey, type PostBody, type PostSource, createPostQueries } from './post-queries'
+import { type PostMeta, createPostIndex } from '../model/post-index'
+import { type BodyKey, type PostBody, type PostSource, createPostQueries } from '../model/post-queries'
 
 const toMeta = ({ slug, locale, title, description, date, updated, tags, draft }: PostMeta): PostMeta => ({
   slug,
