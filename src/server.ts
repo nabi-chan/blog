@@ -4,19 +4,50 @@ import { createApiContext } from '~/api/context'
 import { safeReturnPath } from '~/api/http'
 import { routeApi } from '~/api/router'
 import { postIndex } from '~/content/posts.server'
+import { markdownAlternate, prefersMarkdown } from '~/lib/markdown-negotiation'
 import { withSecurityHeaders } from '~/lib/security-headers'
 import { isMalformedPath } from '~/lib/url-guard'
 import { paraglideMiddleware } from '~/paraglide/server'
+import { site } from '~/site'
 
 export default {
   // 정적 에셋 응답은 public/_headers 가, Worker 응답은 여기서 같은 보안 헤더를 단다
   async fetch(req, env) {
-    return withSecurityHeaders(await respond(req, env))
+    return withSecurityHeaders((await negotiate(req, env)) ?? (await respond(req, env)))
   },
   scheduled(controller, env, ctx) {
     ctx.waitUntil(cleanup(env.DB, new Date(controller.scheduledTime)).then((removed) => console.log('[cron] 정리 완료', removed)))
   },
 } satisfies ExportedHandler<Env>
+
+const POST_PATH = /^\/(en\/)?\d/
+
+// 홈과 글은 Worker 가 먼저 받는다(wrangler.jsonc run_worker_first). Accept 가 text/markdown 을 원하면 Markdown 원문을,
+// 아니면 프리렌더 HTML 을 그대로 낸다. 정적 파일이 없으면(없는 글) null 을 돌려 기존 경로가 404 문서를 그리게 한다
+async function negotiate(req: Request, env: Env): Promise<Response | null> {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return null
+  const url = new URL(req.url)
+  const alternate = markdownAlternate(url.pathname)
+  if (alternate === null && !POST_PATH.test(url.pathname)) return null
+  if (alternate !== null && prefersMarkdown(req.headers.get('accept'))) {
+    const markdown = await env.ASSETS.fetch(new URL(alternate, url))
+    if (markdown.ok) {
+      const headers = new Headers(markdown.headers)
+      headers.set('content-type', 'text/markdown; charset=utf-8')
+      headers.set('content-signal', site.contentSignal)
+      headers.append('vary', 'Accept')
+      return new Response(markdown.body, { status: 200, headers })
+    }
+    // 원문이 없으면 페이지도 없다. HTML 이 아닌 요청이라 TanStack 은 406 을 내므로 여기서 404 로 끝낸다
+    return new Response('Not Found', { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8', vary: 'Accept' } })
+  }
+  const asset = await env.ASSETS.fetch(req)
+  if (asset.status === 404) return null
+  if (alternate === null) return asset
+  const html = new Response(asset.body, asset)
+  html.headers.append('vary', 'Accept')
+  return html
+}
 
 function respond(req: Request, env: Env): Promise<Response> {
   const url = new URL(req.url)

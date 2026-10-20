@@ -36,7 +36,24 @@ export const CHECKS: SmokeCheck[] = [
   { path: '/en', status: 200, contains: ['Today', 'Total'] },
   // SEO·GEO 산출물 (계획 3)
   { path: '/sitemap.xml', status: 200, contains: ['<urlset'] },
-  { path: '/robots.txt', status: 200, contains: ['Disallow: /api/', 'User-agent: ClaudeBot', 'Sitemap: https://nabichan.me/sitemap.xml'] },
+  {
+    path: '/robots.txt',
+    status: 200,
+    contains: ['Disallow: /api/', 'User-agent: ClaudeBot', 'Content-Signal: search=yes, ai-input=yes, ai-train=no', 'Sitemap: https://nabichan.me/sitemap.xml'],
+  },
+  // Accept 로 Markdown 을 고르면 홈은 llms.txt 를 준다. 브라우저 Accept 는 그대로 HTML 이다
+  {
+    path: '/',
+    headers: { accept: 'text/markdown' },
+    status: 200,
+    contains: ['# eunsol'],
+    notContains: ['<html'],
+    responseHeaders: { 'content-type': 'text/markdown; charset=utf-8', 'content-signal': 'search=yes, ai-input=yes, ai-train=no' },
+  },
+  { path: '/en', headers: { accept: 'text/markdown' }, status: 200, responseHeaders: { 'content-type': 'text/markdown; charset=utf-8' } },
+  { path: '/', headers: { accept: 'text/html,application/xhtml+xml,*/*;q=0.8' }, status: 200, contains: ['<html'] },
+  // 없는 글은 Markdown 으로 물어도 404 다 (TanStack 은 HTML 이 아닌 요청에 406 을 낸다)
+  { path: '/261099', headers: { accept: 'text/markdown' }, status: 404 },
   { path: '/rss.xml', status: 200, contains: ['<rss'] },
   { path: '/en/rss.xml', status: 200, contains: ['<rss'] },
   { path: '/llms.txt', status: 200 },
@@ -69,6 +86,7 @@ function postChecks({ slug, en }: SmokePost, production: boolean): SmokeCheck[] 
     { path: '/llms.txt', status: 200, contains: [`https://nabichan.me/${slug}.md`] },
     { path: '/llms-full.txt', status: 200, contains: [`URL: https://nabichan.me/${slug}`] },
     { path: `/${slug}.md`, status: 200 },
+    { path: `/${slug}`, headers: { accept: 'text/markdown' }, status: 200, notContains: ['<html'], responseHeaders: { 'content-type': 'text/markdown; charset=utf-8' } },
     { path: `/og/ko/${slug}.png`, status: 200 },
   ]
   if (!en) return ko

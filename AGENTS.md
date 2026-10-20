@@ -120,6 +120,12 @@ pnpm dev                         # http://localhost:3000
   - `www.nabichan.me` → apex. 경로와 쿼리를 유지한다.
   - `nabi.kim`, `www.nabi.kim` → `https://nabichan.me/`. 경로를 버린다.
   - `nabi.kim` 의 MX·TXT 는 메일(`hello@nabi.kim`)용이라 건드리지 않는다.
+- Workers 는 **무료 플랜**이다(2026-10-20 은솔 확인). 요청당 CPU 10ms, Worker 요청 하루 10만 건이 한도다.
+- Markdown 협상: 홈(`/`, `/en`)과 글(`/<slug>`, `/en/<slug>`)은 Worker 가 먼저 받는다(`wrangler.jsonc` 의 `run_worker_first`).
+  - `Accept` 에 `text/markdown` 을 직접 적고 HTML 보다 낮게 두지 않은 요청은 글의 `.md` 원문, 홈은 `llms.txt` 를 받는다. 나머지는 프리렌더 HTML 그대로다.
+  - 응답에 `Vary: Accept` 와 `Content-Signal` 헤더가 붙는다. 판단은 `src/lib/markdown-negotiation.ts`, 연결은 `src/server.ts` 의 `negotiate`.
+  - 글 경로 패턴은 첫 자리 숫자(`/0*`~`/9*`)로 잡는다. 패턴이 숫자 범위를 지원하지 않아서다.
+- Content Signals 는 `src/site.ts` 의 `contentSignal` 한 곳에서 정한다(검색·AI 답변 허용, 학습 거부). robots.txt 의 모든 그룹과 Markdown 응답 헤더에 같은 값이 들어간다.
 - CSP 는 `src/lib/security-headers.ts` 에서만 고치고 `public/_headers` 를 다시 만든다(테스트가 둘이 같은지 본다). Cloudflare 가 끼워 넣는 Web Analytics 비콘을 허용해 두었다.
   - 이미지는 같은 출처와 `data:` 만 된다. 글에 외부 이미지 주소를 쓰면 `content:check` 가 문제로 잡는다.
   - 스모크와 `audit:repo --live` 가 정적 응답·Worker 응답·404 의 헤더 값을 lib 과 글자까지 비교한다.

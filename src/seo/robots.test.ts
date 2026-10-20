@@ -22,6 +22,11 @@ describe('buildRobots', () => {
     }
   })
 
+  it('모든 그룹에 Content Signals(검색·AI 답변 허용, 학습 거부)를 단다', () => {
+    const ruleGroups = groups.filter((group) => group.startsWith('User-agent:'))
+    for (const group of ruleGroups) expect(group).toContain('Content-Signal: search=yes, ai-input=yes, ai-train=no\n')
+  })
+
   it('마지막 줄은 sitemap 주소다', () => {
     expect(text.trimEnd().split('\n').at(-1)).toBe('Sitemap: https://nabichan.me/sitemap.xml')
   })
