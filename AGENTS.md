@@ -42,6 +42,7 @@ pnpm dev                         # http://localhost:3000
 2. `pnpm test`
 3. `pnpm audit:repo`
 4. 배포 전에는 `pnpm audit:repo --build` 를 **혼자 직렬로** 돌린다. 다른 빌드나 dev 서버와 같이 돌리지 않는다.
+   `--build` 는 4173 포트에 preview 를 직접 띄우므로 떠 있는 `pnpm preview` 는 먼저 끈다(포트가 쓰이고 있으면 smoke 가 FAIL 로 멈춘다).
 
 `audit:repo` 결과는 PASS / WARN / FAIL / INFO 로 나오고 `.audit-report.json` 에 남는다. FAIL 이 있으면 배포하지 않는다.
 

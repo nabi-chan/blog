@@ -220,26 +220,57 @@ async function buildChecks() {
       : { id: 'artifacts', status: 'FAIL', message: '빠진 산출물', details: missing },
   )
 
-  // preview 로 스모크(메타 URL 200 포함)를 돌린다
+  // preview 로 스모크(메타 URL 200 포함)를 돌린다.
+  // 4173 이 이미 쓰이고 있으면 새 preview 가 뜨지 못하고 스모크가 낡은 서버를 상대로 돌므로 먼저 막는다
+  const PREVIEW_URL = 'http://localhost:4173/'
+  const occupied = await fetch(PREVIEW_URL).then(
+    () => true,
+    () => false,
+  )
+  if (occupied) {
+    results.push({ id: 'smoke', status: 'FAIL', message: '4173 포트가 이미 쓰이고 있습니다. 떠 있는 pnpm preview 를 끄고 다시 실행하세요' })
+    return
+  }
   const preview = spawn('pnpm', ['preview', '--strictPort'], { detached: true, stdio: 'ignore' })
+  let exited = false
+  preview.on('exit', () => {
+    exited = true
+  })
+  // preview 와 그 아래 workerd 를 같이 끈다. 이미 끝났으면 무시한다
+  const stopPreview = () => {
+    try {
+      if (preview.pid && !exited) process.kill(-preview.pid)
+    } catch {
+      // 이미 끝난 프로세스 그룹
+    }
+  }
+  const onInterrupt = () => {
+    stopPreview()
+    process.exit(130)
+  }
+  process.once('SIGINT', onInterrupt)
   try {
     let ready = false
-    for (let attempt = 0; attempt < 60 && !ready; attempt += 1) {
-      ready = await fetch('http://localhost:4173/').then(
+    for (let attempt = 0; attempt < 60 && !ready && !exited; attempt += 1) {
+      ready = await fetch(PREVIEW_URL).then(
         () => true,
         () => false,
       )
       if (!ready) await new Promise((resolve) => setTimeout(resolve, 500))
     }
-    const smoke = run('node', ['scripts/smoke.ts', 'http://localhost:4173'])
+    if (!ready) {
+      results.push({ id: 'smoke', status: 'FAIL', message: `preview 가 뜨지 않았습니다${exited ? ' (프로세스가 끝남)' : ' (30초 대기)'}` })
+      return
+    }
+    const smoke = run('node', ['scripts/smoke.ts', PREVIEW_URL])
     results.push(
       smoke.status === 0
         ? { id: 'smoke', status: 'PASS', message: `preview 스모크 (${tail(smoke.stdout, 1)[0] ?? ''})` }
         : { id: 'smoke', status: 'FAIL', message: 'preview 스모크 실패', details: tail(`${smoke.stdout}${smoke.stderr}`) },
     )
   } finally {
-    // preview 와 그 아래 workerd 를 같이 끈다
-    if (preview.pid) process.kill(-preview.pid)
+    process.removeListener('SIGINT', onInterrupt)
+    stopPreview()
   }
 }
 
