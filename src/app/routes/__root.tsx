@@ -13,8 +13,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      // 검색엔진 사이트 인증. 값이 정해지면 site.verification 에 넣는다
-      ...(site.verification.google ? [{ name: 'google-site-verification', content: site.verification.google }] : []),
+      // 검색엔진 사이트 인증 (site.verification)
       ...(site.verification.naver ? [{ name: 'naver-site-verification', content: site.verification.naver }] : []),
     ],
     links: [

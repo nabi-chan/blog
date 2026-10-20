@@ -23,6 +23,11 @@ describe('siteGraph', () => {
     expect(website).toMatchObject({ '@id': 'https://nabichan.me/#website', url: 'https://nabichan.me/', name: 'eunsol', publisher: { '@id': 'https://nabichan.me/#person' } })
     expect(person).toMatchObject({ '@id': 'https://nabichan.me/#person', name: 'eunsol (Nabi)', url: 'https://nabichan.me/' })
   })
+
+  it('Person 의 sameAs 에는 소셜 링크 중 웹 주소만 넣고 mailto 는 뺀다', () => {
+    const [person] = byType(siteGraph('ko'), 'Person')
+    expect(person.sameAs).toEqual(['https://github.com/nabi-chan'])
+  })
 })
 
 describe('postGraph', () => {

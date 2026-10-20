@@ -19,7 +19,14 @@ export function siteGraph(locale: Locale): Graph {
       inLanguage: ['ko', 'en'],
       publisher: { '@id': PERSON_ID },
     },
-    { '@type': 'Person', '@id': PERSON_ID, name: site.author, url: absoluteUrl('/') },
+    {
+      '@type': 'Person',
+      '@id': PERSON_ID,
+      name: site.author,
+      url: absoluteUrl('/'),
+      // sameAs 는 같은 사람을 가리키는 웹 페이지 자리라서 mailto 는 넣지 않는다
+      sameAs: site.socials.filter((social) => social.href.startsWith('https://')).map((social) => social.href),
+    },
   ]
 }
 
