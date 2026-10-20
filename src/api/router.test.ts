@@ -65,6 +65,22 @@ describe('routeApi', () => {
     expect((await call('/api/posts/%E0/comments')).status).toBe(404)
   })
 
+  it('POST /api/views 는 Origin 이 같아야 한다', async () => {
+    expect((await call('/api/views', jsonInit('POST', {}, 'https://evil.example'))).status).toBe(403)
+    expect((await call('/api/views', jsonInit('POST', {}))).status).toBe(200)
+    expect((await call('/api/views')).status).toBe(405)
+  })
+
+  it('조회수도 D1 이 실패하면 0 이 아니라 503 이다', async () => {
+    const broken = await createTestDb({ migrate: false })
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const res = await call('/api/views', jsonInit('POST', { slug: '261020' }), broken.db)
+    expect(res.status).toBe(503)
+    expect(await res.json()).toEqual({ error: 'unavailable' })
+    error.mockRestore()
+    await broken.dispose()
+  })
+
   it('D1 이 실패하면 원인을 남기고 503 을 돌려준다', async () => {
     const broken = await createTestDb({ migrate: false })
     const error = vi.spyOn(console, 'error').mockImplementation(() => {})

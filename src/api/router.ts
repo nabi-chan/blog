@@ -1,6 +1,7 @@
 import { handleCreateComment, handleDeleteComment, handleEditComment, handleListComments, handleMe } from './comments'
 import { apiError, isSameOrigin } from './http'
 import type { TurnstileOutcome } from './turnstile'
+import { handleRecordView } from './views'
 
 // 핸들러가 쓰는 것 전부. env 를 엮는 일은 context.ts 가 하고, 테스트는 test-utils 의 testContext 로 만든다
 export type ApiContext = {
@@ -34,6 +35,7 @@ const ROUTES: Route[] = [
     },
   },
   { pattern: /^\/api\/comments\/([^/]+)$/, handlers: { PATCH: handleEditComment, DELETE: handleDeleteComment } },
+  { pattern: /^\/api\/views$/, handlers: { POST: handleRecordView } },
 ]
 
 function matchRoute(pathname: string): { route: Route; param: string } | null {
