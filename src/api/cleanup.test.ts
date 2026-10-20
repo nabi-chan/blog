@@ -19,8 +19,10 @@ describe('cleanup', () => {
     await recordView(db, { slug: '261020', day: '2026-10-21', visitor: 'today' })
     await recordFailure(db, ['old'], new Date(now.getTime() - ATTEMPT_WINDOW_SECONDS * 1000))
     await recordFailure(db, ['now'], now)
-    expect(await cleanup(db, now)).toEqual({ views: 1, attempts: 1 })
-    expect(await db.prepare('SELECT visitor FROM view_dedupe').all()).toMatchObject({ results: [{ visitor: 'today' }] })
+    // 조회 한 번이 글과 사이트(*) 두 행을 남긴다
+    expect(await cleanup(db, now)).toEqual({ views: 2, attempts: 1 })
+    const { results } = await db.prepare('SELECT DISTINCT visitor FROM view_dedupe').all()
+    expect(results).toEqual([{ visitor: 'today' }])
     expect(await db.prepare('SELECT key FROM attempts').all()).toMatchObject({ results: [{ key: 'now' }] })
   })
 })

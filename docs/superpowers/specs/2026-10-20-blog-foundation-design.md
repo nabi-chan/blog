@@ -439,8 +439,9 @@ comments(
 **정의** [은솔]
 
 - **글별 조회수**: 같은 방문자가 같은 글을 보면 KST 하루에 1회만 센다.
-- **사이트 전체 조회수**: 모든 페이지 조회(PV)의 합이고, 중복을 거르지 않는다 [이로하: PV 의 일반적 단위]. 404 는 세지 않는다.
-- **사이트 오늘 조회수**: KST 오늘의 사이트 PV [은솔]. 날짜별 PV 행에서 오늘 날짜 행을 읽는다.
+- **사이트 오늘 조회수**: KST 오늘 사이트에 온 방문자 수다. 같은 방문자는 하루에 한 번만 센다 [은솔: 새로고침·페이지 이동으로 오르지 않게]. 404 는 세지 않는다.
+- **사이트 전체 조회수**: 날마다 센 방문자 수의 누적이다 [은솔]. 같은 사람이 다른 날 다시 오면 또 센다.
+- 판정은 글별과 같은 `view_dedupe` 에 사이트용 키(`*`)로 기록한다.
 
 **세는 방법** [이로하, 참고 저장소 교훈]
 
@@ -463,7 +464,7 @@ site_daily_views(day TEXT PRIMARY KEY, count INTEGER NOT NULL)  -- 0002, KST 날
 view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 ```
 
-- 새로 온 방문자일 때만 `post_views` 를 올리고, 이 판정과 기록은 D1 batch 하나로 묶는다(트랜잭션).
+- 새로 온 방문자일 때만 `post_views`(와 사이트 카운터)를 올리고, 이 판정과 기록은 D1 batch 하나로 묶는다(트랜잭션).
   - batch 안에서는 앞 문장의 `changes` 를 보고 다음 문장을 고를 수 없다.
   - 그래서 조건을 SQL 안에 넣는다.
     1. `INSERT INTO post_views ... SELECT ... WHERE NOT EXISTS (SELECT 1 FROM view_dedupe ...) ON CONFLICT DO UPDATE SET count = count + 1`

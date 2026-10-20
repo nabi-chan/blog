@@ -48,10 +48,16 @@ describe('isBotUserAgent', () => {
 })
 
 describe('recordView', () => {
-  it('같은 방문자는 글별 수를 하루 한 번만 올리고, 전체·오늘 수는 매번 올린다', async () => {
+  it('같은 방문자는 글별 수도 전체·오늘 수도 하루 한 번만 올린다', async () => {
     expect(await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'a' })).toEqual({ site: 1, today: 1, post: 1 })
-    expect(await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'a' })).toEqual({ site: 2, today: 2, post: 1 })
-    expect(await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'b' })).toEqual({ site: 3, today: 3, post: 2 })
+    expect(await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'a' })).toEqual({ site: 1, today: 1, post: 1 })
+    expect(await recordView(db, { day: '2026-10-20', visitor: 'a' })).toEqual({ site: 1, today: 1 })
+    expect(await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'b' })).toEqual({ site: 2, today: 2, post: 2 })
+  })
+
+  it('같은 방문자가 같은 날 다른 글을 보면 그 글 수만 오른다', async () => {
+    await recordView(db, { day: '2026-10-20', visitor: 'a' })
+    expect(await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'a' })).toEqual({ site: 1, today: 1, post: 1 })
   })
 
   it('오늘 수는 KST 날짜가 바뀌면 0 부터 다시 센다', async () => {
@@ -73,7 +79,7 @@ describe('recordView', () => {
   it('동시 요청도 하루 1회만 센다', async () => {
     const view = () => recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'a' })
     await Promise.all([view(), view()])
-    expect(await readViews(db, '2026-10-20', '261020')).toEqual({ site: 2, today: 2, post: 1 })
+    expect(await readViews(db, '2026-10-20', '261020')).toEqual({ site: 1, today: 1, post: 1 })
   })
 })
 
@@ -87,8 +93,9 @@ describe('readViews', () => {
 describe('pruneViews', () => {
   it('그제 이전 기록만 지우고 어제·오늘은 남긴다', async () => {
     for (const day of ['2026-10-18', '2026-10-19', '2026-10-20']) await recordView(db, { slug: '261020', day, visitor: 'a' })
-    expect(await pruneViews(db, new Date('2026-10-20T03:00:00Z'))).toBe(1)
-    const { results } = await db.prepare('SELECT day FROM view_dedupe ORDER BY day').all()
+    // 날짜마다 글과 사이트(*) 두 행이다
+    expect(await pruneViews(db, new Date('2026-10-20T03:00:00Z'))).toBe(2)
+    const { results } = await db.prepare('SELECT DISTINCT day FROM view_dedupe ORDER BY day').all()
     expect(results).toEqual([{ day: '2026-10-19' }, { day: '2026-10-20' }])
   })
 })

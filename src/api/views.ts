@@ -21,10 +21,24 @@ export function isBotUserAgent(userAgent: string): boolean {
   return userAgent === '' || BOT_PATTERN.test(userAgent)
 }
 
-const siteIncrement = (db: D1Database) =>
-  db.prepare('INSERT INTO site_views(id, count) VALUES (1, 1) ON CONFLICT(id) DO UPDATE SET count = count + 1')
-const dailyIncrement = (db: D1Database, day: string) =>
-  db.prepare('INSERT INTO site_daily_views(day, count) VALUES (?1, 1) ON CONFLICT(day) DO UPDATE SET count = count + 1').bind(day)
+// 사이트 방문도 글과 같은 view_dedupe 로 하루 1회만 센다. 글 slug(YYMMDD…)와 겹치지 않는 키를 쓴다
+const SITE_KEY = '*'
+const firstVisitToday = 'NOT EXISTS (SELECT 1 FROM view_dedupe WHERE day = ?1 AND slug = ?2 AND visitor = ?3)'
+
+// 오늘 처음 온 방문자일 때만 올린다. 판정 행(view_dedupe)은 이 문장들 뒤에 넣어야 한다
+const countVisit = (db: D1Database, key: string, day: string, visitor: string) => [
+  db.prepare(`INSERT INTO site_views(id, count) SELECT 1, 1 WHERE ${firstVisitToday} ON CONFLICT(id) DO UPDATE SET count = count + 1`).bind(day, key, visitor),
+  db
+    .prepare(`INSERT INTO site_daily_views(day, count) SELECT ?1, 1 WHERE ${firstVisitToday} ON CONFLICT(day) DO UPDATE SET count = count + 1`)
+    .bind(day, key, visitor),
+]
+const countPostView = (db: D1Database, slug: string, day: string, visitor: string) =>
+  db
+    .prepare(`INSERT INTO post_views(slug, count) SELECT ?2, 1 WHERE ${firstVisitToday} ON CONFLICT(slug) DO UPDATE SET count = count + 1`)
+    .bind(day, slug, visitor)
+const markSeen = (db: D1Database, key: string, day: string, visitor: string) =>
+  db.prepare('INSERT OR IGNORE INTO view_dedupe(day, slug, visitor) VALUES (?1, ?2, ?3)').bind(day, key, visitor)
+
 const siteCount = (db: D1Database) => db.prepare('SELECT count FROM site_views WHERE id = 1')
 const dailyCount = (db: D1Database, day: string) => db.prepare('SELECT count FROM site_daily_views WHERE day = ?1').bind(day)
 const postCount = (db: D1Database, slug: string) => db.prepare('SELECT count FROM post_views WHERE slug = ?1').bind(slug)
@@ -32,27 +46,21 @@ const postCount = (db: D1Database, slug: string) => db.prepare('SELECT count FRO
 const countOf = (result: D1Result<{ count: number }> | undefined) => result?.results[0]?.count ?? 0
 
 // 한 batch(트랜잭션)로 판정·기록·조회를 한다. batch 안에서는 앞 문장의 changes 를 볼 수 없어서
-// "오늘 처음 온 방문자"인지는 SQL 의 NOT EXISTS 로 판정한다 (스펙 4.8)
+// "오늘 처음 온 방문자"인지는 SQL 의 NOT EXISTS 로 판정한다 (스펙 4.8). 사이트·글 모두 방문자 하루 1회다 [은솔]
 export async function recordView(db: D1Database, input: { slug?: string; day: string; visitor: string }): Promise<ViewCountsDto> {
   const { slug, day, visitor } = input
-  const site = [siteIncrement(db), dailyIncrement(db, day), siteCount(db), dailyCount(db, day)]
+  const site = [...countVisit(db, SITE_KEY, day, visitor), markSeen(db, SITE_KEY, day, visitor), siteCount(db), dailyCount(db, day)]
   if (slug === undefined) {
-    const [, , total, today] = await db.batch<{ count: number }>(site)
-    return { site: countOf(total), today: countOf(today) }
+    const results = await db.batch<{ count: number }>(site)
+    return { site: countOf(results[3]), today: countOf(results[4]) }
   }
   const results = await db.batch<{ count: number }>([
-    db
-      .prepare(
-        `INSERT INTO post_views(slug, count) SELECT ?1, 1
-         WHERE NOT EXISTS (SELECT 1 FROM view_dedupe WHERE day = ?2 AND slug = ?1 AND visitor = ?3)
-         ON CONFLICT(slug) DO UPDATE SET count = count + 1`,
-      )
-      .bind(slug, day, visitor),
-    db.prepare('INSERT OR IGNORE INTO view_dedupe(day, slug, visitor) VALUES (?2, ?1, ?3)').bind(slug, day, visitor),
+    countPostView(db, slug, day, visitor),
+    markSeen(db, slug, day, visitor),
     ...site,
     postCount(db, slug),
   ])
-  return { site: countOf(results[4]), today: countOf(results[5]), post: countOf(results[6]) }
+  return { site: countOf(results[5]), today: countOf(results[6]), post: countOf(results[7]) }
 }
 
 export async function readViews(db: D1Database, day: string, slug?: string): Promise<ViewCountsDto> {
