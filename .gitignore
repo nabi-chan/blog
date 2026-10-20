@@ -10,3 +10,4 @@ project.inlang/cache
 coverage
 .superpowers
 temp.local
+public/og

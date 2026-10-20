@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { type Context, type WriterHook, defineCollection, defineConfig } from '@content-collections/core'
 import { z } from 'zod'
@@ -10,6 +11,8 @@ import { computeSourceHash } from './src/content/source-hash'
 import { absolutizeMarkdownImages, countWords } from './src/markdown/agent-markdown'
 import { writeAssets } from './src/markdown/assets'
 import { type Glossary, renderMarkdown } from './src/markdown/render'
+import { postCard, siteCard } from './src/og/card'
+import { writeOgImage } from './src/og/render'
 import { site } from './src/site'
 import { widgetNames } from './src/widgets/names'
 
@@ -18,6 +21,14 @@ type CacheFn = Context['cache']
 // 렌더 결과의 모양이나 플러그인 동작이 바뀌면 올린다. 캐시 키에 들어가서 예전 캐시를 쓰지 않게 한다
 // 2: RenderResult.images 추가 (계획 3)
 const RENDER_VERSION = 2
+
+// OG 이미지 (스펙 4.9). public/og 는 빌드마다 비우고, 그린 PNG 는 여기 캐시에서 복사한다
+const OG_CACHE_DIR = 'node_modules/.cache/og'
+const ogFile = (locale: string, name: string) => join('public/og', locale, `${name}.png`)
+
+// 사이트 기본 카드 설명. Paraglide 컴파일보다 먼저 돌 수 있어서 메시지 파일을 직접 읽는다
+const siteDescription = (locale: 'ko' | 'en'): string =>
+  (JSON.parse(readFileSync(`messages/${locale}.json`, 'utf8')) as { site_description: string }).site_description
 
 const isProduction = () => process.env.NODE_ENV === 'production'
 
@@ -101,6 +112,7 @@ const koPosts = defineCollection({
     const conflicts = sameDayConflicts(slug, (await collection.documents()).map((sibling) => sibling._meta.directory))
     if (conflicts.length > 0) throw new Error(`${slug}: 같은 날짜의 글이 이미 있습니다 (${conflicts.join(', ')}). 하루에 한 편만 씁니다`)
     if (doc.draft && isProduction()) return skip('draft')
+    await writeOgImage(postCard({ title: doc.title, date, locale: 'ko' }), ogFile('ko', slug), OG_CACHE_DIR)
     // 한국어 본문의 내부 링크는 언제나 한국어 글을 가리키므로 영어 번역본 목록이 필요 없다
     const body = await render(cache, {
       markdown: doc.content,
@@ -164,6 +176,7 @@ const enPosts = defineCollection({
       { production: isProduction() },
     )
     if (result.kind === 'skip') return skip('draft')
+    await writeOgImage(postCard({ title: result.post.title, date: result.post.date, locale: 'en' }), ogFile('en', slug), OG_CACHE_DIR)
     // 영어 본문의 내부 링크는 실제로 공개되는 영어 번역본이 있을 때만 /en 으로 바꾼다
     const enSlugs = (await collection.documents())
       .map((sibling) => sibling._meta.directory)
@@ -201,6 +214,8 @@ const lobbyIntros = defineCollection({
   transform: async (doc, { cache, documents }) => {
     const locale = /^index\.(ko|en)$/.exec(doc._meta.path)?.[1]
     if (locale !== 'ko' && locale !== 'en') throw new Error(`${doc._meta.filePath}: index.ko.md 또는 index.en.md 여야 합니다`)
+    // Lobby·Posts·404 가 쓰는 사이트 기본 OG 이미지. 언어마다 한 장이라 소개글 변환에서 만든다
+    await writeOgImage(siteCard({ locale, description: siteDescription(locale) }), ogFile(locale, 'site'), OG_CACHE_DIR)
     // 영어 소개글의 글 링크도 공개되는 영어 번역본이 있을 때만 /en 으로 바꾼다.
     // enPosts 는 이미 변환이 끝나서 documents() 가 변환 결과(slug 있음, draft 는 빠짐)를 돌려준다. 타입은 변환 전 모양이라 둘 다 받는다
     const enSlugs = documents(enPosts).map((post) => {
