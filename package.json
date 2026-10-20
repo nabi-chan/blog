@@ -17,7 +17,8 @@
     "smoke": "node scripts/smoke.ts",
     "indexnow": "node scripts/indexnow.ts",
     "i18n:compile": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide",
-    "content:rehash": "node scripts/content-rehash.ts"
+    "content:rehash": "node scripts/content-rehash.ts",
+    "content:check": "node scripts/content-check.ts"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.170.45",
@@ -45,6 +46,7 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-react": "^6.1.2",
     "@vitest/coverage-v8": "^5.0.5",
+    "github-slugger": "^2.0.0",
     "hast-util-to-string": "^3.0.1",
     "image-size": "^2.0.4",
     "mdast-util-directive": "^3.1.1",

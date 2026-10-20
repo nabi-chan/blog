@@ -236,6 +236,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^5.0.5
         version: 5.0.5(vitest@5.0.5)
+      github-slugger:
+        specifier: ^2.0.0
+        version: 2.0.0
       hast-util-to-string:
         specifier: ^3.0.1
         version: 3.0.1
