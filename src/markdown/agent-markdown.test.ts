@@ -12,6 +12,12 @@ describe('absolutizeMarkdownImages', () => {
     expect(absolutizeMarkdownImages('![작게](./photo.png?w=400)', images, ORIGIN)).toBe('![작게](https://nabichan.me/content-assets/261020/photo.def.png)')
   })
 
+  it('한 문서의 여러 이미지를 위치가 어긋나지 않게 모두 바꾼다', () => {
+    expect(absolutizeMarkdownImages('![a](./diagram.svg) 와 ![b](./photo.png?w=400)', images, ORIGIN)).toBe(
+      '![a](https://nabichan.me/content-assets/261020/diagram.abc.svg) 와 ![b](https://nabichan.me/content-assets/261020/photo.def.png)',
+    )
+  })
+
   it('참조형 이미지는 정의 줄의 경로를 바꾼다', () => {
     expect(absolutizeMarkdownImages('![a][d]\n\n[d]: ./diagram.svg "t"\n', images, ORIGIN)).toBe(
       '![a][d]\n\n[d]: https://nabichan.me/content-assets/261020/diagram.abc.svg "t"\n',
