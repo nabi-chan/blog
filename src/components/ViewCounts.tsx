@@ -3,9 +3,9 @@ import { type ReactNode, createContext, useContext, useEffect, useRef, useState 
 import { createApiClient } from '~/lib/api-client'
 import { type MatchLike, viewTarget } from '~/lib/view-target'
 
-type ViewCounts = { site: number | null; post: { slug: string; count: number } | null }
+type ViewCounts = { site: number | null; today: number | null; post: { slug: string; count: number } | null }
 
-const EMPTY: ViewCounts = { site: null, post: null }
+const EMPTY: ViewCounts = { site: null, today: null, post: null }
 const ViewCountsContext = createContext<ViewCounts>(EMPTY)
 const client = createApiClient()
 
@@ -38,8 +38,8 @@ export function ViewCountsProvider({ children }: { children: ReactNode }) {
         setCounts(EMPTY)
         return
       }
-      const { site, post } = result.data
-      setCounts({ site, post: target.slug !== undefined && post !== undefined ? { slug: target.slug, count: post } : null })
+      const { site, today, post } = result.data
+      setCounts({ site, today, post: target.slug !== undefined && post !== undefined ? { slug: target.slug, count: post } : null })
     })
   }, [idle, key, router])
 

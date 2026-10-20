@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useRef } from 'react'
 import { PostList } from '~/components/PostList'
+import { ViewCount, useViewCounts } from '~/components/ViewCounts'
 import { TermTooltips } from '~/components/TermTooltips'
 import { WidgetMounter } from '~/components/WidgetMounter'
 import { getLobbyIntroFn, listPostsFn } from '~/content/posts.functions'
@@ -22,8 +23,14 @@ function Lobby() {
   const { posts, intro } = Route.useLoaderData()
   const locale = getLocale()
   const introRef = useRef<HTMLDivElement>(null)
+  const views = useViewCounts()
   return (
     <main className="lobby">
+      {/* 사이트 PV. 레이블은 프리렌더하고 숫자는 브라우저가 채운다 */}
+      <p className="lobby-views meta-list">
+        <ViewCount label={m.lobby_views_today()} value={views.today} />
+        <ViewCount label={m.lobby_views_total()} value={views.site} />
+      </p>
       {intro && (
         <>
           {/* content/lobby/index.{ko,en}.md 를 빌드할 때 만든 HTML */}

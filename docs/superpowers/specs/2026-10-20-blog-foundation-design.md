@@ -357,7 +357,7 @@ translationStatus: machine   # machine | reviewed
   - 쿠키 경로 속성은 끈다(기본값). 그래서 로그인 뒤 `CF_Authorization` 쿠키가 사이트 전체 요청에 실린다.
   - SameSite 는 Lax 로 둔다 [이로하].
 - **로그인 흐름**
-  - 댓글 영역의 "글쓴이로 로그인" 링크가 `/admin?return=<현재 경로>` 로 보낸다.
+  - 화면에 로그인 링크는 두지 않는다 [은솔: 주소는 은솔만 알면 된다]. 은솔이 `/admin?return=<경로>` 를 직접 연다.
   - Access 로그인 뒤 Worker 가 그 경로로 되돌린다. 같은 사이트 경로만 허용해서 open redirect 를 막는다.
   - 로그아웃은 `/cdn-cgi/access/logout` 이다.
 - **검증**: Worker 가 API 요청의 `CF_Authorization` JWT 를 직접 검증한다.
@@ -440,6 +440,7 @@ comments(
 
 - **글별 조회수**: 같은 방문자가 같은 글을 보면 KST 하루에 1회만 센다.
 - **사이트 전체 조회수**: 모든 페이지 조회(PV)의 합이고, 중복을 거르지 않는다 [이로하: PV 의 일반적 단위]. 404 는 세지 않는다.
+- **사이트 오늘 조회수**: KST 오늘의 사이트 PV [은솔]. 날짜별 PV 행에서 오늘 날짜 행을 읽는다.
 
 **세는 방법** [이로하, 참고 저장소 교훈]
 
@@ -458,6 +459,7 @@ comments(
 ```sql
 post_views(slug TEXT PRIMARY KEY, count INTEGER NOT NULL)
 site_views(id INTEGER PRIMARY KEY CHECK (id = 1), count INTEGER NOT NULL)
+site_daily_views(day TEXT PRIMARY KEY, count INTEGER NOT NULL)  -- 0002, KST 날짜별 PV
 view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 ```
 
@@ -472,13 +474,17 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 
 **응답과 표시**
 
-- 증가 응답이 `{ site, post? }` 를 돌려주고, 화면은 그 값을 쓴다.
+- 증가 응답이 `{ site, today, post? }` 를 돌려주고, 화면은 그 값을 쓴다.
+  - 조회마다 행을 쌓고 날짜로 거르면 D1 이 훑은 행 수만큼 읽기로 세서 요청 비용이 계속 커진다. 그래서 날짜별로 모아 둔 행을 쓰고, 전체는 카운터를 따로 둔다.
 - **실패하면 503 을 돌려준다.** 0 을 보내면 "고장"과 "아직 아무도 안 옴"이 같아진다.
 - **레이블은 프리렌더 HTML 에 미리 넣고, 숫자 자리만 비워 둔다.** "조회", "전체" 같은 레이블이 HTML 에 들어 있다.
   - 숫자 자리는 `tabular-nums` 와 최소 폭으로 잡는다.
   - 실패했거나 응답 전이면 `visibility` 로만 감춘다.
   - **목표는 CLS 0** 이다.
-- 표시 위치: Post 에 글별 조회수, 푸터에 사이트 전체 [은솔: 기본안].
+- 표시 위치 [은솔]
+  - Post 메타(날짜 옆, 구분선)에 글별 조회수
+  - Lobby(`/`, `/en`) 맨 위에 사이트 오늘·전체 PV
+  - 푸터에는 두지 않는다.
 
 ### 4.9 SEO / GEO
 

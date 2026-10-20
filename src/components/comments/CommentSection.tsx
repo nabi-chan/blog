@@ -1,8 +1,6 @@
-import { useRouterState } from '@tanstack/react-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CommentDto, MeDto } from '~/api/types'
 import { m } from '~/i18n/messages'
-import { localizeHref } from '~/i18n/runtime'
 import { createApiClient } from '~/lib/api-client'
 import { CommentForm } from './CommentForm'
 import { CommentItem, type PanelMode } from './CommentItem'
@@ -17,7 +15,6 @@ export function CommentSection({ slug }: { slug: string }) {
   const [open, setOpen] = useState<{ id: string; mode: PanelMode } | null>(null)
   const [nearby, setNearby] = useState(false)
   const section = useRef<HTMLElement>(null)
-  const pathname = useRouterState({ select: (state) => state.location.pathname })
 
   const reload = useCallback(async () => {
     const result = await client.listComments(slug)
@@ -81,15 +78,12 @@ export function CommentSection({ slug }: { slug: string }) {
         )}
       </div>
       <CommentForm slug={slug} {...shared} onCreated={reload} />
-      <p className="comments-auth">
-        {owner ? (
-          <>
-            {m.comment_writing_as_owner()} <a href="/cdn-cgi/access/logout">{m.comment_logout()}</a>
-          </>
-        ) : (
-          <a href={`/admin?return=${encodeURIComponent(localizeHref(pathname))}`}>{m.comment_login()}</a>
-        )}
-      </p>
+      {/* 로그인 링크는 두지 않는다. 은솔은 /admin?return=<경로> 를 직접 연다 */}
+      {owner && (
+        <p className="comments-auth">
+          {m.comment_writing_as_owner()} <a href="/cdn-cgi/access/logout">{m.comment_logout()}</a>
+        </p>
+      )}
     </section>
   )
 }

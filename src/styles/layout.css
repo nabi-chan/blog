@@ -242,3 +242,29 @@ html:not([data-tag]) .tag-filter [data-chip=''] {
   font-variant-numeric: tabular-nums;
   text-align: start;
 }
+
+/* 한 줄 메타 항목 사이의 얇은 세로선 구분자 (글 메타, Lobby 조회수) */
+.meta-list > * + *::before {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 0.75em;
+  margin-right: 1.25rem;
+  background: var(--rule);
+  vertical-align: -0.05em;
+}
+
+.lobby-views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0 0 2.5rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+/* 한 줄 메타 안에서는 숫자 폭을 미리 잡지 않는다. 잡으면 짧은 숫자 뒤에 빈칸이 생겨 구분선 간격이 어긋난다.
+   숫자 자릿수만큼 뒤 항목이 몇 px 밀리지만 화면 위쪽 한 줄이라 레이아웃 이동 점수는 사실상 0 이다 */
+.meta-list .view-count-number {
+  min-width: 0;
+}

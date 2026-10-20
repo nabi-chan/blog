@@ -10,7 +10,7 @@ beforeAll(async () => {
 })
 afterAll(() => dispose())
 beforeEach(async () => {
-  await db.batch([db.prepare('DELETE FROM post_views'), db.prepare('DELETE FROM site_views'), db.prepare('DELETE FROM view_dedupe')])
+  await db.batch([db.prepare('DELETE FROM post_views'), db.prepare('DELETE FROM site_views'), db.prepare('DELETE FROM site_daily_views'), db.prepare('DELETE FROM view_dedupe')])
 })
 
 const CHROME = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36'
@@ -48,30 +48,39 @@ describe('isBotUserAgent', () => {
 })
 
 describe('recordView', () => {
-  it('같은 방문자는 글별 수를 하루 한 번만 올리고, 전체 수는 매번 올린다', async () => {
-    expect(await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'a' })).toEqual({ site: 1, post: 1 })
-    expect(await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'a' })).toEqual({ site: 2, post: 1 })
-    expect(await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'b' })).toEqual({ site: 3, post: 2 })
-    expect(await recordView(db, { slug: '261020', day: '2026-10-21', visitor: 'a' })).toEqual({ site: 4, post: 3 })
+  it('같은 방문자는 글별 수를 하루 한 번만 올리고, 전체·오늘 수는 매번 올린다', async () => {
+    expect(await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'a' })).toEqual({ site: 1, today: 1, post: 1 })
+    expect(await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'a' })).toEqual({ site: 2, today: 2, post: 1 })
+    expect(await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'b' })).toEqual({ site: 3, today: 3, post: 2 })
+  })
+
+  it('오늘 수는 KST 날짜가 바뀌면 0 부터 다시 센다', async () => {
+    await recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'a' })
+    expect(await recordView(db, { slug: '261020', day: '2026-10-21', visitor: 'a' })).toEqual({ site: 2, today: 1, post: 2 })
+    const { results } = await db.prepare('SELECT day, count FROM site_daily_views ORDER BY day').all()
+    expect(results).toEqual([
+      { day: '2026-10-20', count: 1 },
+      { day: '2026-10-21', count: 1 },
+    ])
   })
 
   it('글이 아닌 페이지는 전체 수만 올리고 post 키가 없다', async () => {
     const counts = await recordView(db, { day: '2026-10-20', visitor: 'a' })
-    expect(counts).toEqual({ site: 1 })
+    expect(counts).toEqual({ site: 1, today: 1 })
     expect('post' in counts).toBe(false)
   })
 
   it('동시 요청도 하루 1회만 센다', async () => {
     const view = () => recordView(db, { slug: '261020', day: '2026-10-20', visitor: 'a' })
     await Promise.all([view(), view()])
-    expect(await readViews(db, '261020')).toEqual({ site: 2, post: 1 })
+    expect(await readViews(db, '2026-10-20', '261020')).toEqual({ site: 2, today: 2, post: 1 })
   })
 })
 
 describe('readViews', () => {
   it('아직 아무도 안 왔으면 0 이다', async () => {
-    expect(await readViews(db, '261020')).toEqual({ site: 0, post: 0 })
-    expect(await readViews(db)).toEqual({ site: 0 })
+    expect(await readViews(db, '2026-10-20', '261020')).toEqual({ site: 0, today: 0, post: 0 })
+    expect(await readViews(db, '2026-10-20')).toEqual({ site: 0, today: 0 })
   })
 })
 
@@ -95,23 +104,23 @@ describe('handleRecordView', () => {
   it('글별·전체 수를 올려 돌려준다', async () => {
     const res = await handleRecordView(post({ slug: '261020' }), testContext(db, { userAgent: CHROME }))
     expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({ site: 1, post: 1 })
+    expect(await res.json()).toEqual({ site: 1, today: 1, post: 1 })
   })
 
   it('slug 가 없으면 전체 수만 올린다', async () => {
-    expect(await (await handleRecordView(post({}), testContext(db, { userAgent: CHROME }))).json()).toEqual({ site: 1 })
+    expect(await (await handleRecordView(post({}), testContext(db, { userAgent: CHROME }))).json()).toEqual({ site: 1, today: 1 })
   })
 
   it('봇은 세지 않고 지금 수만 돌려준다', async () => {
     await handleRecordView(post({ slug: '261020' }), testContext(db, { userAgent: CHROME }))
     const res = await handleRecordView(post({ slug: '261020' }), testContext(db, { userAgent: 'Googlebot/2.1' }))
-    expect(await res.json()).toEqual({ site: 1, post: 1 })
+    expect(await res.json()).toEqual({ site: 1, today: 1, post: 1 })
   })
 
   it('없는 글이면 404 이고 아무 수도 올리지 않는다', async () => {
     const res = await handleRecordView(post({ slug: '261099' }), testContext(db, { userAgent: CHROME }))
     expect(res.status).toBe(404)
-    expect(await readViews(db)).toEqual({ site: 0 })
+    expect(await readViews(db, '2026-10-20')).toEqual({ site: 0, today: 0 })
   })
 
   it('본문이 틀리면 400', async () => {

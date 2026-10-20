@@ -15,7 +15,6 @@
   "not_found_back_home": "Go home",
   "posts_tag_filter": "Filter by tag",
   "view_post_label": "Views",
-  "view_site_label": "Total views",
   "comments_title": "Comments",
   "comments_empty": "No comments yet.",
   "comment_author": "Name",
@@ -30,7 +29,6 @@
   "comment_delete_confirm": "Delete this comment?",
   "comment_owner_badge": "Author",
   "comment_edited": "edited",
-  "comment_login": "Sign in as author",
   "comment_logout": "Sign out",
   "comment_writing_as_owner": "Writing as author",
   "comment_turnstile_required": "Finish the spam check first.",
@@ -42,5 +40,7 @@
   "comment_error_not_found": "Comment or post not found.",
   "comment_error_too_many_attempts": "Too many attempts. Try again in 10 minutes.",
   "comment_error_unavailable": "Comments are unavailable right now. Try again later.",
-  "comment_error_network": "Check your connection."
+  "comment_error_network": "Check your connection.",
+  "lobby_views_today": "Today",
+  "lobby_views_total": "Total"
 }

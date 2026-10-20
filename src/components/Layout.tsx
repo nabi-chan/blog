@@ -3,10 +3,11 @@ import type { ReactNode } from 'react'
 import { m } from '~/i18n/messages'
 import { site } from '~/site'
 import { LanguageSwitch } from './LanguageSwitch'
-import { ViewCount, ViewCountsProvider, useViewCounts } from './ViewCounts'
+import { ViewCountsProvider } from './ViewCounts'
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
+    // 조회수는 화면마다 여기서 한 번 센다. 표시는 Lobby(사이트 오늘·전체)와 Post(글별)가 한다
     <ViewCountsProvider>
       <div className="site">
         <header className="site-header">
@@ -19,27 +20,19 @@ export function Layout({ children }: { children: ReactNode }) {
           </nav>
         </header>
         {children}
-        <SiteFooter />
+        {/* 소셜 링크가 정해지면 푸터를 그린다 (site.socials) */}
+        {site.socials.length > 0 && (
+          <footer className="site-footer">
+            <ul className="site-socials">
+              {site.socials.map((social) => (
+                <li key={social.href}>
+                  <a href={social.href}>{social.label}</a>
+                </li>
+              ))}
+            </ul>
+          </footer>
+        )}
       </div>
     </ViewCountsProvider>
-  )
-}
-
-function SiteFooter() {
-  const counts = useViewCounts()
-  return (
-    <footer className="site-footer">
-      <ViewCount label={m.view_site_label()} value={counts.site} />
-      {/* 소셜 링크는 정해지면 site.socials 에 채운다 */}
-      {site.socials.length > 0 && (
-        <ul className="site-socials">
-          {site.socials.map((social) => (
-            <li key={social.href}>
-              <a href={social.href}>{social.label}</a>
-            </li>
-          ))}
-        </ul>
-      )}
-    </footer>
   )
 }

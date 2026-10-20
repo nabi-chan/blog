@@ -47,6 +47,11 @@ describe('마이그레이션 스키마', () => {
     ])
   })
 
+  it('site_daily_views 는 날짜마다 한 행이다', async () => {
+    await db.prepare("INSERT INTO site_daily_views(day, count) VALUES ('2026-10-20', 1)").run()
+    await expect(db.prepare("INSERT INTO site_daily_views(day, count) VALUES ('2026-10-20', 1)").run()).rejects.toThrow(/UNIQUE|PRIMARY/)
+  })
+
   it('댓글 목록용 인덱스가 있다', async () => {
     const row = await db.prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND name = 'comments_post_created'").first()
     expect(row).toEqual({ name: 'comments_post_created' })

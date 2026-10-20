@@ -35,7 +35,7 @@ function Post() {
       <article>
         <header className="post-header">
           <h1 className="display">{post.title}</h1>
-          <p className="post-meta">
+          <p className="post-meta meta-list">
             <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
             {post.updated && (
               <span>
