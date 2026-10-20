@@ -10,3 +10,7 @@ export const listPostsFn = createServerFn({ method: 'GET' })
 export const getPostFn = createServerFn({ method: 'GET' })
   .validator((data: { locale: Locale; slug: string }) => data)
   .handler(({ data }) => queries.getPostPage(data.locale, data.slug))
+
+export const getLobbyIntroFn = createServerFn({ method: 'GET' })
+  .validator((data: { locale: Locale }) => data)
+  .handler(({ data }) => queries.getLobbyIntro(data.locale))

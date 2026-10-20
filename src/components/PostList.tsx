@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { formatDate } from '~/content/date'
+import { formatCompactDate, formatDate } from '~/content/date'
 import { type PostMeta, groupByYear as group } from '~/content/post-index'
 import type { Locale } from '~/i18n/runtime'
 
@@ -9,7 +9,9 @@ function Item({ post, locale }: { post: PostMeta; locale: Locale }) {
       <Link to="/$slug" params={{ slug: post.slug }} className="post-item-title">
         {post.title}
       </Link>
-      <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+      <time dateTime={post.date} title={formatDate(post.date, locale)}>
+        {formatCompactDate(post.date)}
+      </time>
       <p>{post.description}</p>
     </li>
   )

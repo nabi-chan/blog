@@ -28,7 +28,7 @@ describe('rehypeLocalImages', () => {
   it('글 옆 이미지를 해시 경로로 바꾸고 크기·WebP 사본·로딩 우선순위를 단다', async () => {
     const { html, data } = await run('![그림](./a.png)\n\n문장 안 ![작은](./a.png) 이미지\n\n![외부](https://example.com/x.png)')
     expect(html).toMatch(
-      /<picture><source type="image\/webp" srcset="\/content-assets\/x\/a\.[0-9a-f]{8}\.1w\.webp 1w" sizes="\(max-width: 752px\) calc\(100vw - 32px\), 720px"><img src="\/content-assets\/x\/a\.[0-9a-f]{8}\.png" alt="그림" width="1" height="1" loading="eager" fetchpriority="high" decoding="async"><\/picture>/,
+      /<picture><source type="image\/webp" srcset="\/content-assets\/x\/a\.[0-9a-f]{8}\.1w\.webp 1w" sizes="\(max-width: 1199px\) 90vw, 920px"><img src="\/content-assets\/x\/a\.[0-9a-f]{8}\.png" alt="그림" width="1" height="1" loading="eager" fetchpriority="high" decoding="async"><\/picture>/,
     )
     expect(html).toMatch(/문장 안 <picture>.*<img src="\/content-assets\/x\/a\.[0-9a-f]{8}\.png" alt="작은" width="1" height="1" loading="lazy" fetchpriority="low"/)
     expect(html).toContain('src="https://example.com/x.png"')
@@ -41,8 +41,13 @@ describe('rehypeLocalImages', () => {
   it('?w= 로 폭을 제한하고 쿼리는 경로에서 뺀다', async () => {
     const { html } = await run('![작게](./a.png?w=400)')
     expect(html).toContain('style="max-width:min(400px, 100%);height:auto;"')
-    expect(html).toContain('sizes="(max-width: 752px) calc(100vw - 32px), 400px"')
+    expect(html).toContain('sizes="(max-width: 445px) 90vw, 400px"')
     expect(html).not.toContain('?w=400')
+  })
+
+  it('?w= 가 본문 최대 폭(920px)보다 크면 본문 폭 기준 sizes 를 쓴다', async () => {
+    const { html } = await run('![크게](./a.png?w=1000)')
+    expect(html).toContain('sizes="(max-width: 1199px) 90vw, 920px"')
   })
 
   it('alt 가 없으면 경고만 한다', async () => {

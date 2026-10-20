@@ -15,7 +15,11 @@ export const Route = createRootRoute({
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { title: site.name },
     ],
-    links: [{ rel: 'stylesheet', href: appCss }],
+    links: [
+      // 라틴 기본 글자 조각(scripts/fonts/ranges.txt 마지막 줄, 0부터 센 번호 123). 첫 렌더에 거의 항상 쓰인다
+      { rel: 'preload', as: 'font', type: 'font/woff2', href: '/fonts/suit/eunsol-sans.123.woff2', crossOrigin: 'anonymous' },
+      { rel: 'stylesheet', href: appCss },
+    ],
   }),
   notFoundComponent: () => {
     return (

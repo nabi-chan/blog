@@ -1,3 +1,4 @@
+import type { Locale } from '~/i18n/runtime'
 import { describe, expect, it } from 'vitest'
 import { type PostMeta, createPostIndex } from './post-index'
 import { type BodyKey, type PostBody, createPostQueries, tagRefs } from './post-queries'
@@ -22,6 +23,7 @@ const bodies = new Map<BodyKey, PostBody>([
   ['en/both', { html: '<p>en</p>', toc: [], terms: ['hydration'] }],
   ['ko/ko-only', { html: '<p>ko only</p>', toc: [], terms: [] }],
 ])
+const intros = new Map<Locale, PostBody>([['ko', { html: '<p>소개</p>', toc: [], terms: ['hydration'] }]])
 const glossary = {
   hydration: { ko: { name: '하이드레이션', definition: '정의 ko' }, en: { name: 'Hydration', definition: 'def en' } },
 }
@@ -38,7 +40,7 @@ describe('tagRefs', () => {
 
 describe('createPostQueries', () => {
   it('listPosts 는 그 언어 글과 태그 라벨을 돌려준다', () => {
-    const q = createPostQueries({ index: idx, tagLabels: labels, bodies, glossary })
+    const q = createPostQueries({ index: idx, tagLabels: labels, bodies, glossary, intros })
     expect(q.listPosts('en')).toEqual({
       posts: idx.list('en'),
       tags: [
@@ -50,7 +52,7 @@ describe('createPostQueries', () => {
 })
 
 describe('getPostPage', () => {
-  const q = createPostQueries({ index: idx, tagLabels: labels, bodies, glossary })
+  const q = createPostQueries({ index: idx, tagLabels: labels, bodies, glossary, intros })
 
   it('글 메타·있는 언어·태그·본문을 돌려준다', () => {
     expect(q.getPostPage('en', 'both')).toEqual({
@@ -76,8 +78,23 @@ describe('getPostPage', () => {
   })
 
   it('메타는 있는데 본문이 없으면 데이터 오류로 던진다', () => {
-    expect(() => createPostQueries({ index: idx, tagLabels: labels, bodies: new Map(), glossary }).getPostPage('ko', 'both')).toThrow(
+    expect(() => createPostQueries({ index: idx, tagLabels: labels, bodies: new Map(), glossary, intros }).getPostPage('ko', 'both')).toThrow(
       /본문이 없습니다/,
     )
+  })
+})
+
+describe('getLobbyIntro', () => {
+  const q = createPostQueries({ index: idx, tagLabels: labels, bodies, glossary, intros })
+
+  it('그 언어 소개글 HTML 과 쓴 용어의 정의를 돌려준다', () => {
+    expect(q.getLobbyIntro('ko')).toEqual({
+      html: '<p>소개</p>',
+      terms: { hydration: { name: '하이드레이션', definition: '정의 ko' } },
+    })
+  })
+
+  it('소개글이 없으면 null 이다', () => {
+    expect(q.getLobbyIntro('en')).toBeNull()
   })
 })

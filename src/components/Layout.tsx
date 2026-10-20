@@ -17,14 +17,9 @@ export function Layout({ children }: { children: ReactNode }) {
         </nav>
       </header>
       {children}
-      <footer className="site-footer">
-        <p>
-          {m.footer_license()}{' '}
-          <a href={site.license.url} rel="license">
-            {site.license.name}
-          </a>
-        </p>
-        {site.socials.length > 0 && (
+      {/* 소셜 링크가 정해지면 푸터를 그린다 (site.socials) */}
+      {site.socials.length > 0 && (
+        <footer className="site-footer">
           <ul className="site-socials">
             {site.socials.map((social) => (
               <li key={social.href}>
@@ -32,8 +27,8 @@ export function Layout({ children }: { children: ReactNode }) {
               </li>
             ))}
           </ul>
-        )}
-      </footer>
+        </footer>
+      )}
     </div>
   )
 }

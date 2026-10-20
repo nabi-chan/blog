@@ -9,7 +9,7 @@ export function tagFilterCss(keys: string[]): string {
       (key) =>
         `html[data-tag="${key}"] [data-post]:not([data-tags~="${key}"]){display:none}` +
         `html[data-tag="${key}"] [data-year]:not(:has([data-tags~="${key}"])){display:none}` +
-        `html[data-tag="${key}"] [data-chip="${key}"]{font-weight:700;text-decoration:underline}`,
+        `html[data-tag="${key}"] [data-chip="${key}"]{color:var(--ink);font-weight:700;text-decoration:underline}`,
     )
     .join('')
 }

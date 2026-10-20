@@ -1,30 +1,47 @@
 import type { TocItem } from '~/markdown/rehype-toc'
 
-function TocList({ items }: { items: TocItem[] }) {
+function TocList({ items, activeId }: { items: TocItem[]; activeId: string | null }) {
   return (
     <ol>
       {items.map((item) => (
         <li key={item.id} data-depth={item.depth}>
-          <a href={`#${item.id}`}>{item.text}</a>
+          <a href={`#${item.id}`} aria-current={item.id === activeId ? 'location' : undefined}>
+            {item.text}
+          </a>
         </li>
       ))}
     </ol>
   )
 }
 
-// 넓은 화면에서는 오른쪽 sticky, 좁은 화면에서는 본문 위 접기 블록으로 보인다 (CSS 가 하나를 숨긴다)
-export function Toc({ items, title }: { items: TocItem[]; title: string }) {
+// compact: 본문 위 접기 블록(좁은 화면), side: 본문 오른쪽 280px 칸(넓은 화면). CSS 가 화면 폭에 따라 하나만 보인다
+// activeId 는 지금 보고 있는 섹션이다 (useActiveHeading)
+export function Toc({
+  items,
+  title,
+  variant,
+  activeId,
+}: {
+  items: TocItem[]
+  title: string
+  variant: 'compact' | 'side'
+  activeId: string | null
+}) {
   if (items.length === 0) return null
-  return (
-    <>
-      <details className="toc toc-compact">
-        <summary>{title}</summary>
-        <TocList items={items} />
-      </details>
+  if (variant === 'side') {
+    return (
       <nav className="toc toc-side" aria-label={title}>
         <p>{title}</p>
-        <TocList items={items} />
+        <TocList items={items} activeId={activeId} />
       </nav>
-    </>
+    )
+  }
+  return (
+    <details className="toc toc-compact">
+      <summary>{title}</summary>
+      <nav aria-label={title}>
+        <TocList items={items} activeId={activeId} />
+      </nav>
+    </details>
   )
 }

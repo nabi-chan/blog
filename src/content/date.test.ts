@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDate, kstYear, parseKstDate } from './date'
+import { formatCompactDate, formatDate, kstYear, parseKstDate } from './date'
 
 describe('parseKstDate', () => {
   it('날짜만 있으면 KST 자정으로 본다', () => {
@@ -29,5 +29,11 @@ describe('formatDate', () => {
 describe('kstYear', () => {
   it('KST 기준 연도를 돌려준다', () => {
     expect(kstYear('2026-01-01T00:30:00+09:00')).toBe(2026)
+  })
+})
+
+describe('formatCompactDate', () => {
+  it('KST 날짜를 YY.MM.DD 로 줄인다', () => {
+    expect(formatCompactDate('2026-01-01T00:30:00+09:00')).toBe('26.01.01')
   })
 })

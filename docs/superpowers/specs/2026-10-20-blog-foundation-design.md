@@ -115,7 +115,7 @@
   - 그래서 서브셋 파일의 내부 폰트 이름을 바꾸고, OFL 전문과 원저작자 표기를 함께 둔다 [이로하].
 - Simple Icons(브랜드 아이콘 SVG 경로)는 CC0 이다.
 - jihoon-blog 에는 라이선스 파일이 없다. 구조와 아이디어만 참고하고, 문장이나 코드는 옮기지 않는다 [이로하].
-- 이 블로그 글의 라이선스는 **CC BY-NC 4.0** 이다 [은솔].
+- 글 라이선스는 사이트에 표시하지 않는다 [은솔]. 푸터, 구조화 데이터, llms.txt, RSS 어디에도 넣지 않는다.
 
 ## 4. 설계
 
@@ -322,11 +322,16 @@ translationStatus: machine   # machine | reviewed
 
 ### 4.6 화면과 디자인
 
-- **디자인 기조**: 무채색(흰색·회색·검정), SUIT, 라이트 모드만, lucide-react [은솔]. 브랜드 아이콘(GitHub 등)은 Simple Icons SVG 경로로 작은 컴포넌트를 만든다 [이로하].
+- **디자인 기조**: 무채색(흰색·회색·검정), SUIT, 라이트 모드만, lucide-react [은솔].
+  - 콘텐츠 폭은 `min(1200px, 90vw)` 다 [은솔].
+  - 글 상세는 콘텐츠 폭이 1080px 이상이면 본문 + 오른쪽 목차 280px 로 나눈다(1080px 일 때 본문 800px, 넓어지면 본문이 늘어남). 그보다 좁으면 본문이 전체 폭을 쓰고 목차는 본문 위 접기 블록이다 [은솔].
+  - 목차는 지금 보고 있는 섹션 링크를 하이라이트한다 [은솔].
+  - 굵기는 400 과 700 두 가지만 쓴다 [은솔]. 위계는 크기로 준다. 브랜드 아이콘(GitHub 등)은 Simple Icons SVG 경로로 작은 컴포넌트를 만든다 [이로하].
 - **공통 레이아웃** [이로하]
   - 헤더: 사이트 이름 `eunsol`, Posts 링크, 언어 전환
-  - 푸터: 사이트 전체 조회수, RSS 링크, 소셜 링크(값이 없으면 숨김), "CC BY-NC 4.0" 라이선스 링크
-- **Lobby**: 한 줄 소개 + 최근 글 5개 + "전체 글 보기" [은솔]. 한 줄 소개는 아직 정해지지 않아서 ko/en 각각 자리표시 문구를 넣는다 [은솔: 미정].
+  - 푸터: 사이트 전체 조회수, RSS 링크, 소셜 링크(값이 없으면 숨김)
+- **Lobby**: 소개글 + 최근 글 5개 + "전체 글 보기" [은솔].
+  - 소개글은 `content/lobby/index.ko.md`, `index.en.md` 에 글과 같은 Markdown 으로 자유롭게 쓰고, 본문 크기로 보여준다 [은솔]. 아직 내용이 없어 자리표시 문단을 둔다.
 - **Posts**: 상단 태그 칩 필터 + 연도별 전체 목록 [은솔].
   - 필터는 `?tag=` 쿼리를 쓰고, 필터된 화면의 canonical 은 `/posts` 다 [이로하].
   - 프리렌더된 HTML 위에 필터가 적용될 때 목록이 번쩍이지 않게 처리한다.
@@ -470,7 +475,6 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 | 작성자 | `eunsol (Nabi)` |
 | 한 줄 소개 | 미정 (자리표시) |
 | 소셜 링크 | 미정 (비우면 숨김) |
-| 라이선스 | CC BY-NC 4.0 |
 | Google / 네이버 사이트 인증 메타 | 자리만 둔다 |
 
 **페이지 메타** (TanStack Start 라우트 `head()`)
@@ -494,7 +498,6 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
   - author/publisher 는 `#person` 참조
   - image(OG), inLanguage, mainEntityOfPage, isPartOf(`#website`)
   - keywords(태그), wordCount
-  - `license` (CC BY-NC 4.0 URL)
 - `<` 는 `<` 로 이스케이프한다.
 
 **크롤링·피드**
@@ -508,12 +511,12 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
   - `/api/`, `/admin` 은 막는다 [이로하].
   - 맨 아래에 sitemap 줄을 둔다.
 - **RSS**: 언어별로 둔다(`/rss.xml`, `/en/rss.xml`) [이로하].
-  - 제목, 요약, **본문 HTML 전문**, 링크, 날짜, `<copyright>` 를 넣는다.
+  - 제목, 요약, **본문 HTML 전문**, 링크, 날짜를 넣는다.
   - 본문 안의 상대 URL(이미지, 내부 링크)은 절대 URL 로 바꾼다.
 
 **GEO**
 
-- `llms.txt`(언어별): 사이트 설명, 작성자, 라이선스, 주요 링크(RSS, sitemap), 글 목록(제목 + 설명).
+- `llms.txt`(언어별): 사이트 설명, 작성자, 주요 링크(RSS, sitemap), 글 목록(제목 + 설명).
 - `llms-full.txt`: 공개 글 전체 원문.
 - 글별 원문 `/<slug>.md` 와 `<link rel="alternate" type="text/markdown">`. 원문은 frontmatter 를 뺀 Markdown 그대로다. 글 옆 이미지 경로는 절대 URL 로 바꾼다.
 - **배포 때 Cloudflare 설정을 확인한다.** AI 봇 차단(AI Crawl Control)과 managed robots.txt 가 꺼져 있어야 한다.

@@ -5,7 +5,7 @@ import type { Element, Root } from 'hast'
 import { imageSize } from 'image-size'
 import { visit } from 'unist-util-visit'
 import type { VFile } from 'vfile'
-import { IMAGE_VARIANT_WIDTHS, PROSE_MAX_WIDTH } from '../content/constants'
+import { BODY_MAX_WIDTH, CONTENT_VW, IMAGE_VARIANT_WIDTHS, SPLIT_MIN_VIEWPORT } from '../content/constants'
 import type { Asset } from './render'
 
 declare module 'vfile' {
@@ -42,8 +42,15 @@ function parseSrc(src: string): { path: string; cap: number | null } {
   return { path: src.slice(0, cut), cap: width && /^\d+$/.test(width) ? Number(width) : null }
 }
 
-const sizesFor = (cap: number | null) =>
-  `(max-width: ${PROSE_MAX_WIDTH + 32}px) calc(100vw - 32px), ${Math.min(cap ?? PROSE_MAX_WIDTH, PROSE_MAX_WIDTH)}px`
+// 본문 폭은 넓은 화면(목차를 옆에 두는 레이아웃)에서 최대 920px, 그보다 좁으면 90vw 다.
+// ?w= 가 있으면 그 폭을 넘지 않는다
+function sizesFor(cap: number | null): string {
+  if (cap === null || cap >= BODY_MAX_WIDTH) {
+    return `(max-width: ${SPLIT_MIN_VIEWPORT - 1}px) ${CONTENT_VW}vw, ${BODY_MAX_WIDTH}px`
+  }
+  const breakpoint = Math.ceil(cap / (CONTENT_VW / 100))
+  return `(max-width: ${breakpoint}px) ${CONTENT_VW}vw, ${cap}px`
+}
 
 // 글 옆 이미지를 해시 이름의 공개 경로로 바꾸고, 크기·로딩 우선순위·WebP 사본을 붙인다.
 // 실제 파일 복사는 writeAssets 가 한다 (file.data.assets)

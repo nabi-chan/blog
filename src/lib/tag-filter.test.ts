@@ -6,7 +6,7 @@ describe('tagFilterCss', () => {
     expect(tagFilterCss(['meta'])).toBe(
       'html[data-tag="meta"] [data-post]:not([data-tags~="meta"]){display:none}' +
         'html[data-tag="meta"] [data-year]:not(:has([data-tags~="meta"])){display:none}' +
-        'html[data-tag="meta"] [data-chip="meta"]{font-weight:700;text-decoration:underline}',
+        'html[data-tag="meta"] [data-chip="meta"]{color:var(--ink);font-weight:700;text-decoration:underline}',
     )
   })
 

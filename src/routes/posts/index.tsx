@@ -25,7 +25,7 @@ function Posts() {
   const { posts, tags } = Route.useLoaderData()
   return (
     <main className="posts">
-      <h1>{m.posts_title()}</h1>
+      <h1 className="display">{m.posts_title()}</h1>
       <TagFilter tags={tags} />
       {posts.length === 0 ? <p>{m.posts_empty()}</p> : <PostList posts={posts} locale={getLocale()} groupByYear />}
     </main>

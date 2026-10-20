@@ -9,6 +9,7 @@ import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import { unified } from 'unified'
 import { VFile } from 'vfile'
+import { monochromeTheme } from './code-theme'
 import { rehypeFigure } from './rehype-figure'
 import { rehypeLinks } from './rehype-links'
 import { rehypeLocalImages } from './rehype-local-images'
@@ -60,7 +61,7 @@ export async function renderMarkdown(markdown: string, opts: RenderOptions): Pro
     .use(rehypeLocalImages, { filePath: opts.filePath, slug: opts.slug })
     .use(rehypeFigure)
     .use(rehypeLinks, { locale: opts.locale, enSlugs: opts.enSlugs })
-    .use(rehypePrettyCode, { theme: 'github-light' })
+    .use(rehypePrettyCode, { theme: monochromeTheme, keepBackground: false })
     .use(rehypeAutolinkHeadings, { behavior: 'wrap' })
     .use(rehypeStringify)
     .process(file)

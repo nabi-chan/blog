@@ -18,7 +18,10 @@ const isProduction = () => process.env.NODE_ENV === 'production'
 
 type RenderInput = {
   markdown: string
-  filePath: string
+  // 원본 파일이 있는 폴더(이미지 상대 경로의 기준)와 그 안의 파일 이름
+  dir: string
+  fileName: string
+  // 이미지 공개 경로 /content-assets/<slug>/ 에 쓰는 이름
   slug: string
   locale: 'ko' | 'en'
   enSlugs: string[]
@@ -38,11 +41,11 @@ function siblingFingerprint(postDir: string): string {
 // 렌더 결과는 입력(본문·언어·영어 번역본 목록·글 폴더 파일)이 같으면 캐시에서 가져온다.
 // 이미지 파일 쓰기는 캐시와 상관없이 매번 한다 (빌드 전에 public/content-assets 를 비우기 때문)
 async function render(cache: CacheFn, input: RenderInput) {
-  const filePath = join('content/posts', input.filePath)
+  const filePath = join(input.dir, input.fileName)
   const key = {
     ...input,
     enSlugs: [...input.enSlugs].sort(),
-    siblings: siblingFingerprint(join('content/posts', input.slug)),
+    siblings: siblingFingerprint(input.dir),
     widgetNames: [...widgetNames],
   }
   const result = await cache(key, (value) =>
@@ -105,7 +108,8 @@ const koPosts = defineCollection({
     // 한국어 본문의 내부 링크는 언제나 한국어 글을 가리키므로 영어 번역본 목록이 필요 없다
     const body = await render(cache, {
       markdown: doc.content,
-      filePath: doc._meta.filePath,
+      dir: join('content/posts', slug),
+      fileName: doc._meta.fileName,
       slug,
       locale: 'ko',
       enSlugs: [],
@@ -170,13 +174,43 @@ const enPosts = defineCollection({
       })
     const body = await render(cache, {
       markdown: doc.content,
-      filePath: doc._meta.filePath,
+      dir: join('content/posts', slug),
+      fileName: doc._meta.fileName,
       slug,
       locale: 'en',
       enSlugs,
       glossary: toGlossary(documents(glossary)),
     })
     return { ...result.post, html: body.html, toc: body.toc, terms: body.terms }
+  },
+})
+
+// Lobby 소개글. content/lobby/index.ko.md, index.en.md 에 글과 같은 Markdown 으로 쓴다
+const lobbyIntros = defineCollection({
+  name: 'lobbyIntros',
+  directory: 'content/lobby',
+  include: 'index.*.md',
+  parser: 'frontmatter',
+  schema: z.object({ content: z.string() }),
+  transform: async (doc, { cache, documents }) => {
+    const locale = /^index\.(ko|en)$/.exec(doc._meta.path)?.[1]
+    if (locale !== 'ko' && locale !== 'en') throw new Error(`${doc._meta.filePath}: index.ko.md 또는 index.en.md 여야 합니다`)
+    // 영어 소개글의 글 링크도 공개되는 영어 번역본이 있을 때만 /en 으로 바꾼다.
+    // enPosts 는 이미 변환이 끝나서 documents() 가 변환 결과(slug 있음, draft 는 빠짐)를 돌려준다. 타입은 변환 전 모양이라 둘 다 받는다
+    const enSlugs = documents(enPosts).map((post) => {
+      const doc = post as { slug?: string; _meta?: { directory: string } }
+      return doc.slug ?? doc._meta?.directory ?? ''
+    })
+    const body = await render(cache, {
+      markdown: doc.content,
+      dir: 'content/lobby',
+      fileName: doc._meta.fileName,
+      slug: 'lobby',
+      locale,
+      enSlugs,
+      glossary: toGlossary(documents(glossary)),
+    })
+    return { locale, html: body.html, toc: body.toc, terms: body.terms }
   },
 })
 
@@ -200,6 +234,6 @@ export default defineConfig({
   // 컬렉션은 이 순서대로 하나씩 변환되고, 변환이 끝난 컬렉션의 documents() 는 변환 결과를 돌려준다.
   // enPosts 가 원문의 content 와 draft 를 그대로 봐야 하므로 koPosts 보다 먼저 둔다
   // glossary 는 글보다 먼저 둔다. 글 변환이 용어집을 읽는다
-  content: [glossary, enPosts, koPosts, tagLabels],
+  content: [glossary, enPosts, koPosts, lobbyIntros, tagLabels],
   hooks: { writer: [serverOnlyHook] },
 })

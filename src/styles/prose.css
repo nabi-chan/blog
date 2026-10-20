@@ -1,0 +1,444 @@
+/* 글 상세와 본문(Markdown) 요소 */
+.post-header {
+  margin-bottom: 3rem;
+}
+
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 1.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.post-tags li::before {
+  content: '#';
+  margin-right: 0.1em;
+}
+
+/* 목차: 넓은 화면은 오른쪽 여백에 고정, 좁은 화면은 본문 위 접기 블록 */
+.toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toc li[data-depth='3'] {
+  padding-left: 0.9rem;
+}
+
+.toc a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  line-height: 1.9;
+}
+
+.toc a:hover {
+  color: var(--ink);
+}
+
+.toc-compact {
+  margin-bottom: 2.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--wash);
+  border-radius: 10px;
+}
+
+.toc-compact summary {
+  list-style: none;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.toc-compact summary::-webkit-details-marker {
+  display: none;
+}
+
+.toc-compact summary::before {
+  content: '';
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.4rem;
+  vertical-align: -0.12em;
+  background: currentColor;
+  mask: var(--icon-chevron) center / contain no-repeat;
+  transition: transform 0.15s ease;
+}
+
+.toc-compact[open] summary::before {
+  transform: rotate(90deg);
+}
+
+/* 본문 타이포그래피. Tailwind typography 기본값을 무채색과 이 블로그의 굵기 체계로 덮는다 */
+.prose {
+  --tw-prose-body: var(--text);
+  --tw-prose-headings: var(--ink);
+  --tw-prose-links: var(--ink);
+  --tw-prose-bold: var(--ink);
+  --tw-prose-quotes: var(--text);
+  --tw-prose-quote-borders: var(--rule);
+  --tw-prose-captions: var(--muted);
+  --tw-prose-code: var(--ink);
+  --tw-prose-hr: var(--rule);
+  --tw-prose-bullets: var(--muted);
+  --tw-prose-counters: var(--muted);
+  max-width: none;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.prose :where(h2, h3, h4) {
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  scroll-margin-top: 2rem;
+}
+
+.prose :where(h2, h3, h4) a {
+  text-decoration: none;
+  font-weight: inherit;
+}
+
+.prose :where(h2) {
+  margin-top: 3.2em;
+  font-size: 1.45rem;
+}
+
+.prose :where(h3) {
+  font-size: 1.15rem;
+}
+
+.prose a {
+  text-underline-offset: 0.25em;
+  text-decoration-thickness: 1px;
+}
+
+.prose :where(code):not(pre code) {
+  padding: 0.1em 0.35em;
+  background: var(--wash);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  font-weight: 400;
+}
+
+.prose :where(code):not(pre code)::before,
+.prose :where(code):not(pre code)::after {
+  content: none;
+}
+
+.prose figure[data-rehype-pretty-code-figure] {
+  margin: 1.8em 0;
+}
+
+.prose pre {
+  padding: 1.1rem 1.25rem;
+  background: var(--wash) !important;
+  color: var(--text);
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+
+.prose [data-rehype-pretty-code-title] {
+  margin-bottom: 0.4rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.prose [data-highlighted-line] {
+  background: #e6e6e6;
+}
+
+/* Callout: 종류는 아이콘으로만 구분한다 */
+.prose .callout {
+  margin: 1.8em 0;
+  padding: 1rem 1.25rem 1rem 3.1rem;
+  background: var(--wash);
+  border-radius: 10px;
+  position: relative;
+}
+
+.prose .callout::before {
+  content: '';
+  position: absolute;
+  left: 1.1rem;
+  top: 1.25rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  background: var(--ink);
+  mask: var(--icon-note) center / contain no-repeat;
+}
+
+.prose .callout[data-callout='tip']::before {
+  mask-image: var(--icon-tip);
+}
+
+.prose .callout[data-callout='important']::before {
+  mask-image: var(--icon-important);
+}
+
+.prose .callout[data-callout='warning']::before {
+  mask-image: var(--icon-warning);
+}
+
+.prose .callout[data-callout='caution']::before {
+  mask-image: var(--icon-caution);
+}
+
+.prose .callout > :first-child {
+  margin-top: 0;
+}
+
+.prose .callout > :last-child {
+  margin-bottom: 0;
+}
+
+.prose .callout-title {
+  margin-bottom: 0.25em;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.prose figure:not([data-rehype-pretty-code-figure]) {
+  margin: 2.2em 0;
+}
+
+.prose figure img {
+  margin: 0;
+  border-radius: 6px;
+}
+
+.prose figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.86rem;
+}
+
+.prose img {
+  height: auto;
+}
+
+/* 접기 블록 */
+.prose details.details {
+  margin: 1.8em 0;
+  padding: 0.25rem 0;
+}
+
+.prose details > summary {
+  list-style: none;
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.prose details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.prose details > summary::before {
+  content: '';
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.4rem;
+  vertical-align: -0.12em;
+  background: currentColor;
+  mask: var(--icon-chevron) center / contain no-repeat;
+  transition: transform 0.15s ease;
+}
+
+.prose details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+/* See Also: 종류별 아이콘 목록 */
+.prose .see-also {
+  margin-top: 3.5em;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+.prose .see-also-list {
+  list-style: none;
+  padding: 0;
+}
+
+.prose .see-also-list li {
+  position: relative;
+  padding-left: 1.75rem;
+}
+
+.prose .see-also-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 1rem;
+  height: 1rem;
+  background: var(--muted);
+  mask: var(--icon-link) center / contain no-repeat;
+}
+
+.prose .see-also-list li[data-kind='paper']::before {
+  mask-image: var(--icon-paper);
+}
+
+.prose .see-also-list li[data-kind='docs']::before {
+  mask-image: var(--icon-docs);
+}
+
+.prose .see-also-list li[data-kind='repo']::before {
+  mask-image: var(--icon-repo);
+}
+
+.prose .see-also-list li[data-kind='article']::before {
+  mask-image: var(--icon-article);
+}
+
+/* 원문·번역 병기 인용 */
+.prose blockquote {
+  font-style: normal;
+  font-weight: 400;
+}
+
+.prose blockquote p:first-of-type::before,
+.prose blockquote p:last-of-type::after {
+  content: none;
+}
+
+.prose .bilingual-quote .quote-translation {
+  color: var(--ink);
+}
+
+.prose .bilingual-quote .quote-original {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.92em;
+}
+
+.prose .bilingual-quote .quote-original p,
+.prose .bilingual-quote .quote-translation p {
+  margin: 0;
+}
+
+/* 용어와 툴팁 */
+.prose .term {
+  text-decoration: underline dotted;
+  text-decoration-color: var(--muted);
+  text-underline-offset: 0.3em;
+  cursor: help;
+}
+
+.term-tooltip {
+  z-index: 10;
+  padding: 0.6rem 0.8rem;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+/* 위젯 자리: JS 가 붙기 전과 RSS 에서는 대체 콘텐츠가 보인다 */
+.prose .widget {
+  margin: 1.8em 0;
+  padding: 1rem 1.25rem;
+  border: 1px dashed var(--rule);
+  border-radius: 10px;
+}
+
+.widget-counter {
+  min-width: 3rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+
+/* 문장 안 이미지는 글줄 안에 둔다 (Tailwind preflight 의 img display:block 을 되돌림) */
+.prose p :is(picture, img) {
+  display: inline;
+  margin: 0;
+  vertical-align: middle;
+}
+
+.prose .callout-title + * {
+  margin-top: 0;
+}
+
+/* 굵기는 400·700 두 가지만 쓴다. Tailwind typography 의 500·600·800 을 되돌린다 */
+.prose :where(a, blockquote, code, figcaption, thead th, li::marker) {
+  font-weight: 400;
+}
+
+.prose :where(strong, b, h1, h2, h3, h4, h5, h6, th, dt) {
+  font-weight: 700;
+}
+
+/* 글 본문과 목차 배치. 콘텐츠 폭이 1080px 이상(화면 1200px 이상)이면 본문(1080px 일 때 800px, 넓어지면 함께 늘어남)
+   + 목차 280px, 그보다 좁으면 본문이 전체 폭을 쓰고 목차는 본문 위 접기 블록이다.
+   본문과 목차 사이 간격은 목차 칸의 왼쪽 여백뿐이다.
+   constants.ts 의 SPLIT_MIN_VIEWPORT·BODY_MAX_WIDTH(이미지 sizes)와 같은 값이다 */
+.post-aside {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .post-columns {
+    display: grid;
+    grid-template-columns: minmax(800px, 1fr) 280px;
+  }
+
+  .post-main {
+    min-width: 0;
+  }
+
+  .post-aside {
+    display: block;
+  }
+
+  .toc-compact {
+    display: none;
+  }
+
+  .toc-side {
+    position: sticky;
+    top: 2rem;
+    padding-left: 2rem;
+  }
+
+  .toc-side p {
+    margin: 0 0 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+}
+
+/* 지금 보고 있는 섹션 */
+.toc a[aria-current='location'] {
+  color: var(--ink);
+  font-weight: 700;
+}

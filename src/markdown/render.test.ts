@@ -80,7 +80,7 @@ describe('renderMarkdown 본문 기능 통합', () => {
     expect(r.html).toContain('<blockquote>\n<p>그냥 인용</p>')
     expect(r.html).toContain('[!FOO]')
     expect(r.html).toMatch(
-      /<figure><picture><source type="image\/webp" srcset="\/content-assets\/x\/a\.[0-9a-f]{8}\.1w\.webp 1w" sizes="\(max-width: 752px\) calc\(100vw - 32px\), 720px"><img src="\/content-assets\/x\/a\.[0-9a-f]{8}\.png" alt="그림" width="1" height="1" loading="eager" fetchpriority="high" decoding="async"><\/picture><figcaption>캡션<\/figcaption><\/figure>/,
+      /<figure><picture><source type="image\/webp" srcset="\/content-assets\/x\/a\.[0-9a-f]{8}\.1w\.webp 1w" sizes="\(max-width: 1199px\) 90vw, 920px"><img src="\/content-assets\/x\/a\.[0-9a-f]{8}\.png" alt="그림" width="1" height="1" loading="eager" fetchpriority="high" decoding="async"><\/picture><figcaption>캡션<\/figcaption><\/figure>/,
     )
     expect(r.html).toMatch(/문장 안 <picture>.*<img src="\/content-assets\/x\/a\.[0-9a-f]{8}\.png" alt="작은" width="1" height="1" loading="lazy" fetchpriority="low"/)
     expect(r.html).toContain('src="https://example.com/x.png"')
