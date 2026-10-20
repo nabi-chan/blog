@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { changedMigrations, formatResult, pendingMigrations, summarize, translationResults } from './audit'
+import { BUDGETS, type LiveInput, budgetResults, changedMigrations, formatResult, leakedPostText, liveResults, median, pendingMigrations, securityHeaderGaps, summarize, translationResults } from './audit'
 
 describe('summarize', () => {
   it('FAIL 이 하나라도 있으면 exitCode 1 이다', () => {
@@ -54,5 +54,86 @@ describe('pendingMigrations', () => {
 
   it('적용할 것이 없으면 빈 배열이다', () => {
     expect(pendingMigrations('✅ No migrations to apply!')).toEqual([])
+  })
+})
+
+describe('BUDGETS / budgetResults', () => {
+  it('클라이언트 JS gzip 170KB, Worker 64 MiB 다', () => {
+    expect(BUDGETS).toEqual({ clientJsGzipBytes: 170 * 1024, workerBytes: 64 * 1024 * 1024 })
+  })
+
+  it('예산 안이면 PASS, 넘으면 FAIL, Worker 가 절반을 넘으면 WARN', () => {
+    const status = (input: { clientJsGzipBytes: number; workerBytes: number }) => budgetResults(input).map((result) => result.status)
+    expect(status({ clientJsGzipBytes: 100 * 1024, workerBytes: 5 * 1024 * 1024 })).toEqual(['PASS', 'PASS'])
+    expect(status({ clientJsGzipBytes: 171 * 1024, workerBytes: 33 * 1024 * 1024 })).toEqual(['FAIL', 'WARN'])
+    expect(status({ clientJsGzipBytes: 1, workerBytes: 65 * 1024 * 1024 })).toEqual(['PASS', 'FAIL'])
+  })
+})
+
+describe('leakedPostText', () => {
+  it('클라이언트 에셋에 본문 문장이 실린 글을 낸다', () => {
+    const posts = [
+      { slug: '261020', marker: '이 블로그는 TanStack Start 로 만든 개인 블로그입니다' },
+      { slug: '261021', marker: '다른 글의 긴 문장입니다' },
+    ]
+    expect(leakedPostText(['var a="이 블로그는 TanStack Start 로 만든 개인 블로그입니다"', 'console.log(1)'], posts)).toEqual(['261020'])
+    expect(leakedPostText(['console.log(1)'], posts)).toEqual([])
+  })
+})
+
+describe('median', () => {
+  it('가운데 값을 낸다', () => {
+    expect(median([30, 10, 20])).toBe(20)
+    expect(median([4, 1, 3, 2])).toBe(2.5)
+  })
+})
+
+describe('securityHeaderGaps', () => {
+  it('없는 보안 헤더를 낸다', () => {
+    expect(securityHeaderGaps(new Headers())).toEqual(['strict-transport-security', 'x-content-type-options', 'referrer-policy', 'content-security-policy'])
+    expect(securityHeaderGaps(new Headers({ 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'strict-origin' }))).toEqual([
+      'strict-transport-security',
+      'content-security-policy',
+    ])
+  })
+})
+
+describe('liveResults', () => {
+  const healthy: LiveInput = {
+    pages: [{ path: '/', status: 200, ttfbMs: [40, 20, 30, 50, 10], cache: 'HIT' }],
+    headers: new Headers({
+      'strict-transport-security': 'max-age=1',
+      'x-content-type-options': 'nosniff',
+      'referrer-policy': 'strict-origin',
+      'content-security-policy': "default-src 'self'",
+    }),
+    sitemapUrls: ['https://nabichan.me/261020'],
+    draftSlugs: ['261021'],
+    untranslated: [{ slug: '261019', status: 404 }],
+    metaUrlStatuses: [{ url: 'https://nabichan.me/261020', status: 200 }],
+    apiStatus: 200,
+    redirect: { status: 301, location: 'https://nabichan.me/' },
+  }
+  const fails = (input: LiveInput) => liveResults(input).filter((result) => result.status === 'FAIL').map((result) => result.id)
+
+  it('모두 정상이면 FAIL 이 없고, TTFB 중앙값과 캐시 상태를 INFO 로 남긴다', () => {
+    const results = liveResults(healthy)
+    expect(fails(healthy)).toEqual([])
+    expect(results.find((result) => result.id === 'live:ttfb')).toMatchObject({ status: 'INFO', details: ['/ 30ms (cf-cache-status HIT)'] })
+  })
+
+  it('문제마다 FAIL 을 낸다', () => {
+    expect(fails({ ...healthy, pages: [{ path: '/', status: 500, ttfbMs: [1], cache: null }] })).toEqual(['live:pages'])
+    expect(fails({ ...healthy, sitemapUrls: ['https://nabichan.me/261021'] })).toEqual(['live:draft'])
+    expect(fails({ ...healthy, untranslated: [{ slug: '261019', status: 200 }] })).toEqual(['live:untranslated'])
+    expect(fails({ ...healthy, metaUrlStatuses: [{ url: 'x', status: 307 }] })).toEqual(['live:meta-urls'])
+    expect(fails({ ...healthy, apiStatus: 503 })).toEqual(['live:api'])
+    expect(fails({ ...healthy, redirect: { status: 302, location: 'https://nabichan.me/' } })).toEqual(['live:redirect'])
+  })
+
+  it('보안 헤더가 없으면 WARN, nabi.kim 검사를 안 하면 INFO 다', () => {
+    const results = liveResults({ ...healthy, headers: new Headers(), redirect: undefined })
+    expect(results.find((result) => result.id === 'live:headers')?.status).toBe('WARN')
+    expect(results.find((result) => result.id === 'live:redirect')?.status).toBe('INFO')
   })
 })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { collectContentProblems, headingAnchors, messageKeyDiff, missingTagLabels, missingTerms, brokenInternalLinks } from './content-checks'
+import { brokenInternalLinks, collectContentProblems, headingAnchors, messageKeyDiff, missingTagLabels, missingTerms, plainTextMarker } from './content-checks'
 
 describe('missingTagLabels / missingTerms', () => {
   it('표에 없는 키를 낸다', () => {
@@ -95,5 +95,20 @@ describe('collectContentProblems 의 translation 옵션', () => {
       { translation: false },
     )
     expect(problems).toEqual([])
+  })
+})
+
+describe('plainTextMarker', () => {
+  it('인라인 문법이 없는 첫 순수 텍스트 문단을 고른다 (렌더된 HTML 에 그대로 나오는 글자)', () => {
+    const markdown = '## 제목\n\n문장 안 ![이미지](./a.png) 입니다.\n\n`code` 가 있는 문단입니다 아주 길게요.\n\n본문은 미리 만들어 두고 서빙합니다.\n'
+    expect(plainTextMarker(markdown)).toBe('본문은 미리 만들어 두고 서빙합니다.')
+  })
+
+  it('HTML 에서 이스케이프되는 글자가 있거나 너무 짧은 문단은 고르지 않는다', () => {
+    expect(plainTextMarker('짧음\n\nA & B 는 같지 않습니다 그렇죠\n')).toBeUndefined()
+  })
+
+  it('Callout·디렉티브 안 문단은 고르지 않는다 (렌더 때 글자가 바뀔 수 있다)', () => {
+    expect(plainTextMarker('> [!TIP]\n> 처음 오셨다면 여기부터 보세요 그렇습니다\n')).toBeUndefined()
   })
 })
