@@ -9,7 +9,6 @@
   "posts_empty": "아직 글이 없어요.",
   "post_updated": "수정",
   "post_toc": "목차",
-  "post_read_in_other_language": "English",
   "not_found_title": "페이지를 찾을 수 없어요",
   "not_found_description": "주소가 바뀌었거나 없는 페이지예요.",
   "not_found_back_home": "처음으로",
@@ -44,5 +43,7 @@
   "lobby_views_today": "오늘",
   "lobby_views_total": "전체",
   "comments_load_failed": "댓글을 불러오지 못했어요. 잠시 뒤에 다시 해 주세요.",
-  "site_description": "eunsol 개인 블로그"
+  "site_description": "eunsol 개인 블로그",
+  "language_menu_label": "언어",
+  "language_unavailable": "번역 없음"
 }

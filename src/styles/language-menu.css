@@ -1,0 +1,86 @@
+/* 언어 고르기 팝오버 (헤더 오른쪽) */
+.language-menu {
+  position: relative;
+}
+
+.language-menu-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.language-menu-button:hover,
+.language-menu-button[aria-expanded='true'] {
+  color: var(--ink);
+}
+
+.language-menu-icon {
+  width: 1rem;
+  height: 1rem;
+  background: currentColor;
+  mask: var(--icon-languages) center / contain no-repeat;
+}
+
+.language-menu-panel {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  z-index: 20;
+  min-width: 11rem;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--paper);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
+}
+
+.language-menu-panel[hidden] {
+  display: none;
+}
+
+/* 헤더 링크 규칙(.site-nav a)보다 우선하도록 패널 안으로 좁힌다 */
+.language-menu-panel .language-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.language-menu-panel a.language-menu-item:hover,
+.language-menu-panel a.language-menu-item:focus-visible {
+  background: var(--wash);
+}
+
+.language-menu-panel .language-menu-item[aria-current='true'] {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* 지금 언어 표시 */
+.language-menu-panel .language-menu-item[aria-current='true']::after {
+  content: '';
+  width: 0.9rem;
+  height: 0.9rem;
+  background: currentColor;
+  mask: var(--icon-check) center / contain no-repeat;
+}
+
+.language-menu-panel .language-menu-item[aria-disabled='true'] {
+  color: var(--muted);
+}
+
+.language-menu-item small {
+  font-size: 0.78rem;
+}

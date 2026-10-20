@@ -9,7 +9,6 @@
   "posts_empty": "No posts yet.",
   "post_updated": "Updated",
   "post_toc": "Contents",
-  "post_read_in_other_language": "한국어",
   "not_found_title": "Page not found",
   "not_found_description": "The page may have moved or never existed.",
   "not_found_back_home": "Go home",
@@ -44,5 +43,7 @@
   "lobby_views_today": "Today",
   "lobby_views_total": "Total",
   "comments_load_failed": "Comments are unavailable right now. Try again later.",
-  "site_description": "eunsol's personal blog"
+  "site_description": "eunsol's personal blog",
+  "language_menu_label": "Language",
+  "language_unavailable": "Not translated"
 }

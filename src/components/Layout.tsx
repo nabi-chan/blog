@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { m } from '~/i18n/messages'
 import { site } from '~/site'
-import { LanguageSwitch } from './LanguageSwitch'
+import { LanguageMenu } from './LanguageMenu'
 import { ViewCountsProvider } from './ViewCounts'
 
 export function Layout({ children }: { children: ReactNode }) {
@@ -16,7 +16,7 @@ export function Layout({ children }: { children: ReactNode }) {
           </Link>
           <nav className="site-nav">
             <Link to="/posts">{m.nav_posts()}</Link>
-            <LanguageSwitch />
+            <LanguageMenu />
           </nav>
         </header>
         {children}
