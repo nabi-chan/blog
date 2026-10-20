@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { queries } from '~/content/posts.server'
-import { getLocale } from '~/i18n/runtime'
+import { getLocale } from '~/shared/i18n'
 import { buildLlmsFull } from '~/seo/llms'
 
 // 두 언어 원문을 한 파일에 담는다. /en/llms-full.txt 는 없는 경로로 둔다

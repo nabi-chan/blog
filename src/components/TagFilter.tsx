@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import type { TagRef } from '~/content/post-queries'
-import { m } from '~/i18n/messages'
-import { localizeHref } from '~/i18n/runtime'
+import { localizeHref, m } from '~/shared/i18n'
 import { applyTagSelection, tagFilterCss } from '~/lib/tag-filter'
 
 // 칩 마크업. URL 쿼리를 읽지 않으므로 프리렌더 HTML 과 hydration 결과가 언제나 같다.

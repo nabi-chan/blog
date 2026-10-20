@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { site } from '~/site'
+import { site } from '~/shared/config'
 import { changedSlugs, indexNowPayload, selectIndexNowUrls, sitemapUrls } from './indexnow'
 
 const SITEMAP = `<?xml version="1.0" encoding="UTF-8"?>

@@ -1,8 +1,7 @@
 import { Link } from '@tanstack/react-router'
-import { formatCompactDate, formatDate } from '~/content/date'
+import { formatCompactDate, formatDate } from '~/shared/lib/date'
 import { type PostMeta, groupByYear as group } from '~/content/post-index'
-import { m } from '~/i18n/messages'
-import type { Locale } from '~/i18n/runtime'
+import { type Locale, m } from '~/shared/i18n'
 
 function Item({ post, locale }: { post: PostMeta; locale: Locale }) {
   return (

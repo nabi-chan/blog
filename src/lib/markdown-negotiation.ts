@@ -1,4 +1,4 @@
-import { SLUG_PATTERN } from '../content/constants'
+import { SLUG_PATTERN } from '../shared/config'
 
 type MediaRange = { type: string; q: number }
 

@@ -1,4 +1,4 @@
-import { site } from '~/site'
+import { site } from '~/shared/config'
 
 // 스펙 4.7 의 길이 제한. 길이는 코드 포인트로 센다 (이모지 하나가 한 글자)
 export const COMMENT_LIMITS = {

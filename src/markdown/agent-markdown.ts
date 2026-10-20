@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import { visit } from 'unist-util-visit'
-import type { Locale } from '~/i18n/runtime'
+import type { Locale } from '~/shared/i18n'
 import { resolvePostLink } from './link'
 import { decodePath } from './rehype-local-images'
 

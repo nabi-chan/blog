@@ -2,7 +2,7 @@
 // 사용법: node scripts/smoke.ts <baseUrl>
 import { checkResponse, extractMetaUrls, extractStylesheets, type SmokeCheck, type SmokePost, sitemapPosts } from '../src/lib/smoke.ts'
 import { sitemapUrls } from '../src/lib/indexnow.ts'
-import { SECURITY_HEADERS } from '../src/lib/security-headers.ts'
+import { SECURITY_HEADERS } from '../src/shared/lib/security-headers/index.ts'
 
 // 글이 있든 없든 늘 맞아야 하는 것
 export const CHECKS: SmokeCheck[] = [

@@ -1,4 +1,4 @@
-import type { Locale } from '~/i18n/runtime'
+import type { Locale } from '~/shared/i18n'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeSlug from 'rehype-slug'

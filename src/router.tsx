@@ -1,5 +1,5 @@
 import { createRouter } from '@tanstack/react-router'
-import { deLocalizeUrl, localizeUrl } from '~/i18n/runtime'
+import { deLocalizeUrl, localizeUrl } from '~/shared/i18n'
 import { routeTree } from './routeTree.gen'
 
 export function getRouter() {

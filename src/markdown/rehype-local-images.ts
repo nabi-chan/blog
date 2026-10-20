@@ -5,7 +5,7 @@ import type { Element, Root } from 'hast'
 import { imageSize } from 'image-size'
 import { visit } from 'unist-util-visit'
 import type { VFile } from 'vfile'
-import { BODY_MAX_WIDTH, CONTENT_VW, IMAGE_VARIANT_WIDTHS, SPLIT_MIN_VIEWPORT } from '../content/constants'
+import { BODY_MAX_WIDTH, CONTENT_VW, IMAGE_VARIANT_WIDTHS, SPLIT_MIN_VIEWPORT } from '../shared/config'
 import type { Asset } from './render'
 
 declare module 'vfile' {

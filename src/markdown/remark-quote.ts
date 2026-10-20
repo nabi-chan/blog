@@ -2,7 +2,7 @@ import type { Root, RootContent } from 'mdast'
 import type { ContainerDirective } from 'mdast-util-directive'
 import { toString } from 'mdast-util-to-string'
 import { visit } from 'unist-util-visit'
-import type { Locale } from '~/i18n/runtime'
+import type { Locale } from '~/shared/i18n'
 
 const ERROR = '::::quote 에는 비어 있지 않은 :::translation 과 :::original 이 하나씩 있어야 합니다'
 

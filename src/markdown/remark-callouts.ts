@@ -1,6 +1,6 @@
 import type { Blockquote, Paragraph, Root } from 'mdast'
 import { visit } from 'unist-util-visit'
-import type { Locale } from '~/i18n/runtime'
+import type { Locale } from '~/shared/i18n'
 
 const LABELS = {
   note: { ko: '참고', en: 'Note' },

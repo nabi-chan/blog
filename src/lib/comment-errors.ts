@@ -1,5 +1,5 @@
 import type { ApiErrorCode } from '~/api/types'
-import { m } from '~/i18n/messages'
+import { m } from '~/shared/i18n'
 
 // API 는 오류 코드만 돌려준다. 화면 문구는 여기서 현재 언어로 고른다
 export function commentErrorMessage(code: ApiErrorCode | 'network'): string {

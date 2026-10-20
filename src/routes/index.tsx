@@ -5,12 +5,11 @@ import { ViewCount, useViewCounts } from '~/components/ViewCounts'
 import { TermTooltips } from '~/components/TermTooltips'
 import { WidgetMounter } from '~/components/WidgetMounter'
 import { getLobbyIntroFn, listPostsFn } from '~/content/posts.functions'
-import { m } from '~/i18n/messages'
-import { getLocale } from '~/i18n/runtime'
+import { getLocale, m } from '~/shared/i18n'
 import { pageHead } from '~/seo/head'
 import { siteGraph } from '~/seo/json-ld'
 import { absoluteUrl } from '~/seo/url'
-import { site } from '~/site'
+import { site } from '~/shared/config'
 
 const RECENT_COUNT = 5
 

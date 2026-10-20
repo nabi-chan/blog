@@ -1,4 +1,4 @@
-import { TAG_PATTERN } from '~/content/constants'
+import { TAG_PATTERN } from '~/shared/config'
 
 // 목록 필터는 React 렌더 결과를 바꾸지 않고 <html data-tag> 속성과 CSS 로만 건다.
 // 프리렌더된 /posts 를 ?tag= 로 열어도 hydration 이 어긋나지 않게 하려는 것이다

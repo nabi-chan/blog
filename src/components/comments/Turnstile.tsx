@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { getLocale } from '~/i18n/runtime'
+import { getLocale } from '~/shared/i18n'
 
 type TurnstileApi = {
   render: (container: HTMLElement, options: Record<string, unknown>) => string

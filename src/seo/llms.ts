@@ -1,7 +1,6 @@
 import type { FeedItem } from '~/content/post-queries'
-import { type Locale, locales } from '~/i18n/runtime'
-import { LANGUAGE_NAMES } from '~/lib/language-options'
-import { site } from '~/site'
+import { LANGUAGE_NAMES, type Locale, locales } from '~/shared/i18n'
+import { site } from '~/shared/config'
 import { absoluteUrl, pageUrl } from './url'
 
 const LABELS = {

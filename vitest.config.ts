@@ -14,6 +14,7 @@ export default defineConfig({
         'src/api/**/*.ts',
         'src/seo/**/*.ts',
         'src/og/**/*.ts',
+        'src/shared/**/*.ts',
       ],
       exclude: [
         '**/*.test.{ts,tsx}',
@@ -25,6 +26,10 @@ export default defineConfig({
         'src/api/test-utils.ts',
         'src/api/context.ts',
         'src/api/types.ts',
+        // 지금도 커버리지 밖이던 Paraglide 연결과 사이트 설정
+        'src/shared/i18n/messages.ts',
+        'src/shared/i18n/runtime.ts',
+        'src/shared/config/site.ts',
       ],
       thresholds: { functions: 100, lines: 90 },
     },

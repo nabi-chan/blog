@@ -1,4 +1,4 @@
-import type { Locale } from '~/i18n/runtime'
+import type { Locale } from '~/shared/i18n'
 
 const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})(?: (\d{2}):(\d{2})(?::(\d{2}))?)?$/
 

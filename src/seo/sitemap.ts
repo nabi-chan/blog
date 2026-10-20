@@ -1,5 +1,5 @@
 import type { PostIndex } from '~/content/post-index'
-import type { Locale } from '~/i18n/runtime'
+import type { Locale } from '~/shared/i18n'
 import { escapeXml } from './text'
 import { pageUrl } from './url'
 

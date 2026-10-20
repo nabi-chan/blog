@@ -1,5 +1,5 @@
-import type { Locale } from '~/i18n/runtime'
-import { SLUG_PATTERN } from '../content/constants'
+import type { Locale } from '~/shared/i18n'
+import { SLUG_PATTERN } from '../shared/config'
 
 // Paraglide urlPatterns(Task 2)와 같은 규칙: 한국어는 접두사 없음, 영어는 /en
 export function localizePath(path: string, locale: Locale): string {

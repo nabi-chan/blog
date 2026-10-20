@@ -5,10 +5,10 @@ import { safeReturnPath } from '~/api/http'
 import { routeApi } from '~/api/router'
 import { postIndex } from '~/content/posts.server'
 import { discoveryLinks, markdownAlternate, prefersMarkdown } from '~/lib/markdown-negotiation'
-import { withSecurityHeaders } from '~/lib/security-headers'
+import { withSecurityHeaders } from '~/shared/lib/security-headers'
 import { isMalformedPath } from '~/lib/url-guard'
 import { paraglideMiddleware } from '~/paraglide/server'
-import { site } from '~/site'
+import { site } from '~/shared/config'
 
 export default {
   // 정적 에셋 응답은 public/_headers 가, Worker 응답은 여기서 같은 보안 헤더를 단다

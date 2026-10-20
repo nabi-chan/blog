@@ -1,4 +1,4 @@
-import { hmacHex, sha256Hex } from './crypto'
+import { hmacHex, sha256Hex } from '../shared/lib/crypto'
 import { apiError, json, readJson } from './http'
 import type { ApiContext } from './router'
 import type { ViewCountsDto } from './types'

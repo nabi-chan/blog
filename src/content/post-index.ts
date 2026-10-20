@@ -1,5 +1,5 @@
-import type { Locale } from '~/i18n/runtime'
-import { kstYear } from './date'
+import type { Locale } from '~/shared/i18n'
+import { kstYear } from '../shared/lib/date'
 
 export type PostMeta = {
   slug: string

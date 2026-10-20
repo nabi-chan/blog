@@ -7,7 +7,7 @@ import remarkGfm from 'remark-gfm'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import { visit } from 'unist-util-visit'
-import { SLUG_PATTERN } from './constants.ts'
+import { SLUG_PATTERN } from '../shared/config/index.ts'
 import { computeSourceHash } from './source-hash.ts'
 import { compareStructure, translationStructure } from './translation-structure.ts'
 

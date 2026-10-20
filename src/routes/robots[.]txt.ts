@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { getLocale } from '~/i18n/runtime'
+import { getLocale } from '~/shared/i18n'
 import { buildRobots } from '~/seo/robots'
 
 export const Route = createFileRoute('/robots.txt')({

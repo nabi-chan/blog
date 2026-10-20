@@ -3,9 +3,8 @@ import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { Layout } from '~/components/Layout'
 import { NotFound } from '~/components/NotFound'
-import { m } from '~/i18n/messages'
-import { getLocale, localizeHref } from '~/i18n/runtime'
-import { site } from '~/site'
+import { getLocale, localizeHref, m } from '~/shared/i18n'
+import { site } from '~/shared/config'
 import appCss from '~/styles/app.css?url'
 
 export const Route = createRootRoute({

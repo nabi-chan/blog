@@ -1,4 +1,4 @@
-import type { Locale } from '~/i18n/runtime'
+import type { Locale } from '~/shared/i18n'
 import { describe, expect, it } from 'vitest'
 import { type PostMeta, createPostIndex } from './post-index'
 import { type BodyKey, type PostBody, type PostSource, createPostQueries, tagRefs } from './post-queries'

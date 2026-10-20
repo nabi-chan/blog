@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
-import { m } from '~/i18n/messages'
-import { site } from '~/site'
+import { m } from '~/shared/i18n'
+import { site } from '~/shared/config'
 import { LanguageMenu } from './LanguageMenu'
 import { ViewCountsProvider } from './ViewCounts'
 

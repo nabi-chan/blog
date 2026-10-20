@@ -1,9 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { queries } from '~/content/posts.server'
-import { m } from '~/i18n/messages'
-import { getLocale } from '~/i18n/runtime'
+import { getLocale, m } from '~/shared/i18n'
 import { buildRss } from '~/seo/rss'
-import { site } from '~/site'
+import { site } from '~/shared/config'
 
 // /rss.xml, /en/rss.xml. 빌드 때 프리렌더해서 정적 파일로 굳는다 (정적 서빙은 확장자로 application/xml 을 붙인다)
 export const Route = createFileRoute('/rss.xml')({

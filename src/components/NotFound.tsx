@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { m } from '~/i18n/messages'
+import { m } from '~/shared/i18n'
 
 export function NotFound() {
   return (

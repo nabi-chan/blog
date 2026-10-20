@@ -1,4 +1,4 @@
-import type { Locale } from '~/i18n/runtime'
+import type { Locale } from '~/shared/i18n'
 import type { TocItem } from '../markdown/rehype-toc'
 import type { Glossary, GlossaryEntry } from '../markdown/remark-term'
 import { type PostIndex, type PostMeta, collectTags } from './post-index'

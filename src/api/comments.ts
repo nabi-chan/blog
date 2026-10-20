@@ -1,7 +1,7 @@
 import { ATTEMPT_LIMITS, isLimited, recordFailure } from './attempts'
 import { isReservedName, parseCommentDeletion, parseCommentEdit, parseNewComment } from './comment-input'
 import { type CommentRow, deleteComment, getComment, insertComment, listComments, toCommentDto, updateCommentBody } from './comments-repo'
-import { hmacHex } from './crypto'
+import { hmacHex } from '../shared/lib/crypto'
 import { apiError, json, readJson } from './http'
 import { hashPassword, verifyPassword } from './password'
 import type { ApiContext } from './router'

@@ -1,6 +1,6 @@
 import type { Element, Root } from 'hast'
 import { visit } from 'unist-util-visit'
-import type { Locale } from '~/i18n/runtime'
+import type { Locale } from '~/shared/i18n'
 import { resolvePostLink } from './link'
 
 // 본문 링크를 글 언어에 맞추고, 외부 링크만 새 탭으로 연다

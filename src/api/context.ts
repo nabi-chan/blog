@@ -1,4 +1,4 @@
-import { site } from '~/site'
+import { site } from '~/shared/config'
 import { isOwnerRequest, remoteAccessKeys } from './access'
 import { clientIp } from './http'
 import type { ApiContext } from './router'
