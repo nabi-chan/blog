@@ -65,6 +65,14 @@ describe('createApiClient', () => {
     expect(await client.me()).toEqual({ ok: false, status: 0, error: 'network' })
   })
 
+  it('fetch 를 넘기지 않으면 부를 때의 전역 fetch 를 쓴다', async () => {
+    const global = vi.fn(async () => Response.json({ site: 1 }))
+    vi.stubGlobal('fetch', global)
+    expect(await createApiClient().recordView()).toEqual({ ok: true, data: { site: 1 } })
+    expect(global).toHaveBeenCalledWith('/api/views', expect.objectContaining({ method: 'POST' }))
+    vi.unstubAllGlobals()
+  })
+
   it('recordView 는 slug 가 있을 때만 본문에 싣는다', async () => {
     const { client, calls } = fakeFetch(() => Response.json({ site: 3 }))
     expect(await client.recordView()).toEqual({ ok: true, data: { site: 3 } })
