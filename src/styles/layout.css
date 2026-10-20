@@ -269,12 +269,11 @@ html:not([data-tag]) .tag-filter [data-chip=''] {
   min-width: 0;
 }
 
-/* 응답 전 스켈레톤. 글자는 투명하게 두고 1em 높이 블록만 보인다 */
+/* 응답 전 스켈레톤. 글자는 투명하게 두고 블록만 보인다.
+   line-height: normal 이면 글꼴의 글자 상자 높이가 되어, 기준선에 맞춘 레이블 글자와 위아래가 정확히 겹친다 */
 .view-count-number[data-state='loading'] {
   min-width: 3ch;
-  height: 1em;
-  line-height: 1em;
-  vertical-align: -0.12em;
+  line-height: normal;
   border-radius: 4px;
   background: var(--rule);
   color: transparent;
