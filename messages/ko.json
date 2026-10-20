@@ -43,5 +43,6 @@
   "comment_error_network": "네트워크 연결을 확인해 주세요.",
   "lobby_views_today": "오늘",
   "lobby_views_total": "전체",
-  "comments_load_failed": "댓글을 불러오지 못했어요. 잠시 뒤에 다시 해 주세요."
+  "comments_load_failed": "댓글을 불러오지 못했어요. 잠시 뒤에 다시 해 주세요.",
+  "site_description": "eunsol 개인 블로그"
 }

@@ -12,6 +12,8 @@ export default defineConfig({
         'src/lib/**/*.{ts,tsx}',
         'src/widgets/**/*.{ts,tsx}',
         'src/api/**/*.ts',
+        'src/seo/**/*.ts',
+        'src/og/**/*.ts',
       ],
       exclude: [
         '**/*.test.{ts,tsx}',

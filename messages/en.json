@@ -43,5 +43,6 @@
   "comment_error_network": "Check your connection.",
   "lobby_views_today": "Today",
   "lobby_views_total": "Total",
-  "comments_load_failed": "Comments are unavailable right now. Try again later."
+  "comments_load_failed": "Comments are unavailable right now. Try again later.",
+  "site_description": "eunsol's personal blog"
 }
