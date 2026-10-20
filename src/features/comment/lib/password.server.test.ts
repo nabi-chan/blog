@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PASSWORD_ITERATIONS, hashPassword, verifyPassword } from './password'
+import { PASSWORD_ITERATIONS, hashPassword, verifyPassword } from './password.server'
 
 const PEPPER = 'test-pepper'
 

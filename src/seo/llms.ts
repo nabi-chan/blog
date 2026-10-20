@@ -2,7 +2,7 @@ import type { FeedItem } from '~/entities/post'
 import { type Locale, locales } from '~/shared/i18n'
 import { LANGUAGE_NAMES } from '~/shared/lib/language-options'
 import { site } from '~/shared/config'
-import { absoluteUrl, pageUrl } from './url'
+import { absoluteUrl, pageUrl } from '~/seo/url'
 
 const LABELS = {
   ko: { author: '작성자', links: '링크', posts: '글', full: '전체 원문' },

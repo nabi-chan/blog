@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { discoveryLinks, markdownAlternate, prefersMarkdown } from './markdown-negotiation'
+import { discoveryLinks, markdownAlternate, prefersMarkdown } from '~/lib/markdown-negotiation'
 
 describe('prefersMarkdown', () => {
   it('Accept 에 text/markdown 이 있고 HTML 보다 낮지 않으면 Markdown 을 준다', () => {

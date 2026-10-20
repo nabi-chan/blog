@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { applyTagSelection, readTagParam, tagFilterCss } from './tag-filter'
+import { applyTagSelection, readTagParam, tagFilterCss } from '~/lib/tag-filter'
 
 describe('tagFilterCss', () => {
   it('태그마다 숨김·빈 연도·활성 칩 규칙을 만든다', () => {

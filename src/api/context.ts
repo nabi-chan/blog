@@ -1,7 +1,6 @@
 import { site } from '~/shared/config'
-import { isOwnerRequest, remoteAccessKeys } from './access'
-import { clientIp, verifyTurnstile } from '../shared/api/index.server'
-import type { ApiContext } from '~/shared/api/index.server'
+import { isOwnerRequest, remoteAccessKeys } from '~/api/access'
+import { type ApiContext, clientIp, verifyTurnstile } from '~/shared/api/index.server'
 
 // Worker env 와 요청을 핸들러가 쓰는 ApiContext 로 엮기만 한다 (로직은 각 모듈에 있다)
 export function createApiContext(

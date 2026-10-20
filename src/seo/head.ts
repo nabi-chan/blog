@@ -1,9 +1,9 @@
 import { DESCRIPTION_MAX, site } from '~/shared/config'
 import type { Locale } from '~/shared/i18n'
 import { localizePath } from '~/entities/post'
-import { type Graph, jsonLdScript } from './json-ld'
-import { truncateMeta } from './text'
-import { pageUrl } from './url'
+import { type Graph, jsonLdScript } from '~/seo/json-ld'
+import { truncateMeta } from '~/seo/text'
+import { pageUrl } from '~/seo/url'
 
 export type HeadInput = {
   locale: Locale

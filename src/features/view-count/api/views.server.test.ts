@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { createTestDb, testContext } from '../shared/api/index.testing'
-import { handleRecordView, isBotUserAgent, kstDay, pruneViews, readViews, recordView, visitorKey } from './views'
+import { createTestDb, testContext } from '~/shared/api/index.testing'
+import { handleRecordView, isBotUserAgent, kstDay, pruneViews, readViews, recordView, visitorKey } from './views.server'
 
 let db: D1Database
 let dispose: () => Promise<void>

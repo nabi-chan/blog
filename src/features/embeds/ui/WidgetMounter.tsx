@@ -1,7 +1,7 @@
 import { type RefObject, createElement, useEffect } from 'react'
 import { type Root, createRoot } from 'react-dom/client'
-import { widgetNames } from '~/widgets/names'
-import { widgets } from '~/widgets/registry'
+import { widgetNames } from '../config/names'
+import { widgets } from '../model/registry'
 
 const isWidgetName = (name: string): name is (typeof widgetNames)[number] =>
   (widgetNames as readonly string[]).includes(name)

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { escapeXml, truncateMeta } from './text'
+import { escapeXml, truncateMeta } from '~/seo/text'
 
 describe('truncateMeta', () => {
   it('상한 안이면 그대로 둔다', () => {

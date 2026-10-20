@@ -1,5 +1,5 @@
 import { site } from '~/shared/config'
-import { absoluteUrl } from './url'
+import { absoluteUrl } from '~/seo/url'
 
 // AI 검색·사용자 요청·학습 크롤러. 막지 않는다는 뜻을 이름으로 분명히 남긴다 (스펙 4.9)
 export const AI_CRAWLERS: readonly string[] = [

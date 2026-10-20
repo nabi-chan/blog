@@ -17,7 +17,7 @@ import {
 } from './src/entities/post/index.build'
 import { parseKstDate } from './src/shared/lib/date'
 import { postCard, writeOgImage } from './src/shared/og'
-import { widgetNames } from './src/widgets/names'
+import { widgetNames } from './src/features/embeds/index.build'
 
 type CacheFn = Context['cache']
 

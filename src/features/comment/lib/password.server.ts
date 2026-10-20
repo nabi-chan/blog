@@ -1,4 +1,4 @@
-import { constantTimeEqual, fromBase64, hmacSha256, toBase64 } from '../shared/lib/crypto'
+import { constantTimeEqual, fromBase64, hmacSha256, toBase64 } from '~/shared/lib/crypto'
 
 // 임시값이다. 계획 5 에서 무료 플랜 CPU 시간을 실측해 정한다. Workers 의 PBKDF2 상한은 100,000 이다
 export const PASSWORD_ITERATIONS = 50_000

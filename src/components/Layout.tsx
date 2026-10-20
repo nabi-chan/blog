@@ -2,8 +2,8 @@ import { Link } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { m } from '~/shared/i18n'
 import { site } from '~/shared/config'
-import { LanguageMenu } from './LanguageMenu'
-import { ViewCountsProvider } from './ViewCounts'
+import { LanguageMenu } from '~/components/LanguageMenu'
+import { ViewCountsProvider } from '~/features/view-count'
 
 export function Layout({ children }: { children: ReactNode }) {
   return (

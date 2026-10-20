@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { absoluteUrl, pageUrl } from './url'
+import { absoluteUrl, pageUrl } from '~/seo/url'
 
 describe('absoluteUrl', () => {
   it('사이트 주소 기준 절대 URL 을 만든다. 루트만 끝 슬래시가 있다', () => {

@@ -10,7 +10,7 @@ export function remarkWidget(opts: { names: readonly string[] }) {
     visit(tree, 'containerDirective', (node: ContainerDirective) => {
       if (!node.name.startsWith(PREFIX)) return
       const name = node.name.slice(PREFIX.length)
-      if (!opts.names.includes(name)) throw new Error(`등록되지 않은 위젯입니다: ${node.name} (src/widgets/names.ts)`)
+      if (!opts.names.includes(name)) throw new Error(`등록되지 않은 위젯입니다: ${node.name} (src/features/embeds/config/names.ts)`)
       node.data = { hName: 'div', hProperties: { className: ['widget'], dataWidget: name } }
     })
   }

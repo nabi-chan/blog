@@ -1,9 +1,16 @@
-import { ATTEMPT_LIMITS, apiError, isLimited, json, readJson, recordFailure } from '../shared/api/index.server'
-import { isReservedName, parseCommentDeletion, parseCommentEdit, parseNewComment } from './comment-input'
-import { type CommentRow, deleteComment, getComment, insertComment, listComments, toCommentDto, updateCommentBody } from './comments-repo'
-import { hmacHex } from '../shared/lib/crypto'
-import { hashPassword, verifyPassword } from './password'
-import type { ApiContext } from '~/shared/api/index.server'
+import { ATTEMPT_LIMITS, type ApiContext, apiError, isLimited, json, readJson, recordFailure } from '~/shared/api/index.server'
+import { isReservedName, parseCommentDeletion, parseCommentEdit, parseNewComment } from '../model/comment-input'
+import {
+  type CommentRow,
+  deleteComment,
+  getComment,
+  insertComment,
+  listComments,
+  toCommentDto,
+  updateCommentBody,
+} from './comments-repo.server'
+import { hmacHex } from '~/shared/lib/crypto'
+import { hashPassword, verifyPassword } from '../lib/password.server'
 
 export async function handleMe(ctx: ApiContext): Promise<Response> {
   return json(200, { owner: await ctx.isOwner(), turnstileSiteKey: ctx.turnstileSiteKey })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isMalformedPath } from './url-guard'
+import { isMalformedPath } from '~/lib/url-guard'
 
 describe('isMalformedPath', () => {
   it('디코딩할 수 없는 퍼센트 인코딩은 잘못된 경로다', () => {

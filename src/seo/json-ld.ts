@@ -1,6 +1,6 @@
 import { type Locale, m } from '~/shared/i18n'
 import { site } from '~/shared/config'
-import { absoluteUrl, pageUrl } from './url'
+import { absoluteUrl, pageUrl } from '~/seo/url'
 
 // 구조화 데이터 (스펙 4.9). 노드는 @graph 하나에 넣고 @id 로 잇는다. Person 은 siteGraph 한 곳에서만 만든다
 export type Graph = Record<string, unknown>[]

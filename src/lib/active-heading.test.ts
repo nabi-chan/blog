@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { pickActiveHeading } from './active-heading'
+import { pickActiveHeading } from '~/lib/active-heading'
 
 const headings = [
   { id: 'a', top: -400 },

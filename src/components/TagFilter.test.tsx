@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import { TagChips } from './TagFilter'
+import { TagChips } from '~/components/TagFilter'
 
 describe('TagChips', () => {
   it('URL 쿼리와 상관없이 같은 마크업을 낸다 (활성 표시는 CSS 와 브라우저 effect 가 맡는다)', () => {

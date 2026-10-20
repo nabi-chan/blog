@@ -8,18 +8,17 @@ export default defineConfig({
       provider: 'v8',
       include: [
         'src/lib/**/*.{ts,tsx}',
-        'src/widgets/**/*.{ts,tsx}',
         'src/api/**/*.ts',
         'src/seo/**/*.ts',
         'src/shared/**/*.ts',
         'src/entities/**/*.ts',
+        'src/features/**/*.ts',
       ],
       exclude: [
         '**/*.test.{ts,tsx}',
         'src/entities/post/markdown/test-utils.ts',
         'src/entities/post/api/posts.server.ts',
         'src/entities/post/api/posts.functions.ts',
-        'src/widgets/*.tsx',
         // 테스트 도우미, env 배선, 타입만 있는 파일
         'src/shared/api/test-utils.ts',
         'src/api/context.ts',

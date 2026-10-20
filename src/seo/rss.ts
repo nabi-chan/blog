@@ -1,7 +1,7 @@
 import type { FeedItem } from '~/entities/post'
 import type { Locale } from '~/shared/i18n'
-import { escapeXml } from './text'
-import { pageUrl } from './url'
+import { escapeXml } from '~/seo/text'
+import { pageUrl } from '~/seo/url'
 
 // 본문은 우리가 빌드한 HTML 이라 속성 문자열만 바꾼다. 사이트 경로(/…)와 #헤딩 링크만 절대 URL 로 만든다
 export function absolutizeHtml(html: string, pageUrl: string): string {

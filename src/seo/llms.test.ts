@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { FeedItem } from '~/entities/post'
-import { buildLlmsFull, buildLlmsTxt } from './llms'
+import { buildLlmsFull, buildLlmsTxt } from '~/seo/llms'
 
 const item = (slug: string, locale: 'ko' | 'en', extra: Partial<FeedItem['post']> = {}): FeedItem => ({
   post: { slug, locale, title: `${slug} ${locale}`, description: `${slug} 요약`, date: '2026-10-20T12:00:00+09:00', tags: [], draft: false, ...extra },

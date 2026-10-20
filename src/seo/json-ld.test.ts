@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { collectionGraph, jsonLdScript, postGraph, siteGraph } from './json-ld'
+import { collectionGraph, jsonLdScript, postGraph, siteGraph } from '~/seo/json-ld'
 
 const post = {
   locale: 'en' as const,

@@ -1,4 +1,4 @@
-import type { CommentDto } from '../shared/api'
+import type { CommentDto } from '~/shared/api'
 
 export type CommentRow = {
   id: string

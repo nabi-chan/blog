@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { SEO_PAGES, markdownPagePaths, shouldPrerender } from './prerender'
+import { SEO_PAGES, markdownPagePaths, shouldPrerender } from '~/lib/prerender'
 
 describe('shouldPrerender', () => {
   it('페이지 경로는 프리렌더한다', () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { widgetNames } from './names'
+import { widgetNames } from '../config/names'
 import { widgets } from './registry'
 
 describe('widgets', () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { AI_CRAWLERS, buildRobots } from './robots'
+import { AI_CRAWLERS, buildRobots } from '~/seo/robots'
 
 describe('buildRobots', () => {
   const text = buildRobots()

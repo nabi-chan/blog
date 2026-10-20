@@ -1,6 +1,6 @@
 import { type RefObject, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { computeTooltipPosition } from '~/lib/tooltip-position'
+import { computeTooltipPosition } from '../lib/tooltip-position'
 import type { GlossaryEntry } from '~/entities/post'
 
 type Open = { key: string; target: HTMLElement; top: number; left: number }

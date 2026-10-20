@@ -1,8 +1,8 @@
 import { type FormEvent, useEffect, useState } from 'react'
-import { COMMENT_LIMITS } from '~/api/comment-input'
+import { COMMENT_LIMITS } from '../model/comment-input'
 import { m } from '~/shared/i18n'
 import { createApiClient } from '~/shared/api'
-import { commentErrorMessage } from '~/lib/comment-errors'
+import { commentErrorMessage } from '../lib/comment-errors'
 import { Turnstile } from './Turnstile'
 
 const client = createApiClient()

@@ -1,7 +1,7 @@
 import type { PostIndex } from '~/entities/post'
 import type { Locale } from '~/shared/i18n'
-import { escapeXml } from './text'
-import { pageUrl } from './url'
+import { escapeXml } from '~/seo/text'
+import { pageUrl } from '~/seo/url'
 
 // path 는 언어 접두사 없는 경로, locales 는 그 페이지가 실제로 있는 언어
 export type SitemapEntry = { path: string; lastmod?: Partial<Record<Locale, string>>; locales: Locale[] }

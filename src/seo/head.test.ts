@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { type HeadInput, pageHead } from './head'
-import { siteGraph } from './json-ld'
+import { type HeadInput, pageHead } from '~/seo/head'
+import { siteGraph } from '~/seo/json-ld'
 
 const base: HeadInput = {
   locale: 'en',

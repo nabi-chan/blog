@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { type PostMeta, createPostIndex } from '~/entities/post'
-import { buildSitemap, sitemapEntries } from './sitemap'
+import { buildSitemap, sitemapEntries } from '~/seo/sitemap'
 
 const count = (text: string, needle: string) => text.split(needle).length - 1
 

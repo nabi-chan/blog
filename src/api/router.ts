@@ -1,7 +1,6 @@
-import { handleCreateComment, handleDeleteComment, handleEditComment, handleListComments, handleMe } from './comments'
-import { apiError, isSameOrigin } from '../shared/api/index.server'
-import { handleRecordView } from './views'
-import type { ApiContext } from '~/shared/api/index.server'
+import { handleCreateComment, handleDeleteComment, handleEditComment, handleListComments, handleMe } from '~/features/comment/index.server'
+import { type ApiContext, apiError, isSameOrigin } from '~/shared/api/index.server'
+import { handleRecordView } from '~/features/view-count/index.server'
 
 type Handler = (request: Request, ctx: ApiContext, param: string) => Promise<Response>
 type Route = { pattern: RegExp; handlers: Partial<Record<string, Handler>> }

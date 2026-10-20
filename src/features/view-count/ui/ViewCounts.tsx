@@ -1,8 +1,8 @@
 import { useRouter, useRouterState } from '@tanstack/react-router'
 import { type ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react'
 import { createApiClient } from '~/shared/api'
-import { withMinimumDelay } from '~/lib/min-delay'
-import { type MatchLike, viewKey, viewTarget } from '~/lib/view-target'
+import { withMinimumDelay } from '../lib/min-delay'
+import { type MatchLike, viewKey, viewTarget } from '../lib/view-target'
 
 // failed 는 마지막 요청이 실패했는지. 응답 전(스켈레톤)과 실패(빈자리)를 구분한다
 type ViewCounts = { site: number | null; today: number | null; post: { slug: string; count: number } | null; failed: boolean }

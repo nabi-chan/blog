@@ -1,6 +1,6 @@
 import { type CryptoKey, type JWK, SignJWT, createLocalJWKSet, exportJWK, generateKeyPair } from 'jose'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import { type AccessConfig, isOwnerRequest, remoteAccessKeys, verifyAccessToken } from './access'
+import { type AccessConfig, isOwnerRequest, remoteAccessKeys, verifyAccessToken } from '~/api/access'
 
 const config: AccessConfig = { teamDomain: 'team.cloudflareaccess.com', audience: 'aud-1', ownerEmail: 'owner@example.com' }
 const NOW = new Date('2026-10-20T03:00:00Z')
