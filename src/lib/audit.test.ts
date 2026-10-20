@@ -1,5 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { BUDGETS, type LiveInput, budgetResults, changedMigrations, diffBase, formatResult, leakedPostText, liveResults, median, pendingMigrations, securityHeaderGaps, summarize, translationResults } from './audit'
+import {
+  BUDGETS,
+  type LiveInput,
+  budgetResults,
+  changedMigrations,
+  formatResult,
+  leakedPostText,
+  liveResults,
+  median,
+  migrationCheck,
+  pendingMigrations,
+  securityHeaderGaps,
+  summarize,
+  translationResults,
+} from './audit'
 
 describe('summarize', () => {
   it('FAIL 이 하나라도 있으면 exitCode 1 이다', () => {
@@ -124,6 +138,7 @@ describe('liveResults', () => {
     metaUrlStatuses: [{ url: 'https://nabichan.me/261020', status: 200 }],
     apiStatus: 200,
     redirect: { status: 301, location: 'https://nabichan.me/' },
+    httpRedirect: { status: 301, location: 'https://nabichan.me/' },
   }
   const fails = (input: LiveInput) => liveResults(input).filter((result) => result.status === 'FAIL').map((result) => result.id)
 
@@ -150,21 +165,29 @@ describe('liveResults', () => {
     })
   })
 
+  it('http 로 온 요청은 https 로 301 이어야 하고, 검사를 안 하면 INFO 다', () => {
+    expect(fails({ ...healthy, httpRedirect: { status: 200, location: null } })).toEqual(['live:https'])
+    expect(fails({ ...healthy, httpRedirect: { status: 301, location: 'http://nabichan.me/' } })).toEqual(['live:https'])
+    expect(liveResults({ ...healthy, httpRedirect: undefined }).find((result) => result.id === 'live:https')?.status).toBe('INFO')
+  })
+
   it('nabi.kim 검사를 안 하면 INFO 다', () => {
     const results = liveResults({ ...healthy, redirect: undefined })
     expect(results.find((result) => result.id === 'live:redirect')?.status).toBe('INFO')
   })
 })
 
-describe('diffBase', () => {
-  it('--base 인자, AUDIT_BASE, upstream merge-base, 직전 커밋 순서로 기준점을 고른다', () => {
-    expect(diffBase({ arg: 'abc', env: 'def', upstream: 'up', previous: true })).toEqual({ ref: 'abc', label: '--base abc' })
-    expect(diffBase({ env: 'def', upstream: 'up', previous: true })).toEqual({ ref: 'def', label: 'AUDIT_BASE def' })
-    expect(diffBase({ upstream: 'up1234567890', previous: true })).toEqual({ ref: 'up1234567890', label: 'upstream 과의 공통 조상 up12345' })
-    expect(diffBase({ previous: true })).toEqual({ ref: 'HEAD~1', label: '직전 커밋' })
+describe('migrationCheck', () => {
+  it('작업 트리나 전체 이력에서 커밋된 마이그레이션을 고친 적이 있으면 FAIL', () => {
+    expect(migrationCheck({ working: '', history: 'M\tmigrations/0001_a.sql\n\nD\tmigrations/0003_c.sql\n' })).toMatchObject({
+      status: 'FAIL',
+      details: ['migrations/0001_a.sql', 'migrations/0003_c.sql'],
+    })
+    expect(migrationCheck({ working: 'M\tmigrations/0002_b.sql\n', history: '' })).toMatchObject({ status: 'FAIL', details: ['migrations/0002_b.sql'] })
   })
 
-  it('기준점이 없으면(얕은 clone 첫 커밋) null 이다', () => {
-    expect(diffBase({ previous: false })).toEqual({ ref: null, label: '기준점 없음' })
+  it('고친 적이 없으면 PASS, 이력을 못 읽으면(얕은 clone 등) INFO', () => {
+    expect(migrationCheck({ working: '', history: '' })).toMatchObject({ status: 'PASS' })
+    expect(migrationCheck({ working: '', history: null })).toMatchObject({ status: 'INFO' })
   })
 })

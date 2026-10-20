@@ -1,5 +1,5 @@
 // 저장소 점검 (스펙 5.2). 결과는 PASS / WARN / FAIL / INFO 로 내고 .audit-report.json 에 쓴다. FAIL 이 있으면 exit 1
-// 사용법: node scripts/audit.ts [--build] [--base <sha>] [--live [--base-url <url>]]
+// 사용법: node scripts/audit.ts [--build] [--live [--base-url <url>]]
 import { spawn, spawnSync } from 'node:child_process'
 import { existsSync, openSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -13,11 +13,10 @@ import {
   type AuditResult,
   type TranslationState,
   budgetResults,
-  changedMigrations,
-  diffBase,
   formatResult,
   leakedPostText,
   liveResults,
+  migrationCheck,
   pendingMigrations,
   summarize,
   translationResults,
@@ -129,24 +128,11 @@ function baseChecks() {
     )
   }
 
-  // 이미 커밋된 마이그레이션은 고치지 않는다. 작업 트리와, 기준점(diffBase)부터 HEAD 까지를 본다
-  const upstream = run('git', ['merge-base', 'HEAD', '@{upstream}'])
-  const base = diffBase({
-    arg: args.includes('--base') ? args[args.indexOf('--base') + 1] : undefined,
-    env: process.env.AUDIT_BASE,
-    upstream: upstream.status === 0 ? upstream.stdout.trim() : undefined,
-    previous: run('git', ['rev-parse', '--verify', '--quiet', 'HEAD~1']).status === 0,
-  })
+  // 이미 커밋된 마이그레이션은 고치지 않는다. 작업 트리와 전체 이력을 본다 (얕은 clone 이면 이력을 못 믿어 INFO)
   const working = run('git', ['diff', '--name-status', 'HEAD', '--', 'migrations'])
-  const committed = base.ref === null ? undefined : run('git', ['diff', '--name-status', base.ref, 'HEAD', '--', 'migrations'])
-  const changed = [...changedMigrations(working.stdout), ...(committed?.status === 0 ? changedMigrations(committed.stdout) : [])]
-  results.push(
-    changed.length > 0
-      ? { id: 'migrations', status: 'FAIL', message: `이미 커밋된 마이그레이션을 고쳤습니다 (새 파일로 추가하세요, 기준: ${base.label})`, details: [...new Set(changed)] }
-      : committed?.status === 0
-        ? { id: 'migrations', status: 'PASS', message: `마이그레이션은 추가만 (기준: ${base.label})` }
-        : { id: 'migrations', status: 'INFO', message: `마이그레이션 수정 검사: ${base.label} — 작업 트리만 확인함` },
-  )
+  const shallow = run('git', ['rev-parse', '--is-shallow-repository']).stdout.trim() === 'true'
+  const history = shallow ? undefined : run('git', ['log', '--diff-filter=MDR', '--name-status', '--format=', '--', 'migrations'])
+  results.push(migrationCheck({ working: working.stdout, history: history?.status === 0 ? history.stdout : null }))
 }
 
 // 글 목록 (draft 여부와 영어 번역 유무)
@@ -320,6 +306,13 @@ async function liveChecks() {
   for (const post of posts.filter((entry) => !entry.hasEnglish)) {
     untranslated.push({ slug: post.slug, status: (await fetch(new URL(`/en/${post.slug}`, base), { redirect: 'manual' })).status })
   }
+  const httpRedirect =
+    base === DEFAULT_BASE
+      ? await fetch('http://nabichan.me/', { redirect: 'manual' }).then(
+          (res) => ({ status: res.status, location: res.headers.get('location') }),
+          (error: Error) => ({ status: 0, location: `요청 실패: ${error.message}` }),
+        )
+      : undefined
   const redirect =
     base === DEFAULT_BASE
       ? await fetch('https://nabi.kim/', { redirect: 'manual' }).then(
@@ -344,6 +337,7 @@ async function liveChecks() {
       metaUrlStatuses,
       apiStatus: api.status,
       redirect,
+      httpRedirect,
     }),
   )
 

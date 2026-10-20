@@ -16,12 +16,12 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      # push 직전 커밋. 수동 실행이면 비어 있고, 새 브랜치면 0 이 40개다
+      # push 직전 커밋(IndexNow 용). 수동 실행이면 비어 있고, 새 브랜치면 0 이 40개다
       BEFORE: ${{ github.event.before }}
     steps:
       - uses: actions/checkout@v7
         with:
-          fetch-depth: 0 # 바뀐 글·마이그레이션을 이전 커밋과 비교한다
+          fetch-depth: 0 # 마이그레이션은 전체 이력을, 바뀐 글은 이전 커밋과 비교한다
       - uses: pnpm/action-setup@v6 # 버전은 package.json 의 packageManager
       - uses: actions/setup-node@v7
         with:
@@ -29,8 +29,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: 점검 (게이트)
-        run: |
-          if [[ -z "$BEFORE" || "$BEFORE" =~ ^0+$ ]]; then pnpm audit:repo --build; else pnpm audit:repo --build --base "$BEFORE"; fi
+        run: pnpm audit:repo --build
       - name: 원격 D1 마이그레이션
         run: pnpm exec wrangler d1 migrations apply DB --remote
       - name: 배포
@@ -40,5 +39,6 @@ jobs:
       - name: 바뀐 글 IndexNow
         if: github.event_name == 'push'
         run: |
-          if [[ "$BEFORE" =~ ^0+$ ]]; then echo "이전 커밋이 없어 건너뜀"; exit 0; fi
+          # 새 브랜치거나 force-push 로 이전 커밋을 받지 못했으면 건너뛴다
+          if [[ "$BEFORE" =~ ^0+$ ]] || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then echo "이전 커밋을 찾지 못해 건너뜀"; exit 0; fi
           pnpm indexnow --submit --base "$BEFORE" --head "$GITHUB_SHA"

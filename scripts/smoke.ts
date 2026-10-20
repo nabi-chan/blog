@@ -90,10 +90,13 @@ function postChecks({ slug, en }: SmokePost, production: boolean): SmokeCheck[] 
 // 운영에서는 Access 가 Worker 보다 먼저 /admin 을 받아 로그인으로 보낸다. 되돌림 경로 검사는 Access 가 없는 preview 에서만 한다
 const isProduction = (baseUrl: string) => new URL(baseUrl).hostname === 'nabichan.me'
 
-function adminCheck(baseUrl: string): SmokeCheck {
-  return isProduction(baseUrl)
-    ? { path: '/admin?return=//evil.com', status: 302, locationIncludes: '.cloudflareaccess.com/cdn-cgi/access/login/' }
-    : { path: '/admin?return=//evil.com', status: 302, location: '/' }
+function originChecks(baseUrl: string): SmokeCheck[] {
+  if (!isProduction(baseUrl)) return [{ path: '/admin?return=//evil.com', status: 302, location: '/' }]
+  return [
+    { path: '/admin?return=//evil.com', status: 302, locationIncludes: '.cloudflareaccess.com/cdn-cgi/access/login/' },
+    // http 로 온 요청은 경로·쿼리를 지킨 채 https 로 올라가야 한다 (zone 의 Always Use HTTPS)
+    { path: 'http://nabichan.me/posts?tag=meta', status: 301, location: 'https://nabichan.me/posts?tag=meta' },
+  ]
 }
 
 async function main(baseUrl: string) {
@@ -101,7 +104,7 @@ async function main(baseUrl: string) {
   const posts = sitemapPosts(sitemapUrls(sitemap))
   // 영어판까지 볼 수 있게 번역이 있는 글을 먼저 고른다
   const post = posts.find((entry) => entry.en) ?? posts[0]
-  const checks = [...CHECKS, adminCheck(baseUrl), ...(post ? postChecks(post, isProduction(baseUrl)) : [])]
+  const checks = [...CHECKS, ...originChecks(baseUrl), ...(post ? postChecks(post, isProduction(baseUrl)) : [])]
   console.log(post ? `글 페이지는 /${post.slug} 로 확인` : '글이 없어 글 페이지 검사를 건너뜀')
   const failures: string[] = []
   const request = (check: SmokeCheck) =>

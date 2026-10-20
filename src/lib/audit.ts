@@ -37,14 +37,15 @@ export function changedMigrations(nameStatus: string): string[] {
     .map(([, path]) => path)
 }
 
-// 마이그레이션 수정 검사의 기준점. 마지막 커밋만 보면 여러 커밋을 한 번에 push 할 때 놓친다.
-// --base 인자(CI 는 push 이전 sha) → AUDIT_BASE → upstream 과의 공통 조상 → 직전 커밋 순서로 고른다
-export function diffBase(input: { arg?: string; env?: string; upstream?: string; previous: boolean }): { ref: string | null; label: string } {
-  if (input.arg) return { ref: input.arg, label: `--base ${input.arg}` }
-  if (input.env) return { ref: input.env, label: `AUDIT_BASE ${input.env}` }
-  if (input.upstream) return { ref: input.upstream, label: `upstream 과의 공통 조상 ${input.upstream.slice(0, 7)}` }
-  if (input.previous) return { ref: 'HEAD~1', label: '직전 커밋' }
-  return { ref: null, label: '기준점 없음' }
+// 이미 커밋한 마이그레이션은 고치지 않는다(AGENTS.md). 기준점에 기대지 않고 작업 트리와 전체 이력을 본다.
+// 기준점 방식은 수동 실행·force-push 에서 비교 대상이 없어 아무것도 안 보고 통과했다 (계획 5 최종 리뷰)
+// history 는 `git log --diff-filter=MDR --name-status --format= -- migrations` 출력, 못 읽었으면 null
+export function migrationCheck(input: { working: string; history: string | null }): AuditResult {
+  const changed = [...new Set([...changedMigrations(input.working), ...changedMigrations(input.history ?? '')])]
+  if (changed.length > 0) return { id: 'migrations', status: 'FAIL', message: '이미 커밋된 마이그레이션을 고쳤습니다 (새 파일로 추가하세요)', details: changed }
+  return input.history === null
+    ? { id: 'migrations', status: 'INFO', message: '마이그레이션 수정 검사: 전체 이력을 읽지 못해 작업 트리만 확인함' }
+    : { id: 'migrations', status: 'PASS', message: '마이그레이션은 추가만 (전체 이력)' }
 }
 
 // `wrangler d1 migrations list` 표에서 미적용 파일 이름.
@@ -105,6 +106,8 @@ export type LiveInput = {
   metaUrlStatuses: Array<{ url: string; status: number }>
   apiStatus: number
   redirect?: { status: number; location: string | null }
+  // http://nabichan.me/ 응답. https 로 올려 보내야 한다
+  httpRedirect?: { status: number; location: string | null }
 }
 
 // 배포된 사이트 판정 (스펙 5.2 --live)
@@ -159,6 +162,17 @@ export function liveResults(input: LiveInput): AuditResult[] {
       ok
         ? { id: 'live:redirect', status: 'PASS', message: 'nabi.kim → https://nabichan.me/ (301)' }
         : { id: 'live:redirect', status: 'FAIL', message: `nabi.kim 리다이렉트가 다릅니다 (${input.redirect.status} → ${input.redirect.location ?? '없음'})` },
+    )
+  }
+  if (input.httpRedirect === undefined) {
+    results.push({ id: 'live:https', status: 'INFO', message: 'http → https: 기본 대상이 아니라 건너뜀' })
+  } else {
+    const { status, location } = input.httpRedirect
+    const ok = (status === 301 || status === 308) && (location ?? '').startsWith('https://nabichan.me/')
+    results.push(
+      ok
+        ? { id: 'live:https', status: 'PASS', message: `http → https (${status})` }
+        : { id: 'live:https', status: 'FAIL', message: `http 요청이 https 로 넘어가지 않습니다 (${status} → ${location ?? '없음'})` },
     )
   }
   return results
