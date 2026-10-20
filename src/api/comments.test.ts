@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { handleCreateComment, handleDeleteComment, handleEditComment, handleListComments, handleMe } from './comments'
 import type { ApiContext } from './router'
 import { createTestDb, testContext } from './test-utils'
@@ -11,6 +11,8 @@ beforeAll(async () => {
   ;({ db, dispose } = await createTestDb())
 })
 afterAll(() => dispose())
+// 실패한 테스트의 spy 가 다음 테스트로 번지지 않게 한다
+afterEach(() => vi.restoreAllMocks())
 beforeEach(async () => {
   await db.batch([db.prepare('DELETE FROM comments'), db.prepare('DELETE FROM attempts')])
 })
@@ -140,7 +142,11 @@ describe('handleEditComment / handleDeleteComment', () => {
     const ctx = testContext(db)
     const { comment } = await create(ctx)
     for (let count = 0; count < 5; count++) await remove(ctx, comment!.id, { password: 'wrong-pass', turnstileToken: 'tok' })
+    // 제한 판정이 PBKDF2 보다 먼저라서, 제한에 걸린 요청은 해시를 계산하지 않는다
+    const deriveBits = vi.spyOn(crypto.subtle, 'deriveBits')
     const res = await remove(ctx, comment!.id, { password: 'pass1234', turnstileToken: 'tok' })
+    expect(deriveBits).not.toHaveBeenCalled()
+    deriveBits.mockRestore()
     expect(res.status).toBe(429)
     expect(await res.json()).toEqual({ error: 'too_many_attempts' })
     expect(await db.prepare('SELECT COUNT(*) AS n FROM comments').first('n')).toBe(1)
@@ -157,11 +163,15 @@ describe('handleEditComment / handleDeleteComment', () => {
 
   it('Turnstile 이 실패하면 비밀번호를 보지 않고 403, 장애면 503', async () => {
     const { comment } = await create(testContext(db))
+    // 틀린 비밀번호를 보낸다. 비밀번호를 먼저 봤다면 실패가 attempts 에 기록되고 PBKDF2 가 돌았을 것이다
+    const deriveBits = vi.spyOn(crypto.subtle, 'deriveBits')
     const failed = testContext(db, { verifyTurnstile: async () => 'failed' })
-    expect((await remove(failed, comment!.id, { password: 'pass1234', turnstileToken: 'tok' })).status).toBe(403)
+    expect((await remove(failed, comment!.id, { password: 'wrong-pass', turnstileToken: 'tok' })).status).toBe(403)
     const down = testContext(db, { verifyTurnstile: async () => 'unavailable' })
-    expect((await edit(down, comment!.id, { body: 'x', password: 'pass1234', turnstileToken: 'tok' })).status).toBe(503)
+    expect((await edit(down, comment!.id, { body: 'x', password: 'wrong-pass', turnstileToken: 'tok' })).status).toBe(503)
     expect(await db.prepare('SELECT COUNT(*) AS n FROM attempts').first('n')).toBe(0)
+    expect(deriveBits).not.toHaveBeenCalled()
+    deriveBits.mockRestore()
   })
 
   it('은솔은 남의 댓글을 비밀번호 없이 고치고 지운다', async () => {
