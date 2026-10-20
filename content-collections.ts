@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { type Context, type WriterHook, defineCollection, defineConfig } from '@content-collections/core'
 import { z } from 'zod'
@@ -8,10 +7,10 @@ import { parseKstDate } from './src/content/date'
 import { resolveEnPost } from './src/content/resolve-en-post'
 import { sameDayConflicts, validateSlug } from './src/content/slug'
 import { computeSourceHash } from './src/content/source-hash'
-import { absolutizeMarkdownImages, countWords } from './src/markdown/agent-markdown'
+import { absolutizeMarkdownImages, countWords, localizeMarkdownLinks } from './src/markdown/agent-markdown'
 import { writeAssets } from './src/markdown/assets'
 import { type Glossary, renderMarkdown } from './src/markdown/render'
-import { postCard, siteCard } from './src/og/card'
+import { postCard } from './src/og/card'
 import { writeOgImage } from './src/og/render'
 import { site } from './src/site'
 import { widgetNames } from './src/widgets/names'
@@ -26,10 +25,6 @@ const RENDER_VERSION = 3
 // OG 이미지 (스펙 4.9). public/og 는 빌드마다 비우고, 그린 PNG 는 여기 캐시에서 복사한다
 const OG_CACHE_DIR = 'node_modules/.cache/og'
 const ogFile = (locale: string, name: string) => join('public/og', locale, `${name}.png`)
-
-// 사이트 기본 카드 설명. Paraglide 컴파일보다 먼저 돌 수 있어서 메시지 파일을 직접 읽는다
-const siteDescription = (locale: 'ko' | 'en'): string =>
-  (JSON.parse(readFileSync(`messages/${locale}.json`, 'utf8')) as { site_description: string }).site_description
 
 const isProduction = () => process.env.NODE_ENV === 'production'
 
@@ -199,7 +194,8 @@ const enPosts = defineCollection({
       html: body.html,
       toc: body.toc,
       terms: body.terms,
-      markdown: absolutizeMarkdownImages(doc.content, body.images, site.url),
+      // 영어 원문의 내부 글 링크도 HTML 과 같은 규칙으로 /en 에 맞춘다
+      markdown: localizeMarkdownLinks(absolutizeMarkdownImages(doc.content, body.images, site.url), 'en', new Set(enSlugs)),
       wordCount: countWords(doc.content),
     }
   },
@@ -215,8 +211,6 @@ const lobbyIntros = defineCollection({
   transform: async (doc, { cache, documents }) => {
     const locale = /^index\.(ko|en)$/.exec(doc._meta.path)?.[1]
     if (locale !== 'ko' && locale !== 'en') throw new Error(`${doc._meta.filePath}: index.ko.md 또는 index.en.md 여야 합니다`)
-    // Lobby·Posts·404 가 쓰는 사이트 기본 OG 이미지. 언어마다 한 장이라 소개글 변환에서 만든다
-    await writeOgImage(siteCard({ locale, description: siteDescription(locale) }), ogFile(locale, 'site'), OG_CACHE_DIR)
     // 영어 소개글의 글 링크도 공개되는 영어 번역본이 있을 때만 /en 으로 바꾼다.
     // enPosts 는 이미 변환이 끝나서 documents() 가 변환 결과(slug 있음, draft 는 빠짐)를 돌려준다. 타입은 변환 전 모양이라 둘 다 받는다
     const enSlugs = documents(enPosts).map((post) => {

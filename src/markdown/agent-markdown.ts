@@ -1,9 +1,11 @@
-import type { Definition, Image, Root } from 'mdast'
+import type { Definition, Image, Link, Root } from 'mdast'
 import remarkDirective from 'remark-directive'
 import remarkGfm from 'remark-gfm'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import { visit } from 'unist-util-visit'
+import type { Locale } from '~/i18n/runtime'
+import { resolvePostLink } from './link'
 import { decodePath } from './rehype-local-images'
 
 const parse = (markdown: string): Root => unified().use(remarkParse).use(remarkGfm, { singleTilde: false }).use(remarkDirective).parse(markdown)
@@ -33,6 +35,26 @@ export function absolutizeMarkdownImages(markdown: string, images: Record<string
     const at = marker === -1 ? -1 : raw.indexOf(url, marker + 2)
     if (at === -1) return fail()
     edits.push({ start: position.start.offset + at, end: position.start.offset + at + url.length, url: new URL(target, origin).href })
+  })
+  return edits
+    .sort((a, b) => b.start - a.start)
+    .reduce((text, edit) => text.slice(0, edit.start) + edit.url + text.slice(edit.end), markdown)
+}
+
+// 영어 원문(.md, llms-full)의 사이트 내부 글 링크를 HTML 과 같은 규칙(resolvePostLink)으로 /en 에 맞춘다.
+// 위치에서 경로 글자만 바꾸고 나머지는 그대로 둔다. 경로를 찾지 못하면(이스케이프 등) 그 링크는 그대로 둔다
+export function localizeMarkdownLinks(markdown: string, locale: Locale, enSlugs: ReadonlySet<string>): string {
+  if (locale === 'ko') return markdown
+  const edits: Array<{ start: number; end: number; url: string }> = []
+  visit(parse(markdown), ['link', 'definition'], (node) => {
+    const { url, position } = node as Link | Definition
+    const href = resolvePostLink(url, locale, enSlugs).href
+    if (href === url || position?.start.offset === undefined) return
+    const raw = markdown.slice(position.start.offset, position.end?.offset)
+    const marker = node.type === 'link' ? raw.lastIndexOf('](') : raw.indexOf(']:')
+    const at = marker === -1 ? -1 : raw.indexOf(url, marker + 2)
+    if (at === -1) return
+    edits.push({ start: position.start.offset + at, end: position.start.offset + at + url.length, url: href })
   })
   return edits
     .sort((a, b) => b.start - a.start)

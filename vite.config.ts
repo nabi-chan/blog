@@ -6,12 +6,15 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { SEO_PAGES, markdownPagePaths, shouldPrerender } from './src/lib/prerender.ts'
+import { ogSitePlugin } from './src/og/site-plugin.ts'
 
 export default defineConfig(({ mode }) => ({
   server: { port: 3000 },
   resolve: { tsconfigPaths: true },
   plugins: [
     contentCollections(),
+    // 사이트 기본 OG 이미지 (Lobby·Posts·404)
+    ogSitePlugin(),
     tailwindcss(),
     // 전략·URL 패턴·출력 위치는 project.inlang/paraglide.config.ts 에 있다 (CLI 와 공유)
     paraglideVitePlugin({ project: './project.inlang' }),

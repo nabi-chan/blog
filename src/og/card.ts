@@ -1,6 +1,7 @@
-import { formatDate } from '~/content/date'
-import type { Locale } from '~/i18n/runtime'
-import { site } from '~/site'
+// vite.config(ogSitePlugin)가 불러서 경로 별칭(~/) 대신 상대 경로를 쓴다
+import { formatDate } from '../content/date.ts'
+import type { Locale } from '../i18n/runtime.ts'
+import { site } from '../site.ts'
 
 // satori 에 넘길 요소 트리. JSX 없이 { type, props } 객체로 만든다
 export type OgNode = { type: string; props: { style?: Record<string, string | number>; children?: OgNode | string | Array<OgNode | string> } }
@@ -22,10 +23,37 @@ const el = (type: string, style: Record<string, string | number>, children?: OgN
   props: { style: { display: 'flex', ...style }, children },
 })
 
-// 제목 폭을 어림해서(한글·한자·전각 1em, 그 밖 0.55em) 세 줄 안에 드는 가장 큰 글자 크기를 고른다 (스펙 4.9)
+const LINE_HEIGHT = 1.3
+// 이보다 넓은 공백 없는 토큰(긴 라틴 단어, 띄어쓰기 없는 한글)이 있으면 넘칠 때 단어 안에서 끊는다.
+// keep-all 은 그런 토큰을 끊지 못하고, satori 는 keep-all 에서 라틴 글자 사이의 U+200B 도 무시한다 (렌더로 확인)
+const TOKEN_EMS = 10
+
+const charEms = (char: string) => (WIDE.test(char) ? 1 : 0.55)
+const ems = (text: string) => [...text].reduce((sum, char) => sum + charEms(char), 0)
+const linesAt = (width: number, size: number) => Math.ceil(((width * size) / INNER_WIDTH) * WRAP_SLACK)
+
+export type OgTitle = { text: string; fontSize: number; lines: number; wordBreak: 'keep-all' | 'break-word' }
+
+// 제목 폭을 어림해서(한글·한자·전각 1em, 그 밖 0.55em) 세 줄 안에 드는 가장 큰 글자 크기를 고른다 (스펙 4.9).
+// 가장 작은 크기로도 넘치면 세 줄에 들 만큼 잘라 … 를 붙인다. lines 는 줄바꿈 여유를 둔 어림이다
+export function fitOgTitle(title: string): OgTitle {
+  const wordBreak = title.split(/\s+/).some((token) => ems(token) > TOKEN_EMS) ? 'break-word' : 'keep-all'
+  const width = ems(title)
+  const size = TITLE_SIZES.find((candidate) => linesAt(width, candidate) <= MAX_TITLE_LINES)
+  if (size !== undefined) return { text: title, fontSize: size, lines: linesAt(width, size), wordBreak }
+  const smallest = TITLE_SIZES.at(-1)!
+  const budget = (MAX_TITLE_LINES * INNER_WIDTH) / (smallest * WRAP_SLACK) - charEms('…')
+  let cut = ''
+  for (const char of title) {
+    if (ems(cut + char) > budget) break
+    cut += char
+  }
+  const text = `${cut.trimEnd()}…`
+  return { text, fontSize: smallest, lines: linesAt(ems(text), smallest), wordBreak }
+}
+
 export function ogTitleFontSize(title: string): number {
-  const ems = [...title].reduce((sum, char) => sum + (WIDE.test(char) ? 1 : 0.55), 0)
-  return TITLE_SIZES.find((size) => Math.ceil(((ems * size) / INNER_WIDTH) * WRAP_SLACK) <= MAX_TITLE_LINES) ?? TITLE_SIZES.at(-1)!
+  return fitOgTitle(title).fontSize
 }
 
 // 흰 바탕 무채색 타이포 카드. satori 는 padding 을 크기 밖에 더하므로 border-box 를 꼭 준다
@@ -49,11 +77,28 @@ const frame = (children: OgNode[]): OgNode =>
 const footer = (left: string): OgNode =>
   el('div', { width: INNER_WIDTH, justifyContent: 'space-between', fontSize: 26, color: '#707070' }, [el('span', {}, left), el('span', {}, DOMAIN)])
 
+// 명시 폭을 줘야 줄이 바뀐다. 어림이 빗나가도 날짜 줄을 덮지 않게 세 줄 높이에서 자른다
+function titleBox(title: string): OgNode {
+  const { text, fontSize, wordBreak } = fitOgTitle(title)
+  return el(
+    'div',
+    {
+      width: INNER_WIDTH,
+      maxHeight: Math.ceil(fontSize * LINE_HEIGHT * MAX_TITLE_LINES),
+      overflow: 'hidden',
+      fontSize,
+      fontWeight: 700,
+      lineHeight: LINE_HEIGHT,
+      wordBreak,
+    },
+    text,
+  )
+}
+
 export function postCard(input: { title: string; date: string; locale: Locale }): OgNode {
   return frame([
     el('div', { fontSize: 28, fontWeight: 700 }, site.name),
-    // 긴 라틴 단어가 여백을 넘지 않게 명시 폭을 준다
-    el('div', { width: INNER_WIDTH, fontSize: ogTitleFontSize(input.title), fontWeight: 700, lineHeight: 1.3, wordBreak: 'keep-all' }, input.title),
+    titleBox(input.title),
     footer(formatDate(input.date, input.locale)),
   ])
 }

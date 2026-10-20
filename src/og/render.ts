@@ -4,10 +4,11 @@ import { dirname, join, resolve } from 'node:path'
 import { Resvg } from '@resvg/resvg-js'
 import type { ReactNode } from 'react'
 import satori from 'satori'
-import { OG_SIZE, type OgNode } from './card'
+import { OG_SIZE, type OgNode } from './card.ts'
 
 // 카드 디자인이나 렌더 방식이 바뀌면 올린다. 캐시 키에 들어간다
-const OG_VERSION = 1
+// 2: 제목 맞춤(fitOgTitle)과 세 줄 높이 자르기 (계획 4)
+const OG_VERSION = 2
 
 // satori 는 woff2 와 가변 폰트를 읽지 못해서 SUIT 정적 TTF 를 쓴다 (빌드 전용, 사이트로 내보내지 않음)
 const FONT_DIR = resolve('assets/fonts')

@@ -17,6 +17,11 @@ describe('absolutizeHtml', () => {
     expect(absolutizeHtml('<a href="#intro">처음</a>', PAGE)).toBe('<a href="https://nabichan.me/261020#intro">처음</a>')
   })
 
+  it('본문 글자로 보이는 코드(&lt;a href="#top"&gt;)는 바꾸지 않고 실제 태그만 바꾼다', () => {
+    const html = '<p><code>&lt;a href="#top"&gt;</code> <a href="#x">x</a></p>'
+    expect(absolutizeHtml(html, PAGE)).toBe('<p><code>&lt;a href="#top"&gt;</code> <a href="https://nabichan.me/261020#x">x</a></p>')
+  })
+
   it('외부 URL 과 // 로 시작하는 주소는 그대로 둔다', () => {
     const html = '<a href="https://x.com">x</a><img src="//cdn.example/y.png">'
     expect(absolutizeHtml(html, PAGE)).toBe(html)

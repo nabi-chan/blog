@@ -7,19 +7,22 @@ import { pageUrl } from './url'
 export function absolutizeHtml(html: string, pageUrl: string): string {
   const origin = new URL(pageUrl).origin
   const absolute = (value: string) => (value.startsWith('/') && !value.startsWith('//') ? `${origin}${value}` : value)
-  return html
-    .replace(/\b(src|href)="([^"]*)"/g, (_, name: string, value: string) =>
-      `${name}="${value.startsWith('#') ? `${pageUrl}${value}` : absolute(value)}"`,
-    )
-    .replace(/\bsrcset="([^"]*)"/g, (_, value: string) =>
-      `srcset="${value
-        .split(',')
-        .map((entry) => {
-          const [url, ...rest] = entry.trim().split(/\s+/)
-          return [absolute(url), ...rest].join(' ')
-        })
-        .join(', ')}"`,
-    )
+  // 실제 태그 안의 속성만 바꾼다. 본문 글자의 '<' 는 &lt; 로 이스케이프돼 있어서 코드 예시(&lt;a href="#x"&gt;)는 건드리지 않는다
+  return html.replace(/<[a-zA-Z][^>]*>/g, (tag) =>
+    tag
+      .replace(/\s(src|href)="([^"]*)"/g, (_, name: string, value: string) =>
+        ` ${name}="${value.startsWith('#') ? `${pageUrl}${value}` : absolute(value)}"`,
+      )
+      .replace(/\ssrcset="([^"]*)"/g, (_, value: string) =>
+        ` srcset="${value
+          .split(',')
+          .map((entry) => {
+            const [url, ...rest] = entry.trim().split(/\s+/)
+            return [absolute(url), ...rest].join(' ')
+          })
+          .join(', ')}"`,
+      ),
+  )
 }
 
 const rfc822 = (iso: string) => new Date(iso).toUTCString()

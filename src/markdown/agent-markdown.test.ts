@@ -2,7 +2,7 @@ import { mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { absolutizeMarkdownImages, countWords } from './agent-markdown'
+import { absolutizeMarkdownImages, countWords, localizeMarkdownLinks } from './agent-markdown'
 import { renderMarkdown } from './render'
 
 const ORIGIN = 'https://nabichan.me'
@@ -77,5 +77,23 @@ describe('renderMarkdown 과 함께 (실제 이미지 표)', () => {
 
   it('바꾸지 못한 글 옆 이미지가 남으면 조용히 넘어가지 않고 던진다', async () => {
     await expect(roundTrip('![a](./a\\_b.png)')).rejects.toThrow(/절대 URL 로 바꾸지 못했습니다/)
+  })
+})
+
+describe('localizeMarkdownLinks', () => {
+  const enSlugs = new Set(['261020'])
+
+  it('en 원문의 내부 글 링크를 /en 으로 바꾸고 외부 링크는 그대로 둔다', () => {
+    expect(localizeMarkdownLinks('[구조](/261020#structure) [외부](https://x.com) [목록](/posts)', 'en', enSlugs)).toBe(
+      '[구조](/en/261020#structure) [외부](https://x.com) [목록](/en/posts)',
+    )
+  })
+
+  it('번역 없는 글로 가는 링크와 참조형 정의도 현지화 규칙을 따른다', () => {
+    expect(localizeMarkdownLinks('[a](/261021) [b][d]\n\n[d]: /261020\n', 'en', enSlugs)).toBe('[a](/261021) [b][d]\n\n[d]: /en/261020\n')
+  })
+
+  it('ko 는 그대로다', () => {
+    expect(localizeMarkdownLinks('[구성](/261020#구성)', 'ko', enSlugs)).toBe('[구성](/261020#구성)')
   })
 })

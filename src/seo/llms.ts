@@ -1,5 +1,6 @@
 import type { FeedItem } from '~/content/post-queries'
-import type { Locale } from '~/i18n/runtime'
+import { type Locale, locales } from '~/i18n/runtime'
+import { LANGUAGE_NAMES } from '~/lib/language-options'
 import { site } from '~/site'
 import { absoluteUrl, pageUrl } from './url'
 
@@ -21,6 +22,8 @@ export function buildLlmsTxt(input: { locale: Locale; description: string; items
       `- [RSS](${pageUrl('/rss.xml', input.locale)})`,
       `- [Sitemap](${absoluteUrl('/sitemap.xml')})`,
       `- [${label.full}](${absoluteUrl('/llms-full.txt')})`,
+      // 관례 위치(/llms.txt)만 읽는 에이전트도 다른 언어 목록을 찾게 한다
+      ...locales.filter((other) => other !== input.locale).map((other) => `- [${LANGUAGE_NAMES[other]}](${pageUrl('/llms.txt', other)})`),
     ].join('\n'),
     `## ${label.posts}`,
     posts.length > 0 ? posts.join('\n') : '- (none)',

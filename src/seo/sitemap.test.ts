@@ -12,7 +12,7 @@ describe('buildSitemap', () => {
   })
 
   it('번역 쌍은 언어마다 <url> 을 두고 ko·en·x-default 대체 링크를 단다', () => {
-    const xml = buildSitemap([{ path: '/261020', lastmod: '2026-10-20T12:00:00+09:00', locales: ['ko', 'en'] }])
+    const xml = buildSitemap([{ path: '/261020', lastmod: { ko: '2026-10-20T12:00:00+09:00', en: '2026-10-20T12:00:00+09:00' }, locales: ['ko', 'en'] }])
     expect(count(xml, '<url>')).toBe(2)
     expect(xml).toContain('<loc>https://nabichan.me/261020</loc>')
     expect(xml).toContain('<loc>https://nabichan.me/en/261020</loc>')
@@ -22,7 +22,7 @@ describe('buildSitemap', () => {
   })
 
   it('번역이 없는 글은 <url> 하나이고 대체 링크가 없다', () => {
-    const xml = buildSitemap([{ path: '/261021', lastmod: '2026-10-21T09:00:00+09:00', locales: ['ko'] }])
+    const xml = buildSitemap([{ path: '/261021', lastmod: { ko: '2026-10-21T09:00:00+09:00' }, locales: ['ko'] }])
     expect(count(xml, '<url>')).toBe(1)
     expect(xml).not.toContain('xhtml:link rel')
   })
@@ -60,18 +60,31 @@ describe('sitemapEntries', () => {
   )
 
   it('Lobby·Posts 와 공개 글을 넣고, 목록의 lastmod 는 가장 최근 수정일이다', () => {
+    const both = { ko: '2026-10-22T09:00:00+09:00', en: '2026-10-22T09:00:00+09:00' }
     expect(sitemapEntries(index)).toEqual([
-      { path: '/', lastmod: '2026-10-22T09:00:00+09:00', locales: ['ko', 'en'] },
-      { path: '/posts', lastmod: '2026-10-22T09:00:00+09:00', locales: ['ko', 'en'] },
-      { path: '/261021', lastmod: '2026-10-21T12:00:00+09:00', locales: ['ko'] },
-      { path: '/261020', lastmod: '2026-10-22T09:00:00+09:00', locales: ['ko', 'en'] },
+      { path: '/', lastmod: both, locales: ['ko', 'en'] },
+      { path: '/posts', lastmod: both, locales: ['ko', 'en'] },
+      { path: '/261021', lastmod: { ko: '2026-10-21T12:00:00+09:00' }, locales: ['ko'] },
+      { path: '/261020', lastmod: both, locales: ['ko', 'en'] },
     ])
   })
 
   it('글이 없으면 목록 페이지에 lastmod 를 두지 않는다', () => {
     expect(sitemapEntries(createPostIndex([], []))).toEqual([
-      { path: '/', locales: ['ko', 'en'] },
-      { path: '/posts', locales: ['ko', 'en'] },
+      { path: '/', lastmod: {}, locales: ['ko', 'en'] },
+      { path: '/posts', lastmod: {}, locales: ['ko', 'en'] },
     ])
+  })
+
+  it('목록 페이지의 lastmod 는 언어마다 그 언어 글로 정한다 (ko 전용 글이 en 날짜를 올리지 않는다)', () => {
+    const koOnlyNewer = createPostIndex(
+      [meta('261020', 'ko', '2026-10-20T12:00:00+09:00'), meta('261025', 'ko', '2026-10-25T12:00:00+09:00')],
+      [meta('261020', 'en', '2026-10-20T12:00:00+09:00')],
+    )
+    expect(sitemapEntries(koOnlyNewer)[0]).toEqual({
+      path: '/',
+      lastmod: { ko: '2026-10-25T12:00:00+09:00', en: '2026-10-20T12:00:00+09:00' },
+      locales: ['ko', 'en'],
+    })
   })
 })

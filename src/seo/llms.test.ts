@@ -30,6 +30,11 @@ describe('buildLlmsTxt', () => {
     expect(text).toContain('- [261020 en](https://nabichan.me/en/261020.md): 261020 요약')
   })
 
+  it('다른 언어의 llms.txt 로 가는 링크를 둔다', () => {
+    expect(buildLlmsTxt({ locale: 'ko', description: 'd', items: [] })).toContain('- [English](https://nabichan.me/en/llms.txt)')
+    expect(buildLlmsTxt({ locale: 'en', description: 'd', items: [] })).toContain('- [한국어](https://nabichan.me/llms.txt)')
+  })
+
   it('글이 없으면 목록 자리에 (none) 을 쓴다', () => {
     expect(buildLlmsTxt({ locale: 'en', description: 'd', items: [] })).toContain('## Posts\n\n- (none)')
   })
