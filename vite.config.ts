@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { shouldPrerender } from './src/lib/prerender'
 
 export default defineConfig({
   server: { port: 3000 },
@@ -37,8 +38,8 @@ export default defineConfig({
         autoStaticPathsDiscovery: false,
         autoSubfolderIndex: false,
         failOnError: true,
-        // ?tag= 와 #헤딩 링크는 같은 페이지라 따로 프리렌더하지 않는다
-        filter: ({ path }) => !path.includes('?') && !path.includes('#'),
+        // ?tag=·#헤딩 링크(같은 페이지), /api/·/admin(Worker 가 처리)은 프리렌더하지 않는다
+        filter: ({ path }) => shouldPrerender(path),
       },
       pages: [{ path: '/' }, { path: '/en' }],
     }),

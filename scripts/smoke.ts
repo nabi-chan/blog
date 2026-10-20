@@ -60,12 +60,30 @@ export const CHECKS: SmokeCheck[] = [
   { path: '/en/261099', status: 404, contains: ['lang="en"'] },
   // 깨진 퍼센트 인코딩은 Workers 정적 에셋 계층이 Worker 앞에서 400 으로 끊는다 (500 이 아니면 된다)
   { path: '/%E0', status: 400 },
+  // 댓글·조회수 API 와 Access 귀환 경로 (계획 2)
+  { path: '/api/me', status: 200, contains: ['"owner":false', '"turnstileSiteKey"'] },
+  {
+    path: '/api/views',
+    method: 'POST',
+    headers: { 'content-type': 'application/json', origin: 'https://evil.example' },
+    body: '{}',
+    status: 403,
+    contains: ['forbidden_origin'],
+  },
+  { path: '/admin?return=//evil.com', status: 302, location: '/' },
+  { path: '/admin?return=/261020', status: 302, location: '/261020' },
+  { path: '/api/nope', status: 404 },
 ]
 
 async function main(baseUrl: string) {
   const failures: string[] = []
   for (const check of CHECKS) {
-    const res = await fetch(new URL(check.path, baseUrl), { redirect: 'manual' })
+    const res = await fetch(new URL(check.path, baseUrl), {
+      method: check.method,
+      headers: check.headers,
+      body: check.body,
+      redirect: 'manual',
+    })
     failures.push(
       ...checkResponse(check, {
         status: res.status,

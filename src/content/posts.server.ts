@@ -17,8 +17,11 @@ const toMeta = ({ slug, locale, title, description, date, updated, tags, draft }
 
 const docs = [...allKoPosts, ...allEnPosts]
 
+// 공개되는 글 목록. 댓글·조회수 API 가 있는 글인지 확인할 때도 쓴다
+export const postIndex = createPostIndex(allKoPosts.map(toMeta), allEnPosts.map(toMeta))
+
 export const queries = createPostQueries({
-  index: createPostIndex(allKoPosts.map(toMeta), allEnPosts.map(toMeta)),
+  index: postIndex,
   tagLabels: allTagLabels[0]?.tags ?? [],
   bodies: new Map<BodyKey, PostBody>(
     docs.map((doc) => [`${doc.locale}/${doc.slug}`, { html: doc.html, toc: doc.toc, terms: doc.terms }]),

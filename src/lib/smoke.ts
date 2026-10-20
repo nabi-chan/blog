@@ -4,6 +4,10 @@ export type SmokeCheck = {
   contains?: string[]
   notContains?: string[]
   location?: string
+  // GET 이 아닌 요청(API 확인)에 쓴다
+  method?: string
+  headers?: Record<string, string>
+  body?: string
 }
 
 export type SmokeResponse = { status: number; location: string | null; body: string }
