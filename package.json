@@ -11,9 +11,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "cf-typegen": "wrangler types",
-    "check": "tsc --noEmit",
-    "test": "vitest run --coverage",
-    "smoke": "node scripts/smoke.ts"
+    "check": "pnpm i18n:compile && tsc --noEmit",
+    "test": "pnpm i18n:compile && vitest run --coverage",
+    "smoke": "node scripts/smoke.ts",
+    "i18n:compile": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.170.45",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.64.0",
+    "@inlang/paraglide-js": "2.29.1",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.6.5",

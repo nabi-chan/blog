@@ -1,0 +1,18 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "site_name": "eunsol",
+  "nav_posts": "글",
+  "lobby_intro": "소개 문구를 준비하고 있어요.",
+  "lobby_recent_posts": "최근 글",
+  "lobby_view_all": "전체 글 보기",
+  "posts_title": "글",
+  "posts_all_tags": "전체",
+  "posts_empty": "아직 글이 없어요.",
+  "post_updated": "수정",
+  "post_toc": "목차",
+  "post_read_in_other_language": "English",
+  "not_found_title": "페이지를 찾을 수 없어요",
+  "not_found_description": "주소가 바뀌었거나 없는 페이지예요.",
+  "not_found_back_home": "처음으로",
+  "footer_license": "글은 CC BY-NC 4.0 으로 공개합니다."
+}

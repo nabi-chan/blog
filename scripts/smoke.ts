@@ -2,7 +2,17 @@
 // 사용법: node scripts/smoke.ts <baseUrl>
 import { checkResponse, type SmokeCheck } from '../src/lib/smoke.ts'
 
-export const CHECKS: SmokeCheck[] = [{ path: '/', status: 200, contains: ['<html'] }]
+export const CHECKS: SmokeCheck[] = [
+  { path: '/', status: 200, contains: ['<html', 'lang="ko"'] },
+  { path: '/en', status: 200, contains: ['lang="en"'] },
+  { path: '/posts', status: 200, contains: ['lang="ko"'] },
+  { path: '/en/posts', status: 200, contains: ['lang="en"'] },
+  { path: '/en/', status: 307, location: '/en' },
+  { path: '/fr/posts', status: 404 },
+  { path: '/EN/posts', status: 404 },
+  // 깨진 퍼센트 인코딩은 Workers 정적 에셋 계층이 Worker 앞에서 400 으로 끊는다 (500 이 아니면 된다)
+  { path: '/posts/%E0', status: 400 },
+]
 
 async function main(baseUrl: string) {
   const failures: string[] = []
