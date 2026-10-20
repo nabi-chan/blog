@@ -31,6 +31,17 @@ describe('resolvePostLink', () => {
     expect(resolvePostLink('/', 'en', enSlugs)).toEqual({ href: '/en', external: false })
   })
 
+  it('영어판이 없는 파일과 정적 에셋은 /en 을 붙이지 않는다', () => {
+    const en = new Set(['261020'])
+    for (const href of ['/llms-full.txt', '/sitemap.xml', '/robots.txt', '/content-assets/261020/a.png', '/og/ko/261020.png'])
+      expect(resolvePostLink(href, 'en', en).href).toBe(href)
+    expect(resolvePostLink('/rss.xml', 'en', en).href).toBe('/en/rss.xml')
+    expect(resolvePostLink('/llms.txt', 'en', en).href).toBe('/en/llms.txt')
+    expect(resolvePostLink('/261020.md', 'en', en).href).toBe('/en/261020.md')
+    expect(resolvePostLink('/261021.md', 'en', en)).toEqual({ href: '/261021.md', hrefLang: 'ko', external: false })
+    expect(resolvePostLink('/posts?tag=meta', 'en', en).href).toBe('/en/posts?tag=meta')
+  })
+
   it('외부 링크와 앵커는 그대로 두되 외부 여부를 알려준다', () => {
     expect(resolvePostLink('https://example.com', 'en', enSlugs)).toEqual({ href: 'https://example.com', external: true })
     expect(resolvePostLink('#top', 'en', enSlugs)).toEqual({ href: '#top', external: false })

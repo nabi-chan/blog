@@ -58,13 +58,13 @@ function baseChecks() {
     : []
   const posts = slugs.map((slug) => {
     const ko = splitFrontmatter(readFileSync(join(POSTS_DIR, slug, 'index.ko.md'), 'utf8'))
-    const meta = parse(ko.frontmatter) as { title: string; description: string; tags?: string[] }
+    const meta = parse(ko.frontmatter) as { title: string; description: string; tags?: string[]; draft?: boolean }
     const enPath = join(POSTS_DIR, slug, 'index.en.md')
     const en = existsSync(enPath) ? splitFrontmatter(readFileSync(enPath, 'utf8')) : undefined
     const enMeta = en ? (parse(en.frontmatter) as { sourceHash: string; translationStatus: 'machine' | 'reviewed' }) : undefined
     const input: ContentPostInput = {
       slug,
-      ko: { title: meta.title, description: meta.description, body: ko.body, tags: meta.tags ?? [] },
+      ko: { title: meta.title, description: meta.description, body: ko.body, tags: meta.tags ?? [], draft: meta.draft === true },
       en: en && enMeta ? { body: en.body, sourceHash: enMeta.sourceHash } : undefined,
     }
     return { input, translationStatus: enMeta?.translationStatus }
@@ -307,7 +307,7 @@ async function liveChecks() {
   const sitemap = await (await fetch(new URL('/sitemap.xml', base))).text()
 
   const metaUrls = new Set<string>()
-  for (const path of ['/', '/en', '/posts', '/en/posts', ...posts.map((post) => `/${post.slug}`)]) {
+  for (const path of paths) {
     for (const url of extractMetaUrls(await (await fetch(new URL(path, base))).text())) metaUrls.add(url)
   }
   const metaUrlStatuses = []

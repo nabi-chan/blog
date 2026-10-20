@@ -58,6 +58,14 @@ describe('brokenInternalLinks', () => {
   })
 })
 
+describe('brokenInternalLinks 의 초안 글', () => {
+  it('공개 글이 초안 글로 링크하면 문제로 낸다. 초안끼리는 괜찮다', () => {
+    const site = { posts: new Map([['261020', { ko: new Set<string>() }], ['261021', { ko: new Set<string>(), draft: true }]]) }
+    expect(brokenInternalLinks({ slug: '261020', locale: 'ko', markdown: '[a](/261021)' }, site)).toEqual(['/261021 → 초안 글'])
+    expect(brokenInternalLinks({ slug: '261022', locale: 'ko', markdown: '[a](/261021)', draft: true }, site)).toEqual([])
+  })
+})
+
 describe('messageKeyDiff', () => {
   it('한쪽에만 있는 키를 내고 $schema 는 뺀다', () => {
     expect(messageKeyDiff({ $schema: 'x', a: '', b: '' }, { a: '', c: '' })).toEqual({ onlyKo: ['b'], onlyEn: ['c'] })

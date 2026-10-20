@@ -15,12 +15,12 @@ const only = args.includes('--post') ? args[args.indexOf('--post') + 1] : undefi
 
 function readPost(slug: string): ContentPostInput {
   const ko = splitFrontmatter(readFileSync(join(POSTS_DIR, slug, 'index.ko.md'), 'utf8'))
-  const meta = parse(ko.frontmatter) as { title: string; description: string; tags?: string[] }
+  const meta = parse(ko.frontmatter) as { title: string; description: string; tags?: string[]; draft?: boolean }
   const enPath = join(POSTS_DIR, slug, 'index.en.md')
   const en = existsSync(enPath) ? splitFrontmatter(readFileSync(enPath, 'utf8')) : undefined
   return {
     slug,
-    ko: { title: meta.title, description: meta.description, body: ko.body, tags: meta.tags ?? [] },
+    ko: { title: meta.title, description: meta.description, body: ko.body, tags: meta.tags ?? [], draft: meta.draft === true },
     en: en && { body: en.body, sourceHash: (parse(en.frontmatter) as { sourceHash: string }).sourceHash },
   }
 }

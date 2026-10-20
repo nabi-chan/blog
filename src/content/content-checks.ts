@@ -35,8 +35,8 @@ export function headingAnchors(markdown: string): Set<string> {
   return anchors
 }
 
-export type PostSourceInfo = { slug: string; locale: Locale; markdown: string }
-type SiteAnchors = { posts: Map<string, { ko: Set<string>; en?: Set<string> }> }
+export type PostSourceInfo = { slug: string; locale: Locale; markdown: string; draft?: boolean }
+type SiteAnchors = { posts: Map<string, { ko: Set<string>; en?: Set<string>; draft?: boolean }> }
 
 const EXTERNAL = /^[a-z][a-z0-9+.-]*:/i
 const LIST_PAGES = new Set(['/', '/posts'])
@@ -82,6 +82,11 @@ export function brokenInternalLinks(post: PostSourceInfo, site: SiteAnchors): st
       problems.push(`${url} → 없는 글`)
       continue
     }
+    // 프로덕션 빌드는 초안을 빼므로 공개 글에서 초안으로 가는 링크는 404 가 된다
+    if (target.draft && !post.draft) {
+      problems.push(`${url} → 초안 글`)
+      continue
+    }
     if (explicitEn && !target.en) {
       problems.push(`${url} → 번역 없는 글`)
       continue
@@ -103,7 +108,7 @@ export function messageKeyDiff(ko: Record<string, unknown>, en: Record<string, u
 
 export type ContentPostInput = {
   slug: string
-  ko: { title: string; description: string; body: string; tags: string[] }
+  ko: { title: string; description: string; body: string; tags: string[]; draft?: boolean }
   en?: { body: string; sourceHash: string }
 }
 
@@ -115,7 +120,9 @@ export function collectContentProblems(
 ): Array<{ slug: string; problems: string[] }> {
   const translation = options.translation ?? true
   const site: SiteAnchors = {
-    posts: new Map(input.posts.map((post) => [post.slug, { ko: headingAnchors(post.ko.body), en: post.en ? headingAnchors(post.en.body) : undefined }])),
+    posts: new Map(
+      input.posts.map((post) => [post.slug, { ko: headingAnchors(post.ko.body), en: post.en ? headingAnchors(post.en.body) : undefined, draft: post.ko.draft }]),
+    ),
   }
   return input.posts
     .map((post) => {
@@ -126,9 +133,9 @@ export function collectContentProblems(
       if (tags.length > 0) problems.push(`태그 표시 이름 없음: ${tags.join(', ')}`)
       const terms = missingTerms([...koStructure.terms, ...(enStructure?.terms ?? [])], input.termKeys.map((key) => ({ key })))
       if (terms.length > 0) problems.push(`용어집에 없는 :term: ${terms.join(', ')}`)
-      for (const line of brokenInternalLinks({ slug: post.slug, locale: 'ko', markdown: post.ko.body }, site)) problems.push(`ko 링크 ${line}`)
+      for (const line of brokenInternalLinks({ slug: post.slug, locale: 'ko', markdown: post.ko.body, draft: post.ko.draft }, site)) problems.push(`ko 링크 ${line}`)
       if (post.en && enStructure) {
-        for (const line of brokenInternalLinks({ slug: post.slug, locale: 'en', markdown: post.en.body }, site)) problems.push(`en 링크 ${line}`)
+        for (const line of brokenInternalLinks({ slug: post.slug, locale: 'en', markdown: post.en.body, draft: post.ko.draft }, site)) problems.push(`en 링크 ${line}`)
         if (translation && computeSourceHash(post.ko) !== post.en.sourceHash) {
           problems.push(`en 번역이 낡았습니다 (pnpm content:rehash --post ${post.slug} 또는 /translate-post)`)
         }
