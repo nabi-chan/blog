@@ -5,7 +5,7 @@ import { Layout } from '~/widgets/site-layout'
 import { NotFound } from '~/pages/not-found'
 import { getLocale, localizeHref, m } from '~/shared/i18n'
 import { site } from '~/shared/config'
-import appCss from '~/styles/app.css?url'
+import appCss from '~/app/styles/app.css?url'
 
 export const Route = createRootRoute({
   // 제목·설명·OG 는 화면마다 pageHead 로 단다. 여기에 제목을 두면 404 문서에 <title> 이 두 개가 된다

@@ -1,9 +1,0 @@
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
-@import "./fonts.css";
-@import "./tokens.css";
-@import "./layout.css";
-@import "./prose.css";
-@import "./comments.css";
-@import "./language-menu.css";
-@import "./badge.css";

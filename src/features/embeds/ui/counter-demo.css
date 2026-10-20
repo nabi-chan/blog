@@ -1,0 +1,12 @@
+/* 글 속 위젯: counter-demo */
+.widget-counter {
+  min-width: 3rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}

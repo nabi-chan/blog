@@ -1,0 +1,40 @@
+/* 조회수 숫자. 응답 전에는 스켈레톤, 실패하면 빈자리다 (아래 data-state 규칙) */
+.view-count-number {
+  display: inline-block;
+  min-width: 5ch;
+  font-variant-numeric: tabular-nums;
+  text-align: start;
+}
+
+/* 한 줄 메타 안에서는 숫자 폭을 미리 잡지 않는다. 잡으면 짧은 숫자 뒤에 빈칸이 생겨 구분선 간격이 어긋난다.
+   숫자 자릿수만큼 뒤 항목이 몇 px 밀리지만 화면 위쪽 한 줄이라 레이아웃 이동 점수는 사실상 0 이다 */
+.meta-list .view-count-number {
+  min-width: 0;
+}
+
+/* 응답 전 스켈레톤. 글자는 투명하게 두고 블록만 보인다.
+   line-height: normal 이면 글꼴의 글자 상자 높이가 되어, 기준선에 맞춘 레이블 글자와 위아래가 정확히 겹친다 */
+.view-count-number[data-state='loading'] {
+  min-width: 3ch;
+  line-height: normal;
+  border-radius: 4px;
+  background: var(--rule);
+  color: transparent;
+  animation: view-count-pulse 1.2s ease-in-out infinite;
+}
+
+.view-count-number[data-state='failed'] {
+  visibility: hidden;
+}
+
+@keyframes view-count-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .view-count-number[data-state='loading'] {
+      animation: none;
+    }
+}

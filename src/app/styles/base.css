@@ -1,0 +1,74 @@
+/* 전역 기본: 문서, 포커스, 링크, 큰 제목, 섹션 제목, 한 줄 메타 구분선 */
+html {
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+body {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+a {
+  color: inherit;
+}
+
+main {
+  padding-bottom: 6rem;
+}
+
+/* 큰 제목. 굵기는 400·700 두 가지만 쓰므로 위계는 크기로 준다 */
+.display {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 400;
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  line-height: 1.18;
+  letter-spacing: -0.035em;
+}
+
+.section-title {
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+@media (max-width: 560px) {
+  :root {
+      --gutter: 5rem;
+    }
+
+  html {
+      font-size: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+      transition: none !important;
+    }
+}
+
+/* 한 줄 메타 항목 사이의 얇은 세로선 구분자 (글 메타, Lobby 조회수) */
+.meta-list > * + *::before {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 0.75em;
+  margin-right: 1.25rem;
+  background: var(--rule);
+  vertical-align: -0.05em;
+}

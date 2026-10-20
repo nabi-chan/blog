@@ -1,0 +1,36 @@
+/* 글 목록 화면: 연도 묶음, 태그 필터 */
+.posts .display {
+  margin-bottom: 2.5rem;
+}
+
+.post-year h2 {
+  margin: 3.5rem 0 0.5rem;
+  color: var(--ink);
+  font-weight: 400;
+  font-size: 2.6rem;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tag-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.tag-filter a {
+  color: var(--muted);
+  text-decoration: none;
+  text-underline-offset: 0.3em;
+}
+
+.tag-filter a:hover {
+  color: var(--ink);
+}
+
+html:not([data-tag]) .tag-filter [data-chip=''] {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: underline;
+}

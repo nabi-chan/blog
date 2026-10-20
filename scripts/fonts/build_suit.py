@@ -5,7 +5,7 @@
 - 범위는 scripts/fonts/ranges.txt (구글 폰트 Noto Sans KR 분할 경계) 를 그대로 쓴다.
 - SUIT 는 OFL Reserved Font Name 이 선언돼 있어 수정본(서브셋)에는 그 이름을 쓸 수 없다.
   그래서 폰트 내부 이름을 'Eunsol Sans' 로 바꾸고, OFL 전문과 원저작자 표기를 함께 둔다.
-- 결과: public/fonts/suit/eunsol-sans.<N>.woff2, public/fonts/suit/OFL.txt, src/styles/fonts.css
+- 결과: public/fonts/suit/eunsol-sans.<N>.woff2, public/fonts/suit/OFL.txt, src/app/styles/fonts.css
 """
 
 import io
@@ -18,7 +18,7 @@ from fontTools.ttLib import TTFont
 FAMILY = "Eunsol Sans"
 PS_FAMILY = "EunsolSans"
 OUT_DIR = pathlib.Path("public/fonts/suit")
-CSS_PATH = pathlib.Path("src/styles/fonts.css")
+CSS_PATH = pathlib.Path("src/app/styles/fonts.css")
 RANGES_PATH = pathlib.Path("scripts/fonts/ranges.txt")
 # 저작권·상표·라이선스 문구는 원문 그대로 남긴다
 KEEP_NAME_IDS = {0, 7, 13, 14}

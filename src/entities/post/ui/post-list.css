@@ -1,0 +1,59 @@
+/* 글 목록: 왼쪽 날짜 칸 + 오른쪽 제목·설명 */
+.post-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-item {
+  display: grid;
+  grid-template-columns: var(--gutter) minmax(0, 1fr);
+  column-gap: 1rem;
+  padding: 0.85rem 0;
+}
+
+.post-item time {
+  grid-column: 1;
+  grid-row: 1;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+.post-item-title {
+  grid-column: 2;
+  grid-row: 1;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 1.08rem;
+  text-decoration: none;
+}
+
+.post-item-title:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.post-item p {
+  grid-column: 2;
+  margin: 0.15rem 0 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+@media (max-width: 560px) {
+  .post-item {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+  .post-item time,
+    .post-item-title,
+    .post-item p {
+      grid-column: 1;
+      grid-row: auto;
+    }
+
+  .post-item time {
+      font-size: 0.85rem;
+    }
+}

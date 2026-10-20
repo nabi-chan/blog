@@ -1,0 +1,132 @@
+/* 글 화면: 머리말, 태그, 목차, 본문·목차 배치 */
+.post-header {
+  margin-bottom: 3rem;
+}
+
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 1.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.post-tags li::before {
+  content: '#';
+  margin-right: 0.1em;
+}
+
+/* 목차: 넓은 화면은 오른쪽 여백에 고정, 좁은 화면은 본문 위 접기 블록 */
+.toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toc li[data-depth='3'] {
+  padding-left: 0.9rem;
+}
+
+.toc a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  line-height: 1.9;
+}
+
+.toc a:hover {
+  color: var(--ink);
+}
+
+.toc-compact {
+  margin-bottom: 2.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--wash);
+  border-radius: 10px;
+}
+
+.toc-compact summary {
+  list-style: none;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.toc-compact summary::-webkit-details-marker {
+  display: none;
+}
+
+.toc-compact summary::before {
+  content: '';
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.4rem;
+  vertical-align: -0.12em;
+  background: currentColor;
+  mask: var(--icon-chevron) center / contain no-repeat;
+  transition: transform 0.15s ease;
+}
+
+.toc-compact[open] summary::before {
+  transform: rotate(90deg);
+}
+
+/* 글 본문과 목차 배치. 콘텐츠 폭이 1080px 이상(화면 1200px 이상)이면 본문(1080px 일 때 800px, 넓어지면 함께 늘어남)
+   + 목차 280px, 그보다 좁으면 본문이 전체 폭을 쓰고 목차는 본문 위 접기 블록이다.
+   본문과 목차 사이 간격은 목차 칸의 왼쪽 여백뿐이다.
+   constants.ts 의 SPLIT_MIN_VIEWPORT·BODY_MAX_WIDTH(이미지 sizes)와 같은 값이다 */
+.post-aside {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .post-columns {
+      display: grid;
+      grid-template-columns: minmax(800px, 1fr) 280px;
+    }
+
+  .post-main {
+      min-width: 0;
+    }
+
+  .post-aside {
+      display: block;
+    }
+
+  .toc-compact {
+      display: none;
+    }
+
+  .toc-side {
+      position: sticky;
+      top: 2rem;
+      padding-left: 2rem;
+    }
+
+  .toc-side p {
+      margin: 0 0 0.5rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+}
+
+/* 지금 보고 있는 섹션 */
+.toc a[aria-current='location'] {
+  color: var(--ink);
+  font-weight: 700;
+}

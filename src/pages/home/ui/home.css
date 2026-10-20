@@ -1,0 +1,24 @@
+/* Lobby: 소개, 조회수, 최근 글 */
+.lobby-intro {
+  margin: 0 0 5rem;
+}
+
+.lobby-intro > :first-child {
+  margin-top: 0;
+}
+
+.lobby-more {
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-weight: 700;
+  text-underline-offset: 0.3em;
+}
+
+.lobby-views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0 0 2.5rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}

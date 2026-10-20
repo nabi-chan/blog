@@ -1,90 +1,3 @@
-/* 글 상세와 본문(Markdown) 요소 */
-.post-header {
-  margin-bottom: 3rem;
-}
-
-.post-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1.25rem;
-  margin: 1.5rem 0 0;
-  color: var(--muted);
-  font-size: 0.92rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.post-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1rem;
-  margin: 0.5rem 0 0;
-  padding: 0;
-  list-style: none;
-  color: var(--muted);
-  font-size: 0.92rem;
-}
-
-.post-tags li::before {
-  content: '#';
-  margin-right: 0.1em;
-}
-
-/* 목차: 넓은 화면은 오른쪽 여백에 고정, 좁은 화면은 본문 위 접기 블록 */
-.toc ol {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.toc li[data-depth='3'] {
-  padding-left: 0.9rem;
-}
-
-.toc a {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 0.88rem;
-  line-height: 1.9;
-}
-
-.toc a:hover {
-  color: var(--ink);
-}
-
-.toc-compact {
-  margin-bottom: 2.5rem;
-  padding: 0.75rem 1rem;
-  background: var(--wash);
-  border-radius: 10px;
-}
-
-.toc-compact summary {
-  list-style: none;
-  cursor: pointer;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.toc-compact summary::-webkit-details-marker {
-  display: none;
-}
-
-.toc-compact summary::before {
-  content: '';
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  margin-right: 0.4rem;
-  vertical-align: -0.12em;
-  background: currentColor;
-  mask: var(--icon-chevron) center / contain no-repeat;
-  transition: transform 0.15s ease;
-}
-
-.toc-compact[open] summary::before {
-  transform: rotate(90deg);
-}
-
 /* 본문 타이포그래피. Tailwind typography 기본값을 무채색과 이 블로그의 굵기 체계로 덮는다 */
 .prose {
   --tw-prose-body: var(--text);
@@ -346,16 +259,6 @@
   cursor: help;
 }
 
-.term-tooltip {
-  z-index: 10;
-  padding: 0.6rem 0.8rem;
-  background: var(--ink);
-  color: var(--paper);
-  border-radius: 6px;
-  font-size: 0.85rem;
-  line-height: 1.6;
-}
-
 /* 위젯 자리: JS 가 붙기 전과 RSS 에서는 대체 콘텐츠가 보인다 */
 .prose .widget {
   margin: 1.8em 0;
@@ -363,19 +266,6 @@
   border: 1px dashed var(--rule);
   border-radius: 10px;
 }
-
-.widget-counter {
-  min-width: 3rem;
-  padding: 0.35rem 0.9rem;
-  border: 1px solid var(--ink);
-  border-radius: 999px;
-  background: var(--paper);
-  color: var(--ink);
-  font: inherit;
-  font-variant-numeric: tabular-nums;
-  cursor: pointer;
-}
-
 
 /* 문장 안 이미지는 글줄 안에 둔다 (Tailwind preflight 의 img display:block 을 되돌림) */
 .prose p :is(picture, img) {
@@ -394,52 +284,6 @@
 }
 
 .prose :where(strong, b, h1, h2, h3, h4, h5, h6, th, dt) {
-  font-weight: 700;
-}
-
-/* 글 본문과 목차 배치. 콘텐츠 폭이 1080px 이상(화면 1200px 이상)이면 본문(1080px 일 때 800px, 넓어지면 함께 늘어남)
-   + 목차 280px, 그보다 좁으면 본문이 전체 폭을 쓰고 목차는 본문 위 접기 블록이다.
-   본문과 목차 사이 간격은 목차 칸의 왼쪽 여백뿐이다.
-   constants.ts 의 SPLIT_MIN_VIEWPORT·BODY_MAX_WIDTH(이미지 sizes)와 같은 값이다 */
-.post-aside {
-  display: none;
-}
-
-@media (min-width: 1200px) {
-  .post-columns {
-    display: grid;
-    grid-template-columns: minmax(800px, 1fr) 280px;
-  }
-
-  .post-main {
-    min-width: 0;
-  }
-
-  .post-aside {
-    display: block;
-  }
-
-  .toc-compact {
-    display: none;
-  }
-
-  .toc-side {
-    position: sticky;
-    top: 2rem;
-    padding-left: 2rem;
-  }
-
-  .toc-side p {
-    margin: 0 0 0.5rem;
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: var(--ink);
-  }
-}
-
-/* 지금 보고 있는 섹션 */
-.toc a[aria-current='location'] {
-  color: var(--ink);
   font-weight: 700;
 }
 
