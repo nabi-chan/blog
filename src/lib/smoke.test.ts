@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { checkResponse, extractMetaUrls } from './smoke'
+import { checkResponse, extractMetaUrls, sitemapPosts } from './smoke'
 
 const ok = { status: 200, location: null, body: '' }
 
@@ -67,5 +67,27 @@ describe('extractMetaUrls', () => {
       'https://nabichan.me/og/ko/261020.png',
       'https://nabichan.me/og/ko/261020.png',
     ])
+  })
+})
+
+describe('sitemapPosts', () => {
+  it('sitemap 주소에서 글 slug 와 영어판이 있는지를 고른다', () => {
+    const urls = [
+      'https://nabichan.me/',
+      'https://nabichan.me/en',
+      'https://nabichan.me/posts',
+      'https://nabichan.me/en/posts',
+      'https://nabichan.me/261021-hello-world',
+      'https://nabichan.me/261020',
+      'https://nabichan.me/en/261020',
+    ]
+    expect(sitemapPosts(urls)).toEqual([
+      { slug: '261021-hello-world', en: false },
+      { slug: '261020', en: true },
+    ])
+  })
+
+  it('글이 없으면 빈 배열이다', () => {
+    expect(sitemapPosts(['https://nabichan.me/', 'https://nabichan.me/posts'])).toEqual([])
   })
 })

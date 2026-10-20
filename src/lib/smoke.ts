@@ -1,3 +1,5 @@
+import { SLUG_PATTERN } from '../content/constants.ts'
+
 export type SmokeCheck = {
   path: string
   status: number
@@ -55,4 +57,13 @@ export function extractMetaUrls(html: string): string[] {
     if ((key === 'og:image' || key === 'twitter:image') && content) urls.push(content)
   }
   return urls
+}
+
+export type SmokePost = { slug: string; en: boolean }
+
+// sitemap 주소 중 글 주소만 골라 slug 와 영어판 유무를 돌려준다. 스모크는 이 중 실제 글 하나로 글 페이지를 본다
+export function sitemapPosts(urls: string[]): SmokePost[] {
+  const paths = urls.map((url) => new URL(url).pathname.slice(1))
+  const en = new Set(paths.filter((path) => path.startsWith('en/')).map((path) => path.slice(3)))
+  return paths.filter((path) => SLUG_PATTERN.test(path)).map((slug) => ({ slug, en: en.has(slug) }))
 }
