@@ -1,8 +1,8 @@
 /// <reference types="vite/client" />
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
-import { Layout } from '~/components/Layout'
-import { NotFound } from '~/components/NotFound'
+import { Layout } from '~/widgets/site-layout'
+import { NotFound } from '~/pages/not-found'
 import { getLocale, localizeHref, m } from '~/shared/i18n'
 import { site } from '~/shared/config'
 import appCss from '~/styles/app.css?url'

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { PostList, listPostsFn } from '~/entities/post'
-import { TagFilter } from '~/components/TagFilter'
+import { listPostsFn } from '~/entities/post'
+import { PostsPage } from '~/pages/posts'
 import { TAG_PATTERN, site } from '~/shared/config'
 import { getLocale, m } from '~/shared/i18n'
 import { pageHead } from '~/seo/head'
@@ -32,16 +32,5 @@ export const Route = createFileRoute('/posts/')({
     })
     return { ...head, scripts: [...head.scripts, { children: APPLY_TAG_SCRIPT }] }
   },
-  component: Posts,
+  component: () => <PostsPage {...Route.useLoaderData()} />,
 })
-
-function Posts() {
-  const { posts, tags } = Route.useLoaderData()
-  return (
-    <main className="posts">
-      <h1 className="display">{m.posts_title()}</h1>
-      <TagFilter tags={tags} />
-      {posts.length === 0 ? <p>{m.posts_empty()}</p> : <PostList posts={posts} locale={getLocale()} groupByYear />}
-    </main>
-  )
-}

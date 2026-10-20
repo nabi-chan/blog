@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { pickActiveHeading } from '~/lib/active-heading'
+import { pickActiveHeading } from './active-heading'
 
 // 스크롤 위치에 따라 지금 보고 있는 헤딩 id 를 돌려준다. 서버 렌더와 첫 hydration 에서는 null 이다
 export function useActiveHeading(ids: string[]): string | null {

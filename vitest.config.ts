@@ -13,6 +13,8 @@ export default defineConfig({
         'src/shared/**/*.ts',
         'src/entities/**/*.ts',
         'src/features/**/*.ts',
+        'src/widgets/**/*.ts',
+        'src/pages/**/*.ts',
       ],
       exclude: [
         '**/*.test.{ts,tsx}',
@@ -28,6 +30,8 @@ export default defineConfig({
         'src/shared/i18n/messages.ts',
         'src/shared/i18n/runtime.ts',
         'src/shared/config/site.ts',
+        // 지금도 커버리지 밖이던 React 훅
+        'src/pages/post/lib/useActiveHeading.ts',
       ],
       thresholds: { functions: 100, lines: 90 },
     },

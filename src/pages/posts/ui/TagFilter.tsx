@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import type { TagRef } from '~/entities/post'
 import { localizeHref, m } from '~/shared/i18n'
-import { applyTagSelection, tagFilterCss } from '~/lib/tag-filter'
+import { applyTagSelection, tagFilterCss } from '../lib/tag-filter'
 
 // 칩 마크업. URL 쿼리를 읽지 않으므로 프리렌더 HTML 과 hydration 결과가 언제나 같다.
 // 라우터 Link 는 현재 쿼리로 활성 속성을 붙여 이 불변식을 깨므로 일반 <a> 를 쓴다(정적 페이지라 새로 받는 비용이 작다)
