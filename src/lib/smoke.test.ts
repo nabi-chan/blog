@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { checkResponse, extractMetaUrls, sitemapPosts } from './smoke'
+import { checkResponse, extractMetaUrls, extractStylesheets, sitemapPosts } from './smoke'
 
 const ok = { status: 200, location: null, body: '' }
 
@@ -89,5 +89,12 @@ describe('sitemapPosts', () => {
 
   it('글이 없으면 빈 배열이다', () => {
     expect(sitemapPosts(['https://nabichan.me/', 'https://nabichan.me/posts'])).toEqual([])
+  })
+})
+
+describe('extractStylesheets', () => {
+  it('stylesheet 링크의 주소만 문서 순서대로 고른다', () => {
+    const html = '<link rel="preload" href="/fonts/a.woff2"/><link rel="stylesheet" href="/assets/app-abc.css"/><link href="/assets/b.css" rel="stylesheet">'
+    expect(extractStylesheets(html)).toEqual(['/assets/app-abc.css', '/assets/b.css'])
   })
 })

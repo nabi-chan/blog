@@ -1,6 +1,6 @@
 // 프리뷰(또는 배포) URL 에 요청을 보내 응답을 검사하는 스모크 스크립트
 // 사용법: node scripts/smoke.ts <baseUrl>
-import { checkResponse, extractMetaUrls, type SmokeCheck, type SmokePost, sitemapPosts } from '../src/lib/smoke.ts'
+import { checkResponse, extractMetaUrls, extractStylesheets, type SmokeCheck, type SmokePost, sitemapPosts } from '../src/lib/smoke.ts'
 import { sitemapUrls } from '../src/lib/indexnow.ts'
 
 // 글이 있든 없든 늘 맞아야 하는 것
@@ -124,6 +124,16 @@ async function main(baseUrl: string) {
     if (res.status !== 200) failures.push(`메타 주소 ${url}: 200 기대, 실제 ${res.status}`)
   }
   console.log(`메타 주소 ${metaUrls.size}개 확인`)
+  // 배포된 CSS 가 실제로 내려오는지 본다
+  const stylesheets = extractStylesheets(await (await fetch(new URL('/', baseUrl))).text())
+  if (stylesheets.length === 0) failures.push('/: stylesheet 링크가 없습니다')
+  for (const href of stylesheets) {
+    const res = await fetch(new URL(href, baseUrl))
+    const type = res.headers.get('content-type') ?? ''
+    await res.arrayBuffer()
+    if (res.status !== 200 || !type.includes('text/css')) failures.push(`CSS ${href}: 200·text/css 기대, 실제 ${res.status} ${type}`)
+  }
+  console.log(`CSS ${stylesheets.length}개 확인`)
   const passed = checks.length - new Set(failures.map((f) => f.split(':')[0])).size
   console.log(`${passed}/${checks.length} 통과`)
   if (failures.length > 0) {

@@ -1,0 +1,44 @@
+# main push 또는 수동 실행으로 배포한다 (스펙 4.11). 점검 → 원격 마이그레이션 → 배포 → 스모크 → IndexNow
+name: deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # push 직전 커밋. 수동 실행이면 비어 있고, 새 브랜치면 0 이 40개다
+      BEFORE: ${{ github.event.before }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # 바뀐 글·마이그레이션을 이전 커밋과 비교한다
+      - uses: pnpm/action-setup@v6 # 버전은 package.json 의 packageManager
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: 점검 (게이트)
+        run: |
+          if [[ -z "$BEFORE" || "$BEFORE" =~ ^0+$ ]]; then pnpm audit:repo --build; else pnpm audit:repo --build --base "$BEFORE"; fi
+      - name: 원격 D1 마이그레이션
+        run: pnpm exec wrangler d1 migrations apply DB --remote
+      - name: 배포
+        run: pnpm exec wrangler deploy
+      - name: 배포 스모크
+        run: pnpm smoke https://nabichan.me
+      - name: 바뀐 글 IndexNow
+        if: github.event_name == 'push'
+        run: |
+          if [[ "$BEFORE" =~ ^0+$ ]]; then echo "이전 커밋이 없어 건너뜀"; exit 0; fi
+          pnpm indexnow --submit --base "$BEFORE" --head "$GITHUB_SHA"

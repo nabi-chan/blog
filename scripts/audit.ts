@@ -1,5 +1,5 @@
 // 저장소 점검 (스펙 5.2). 결과는 PASS / WARN / FAIL / INFO 로 내고 .audit-report.json 에 쓴다. FAIL 이 있으면 exit 1
-// 사용법: node scripts/audit.ts [--build] [--live [--base-url <url>]]
+// 사용법: node scripts/audit.ts [--build] [--base <sha>] [--live [--base-url <url>]]
 import { spawn, spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'

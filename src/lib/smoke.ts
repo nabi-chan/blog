@@ -59,6 +59,16 @@ export function extractMetaUrls(html: string): string[] {
   return urls
 }
 
+// 배포된 CSS 가 실제로 내려오는지 보려고 stylesheet 주소를 고른다 (스펙 4.11 배포 스모크)
+export function extractStylesheets(html: string): string[] {
+  const urls: string[] = []
+  for (const [tag] of html.matchAll(/<link\b[^>]*>/gi)) {
+    const href = attr(tag, 'href')
+    if (attr(tag, 'rel') === 'stylesheet' && href) urls.push(href)
+  }
+  return urls
+}
+
 export type SmokePost = { slug: string; en: boolean }
 
 // sitemap 주소 중 글 주소만 골라 slug 와 영어판 유무를 돌려준다. 스모크는 이 중 실제 글 하나로 글 페이지를 본다
