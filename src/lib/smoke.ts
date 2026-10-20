@@ -6,6 +6,8 @@ export type SmokeCheck = {
   contains?: string[]
   notContains?: string[]
   location?: string
+  // Location 에 들어 있어야 할 문자열 (외부 로그인 주소처럼 끝이 매번 다를 때)
+  locationIncludes?: string
   // 문자열이 정확히 몇 번 나와야 하는지 (예: <title 은 한 번)
   count?: Record<string, number>
   // GET 이 아닌 요청(API 확인)에 쓴다
@@ -29,6 +31,9 @@ export function checkResponse(check: SmokeCheck, res: SmokeResponse): string[] {
   }
   if (check.location !== undefined && !(res.location ?? '').endsWith(check.location)) {
     failures.push(`${check.path}: Location 이 "${check.location}" 으로 끝나야 합니다 (실제 ${res.location})`)
+  }
+  if (check.locationIncludes !== undefined && !(res.location ?? '').includes(check.locationIncludes)) {
+    failures.push(`${check.path}: Location 에 "${check.locationIncludes}" 이 있어야 합니다 (실제 ${res.location})`)
   }
   for (const [text, expected] of Object.entries(check.count ?? {})) {
     const actual = res.body.split(text).length - 1

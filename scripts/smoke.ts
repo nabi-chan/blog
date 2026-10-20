@@ -29,7 +29,6 @@ export const CHECKS: SmokeCheck[] = [
     status: 403,
     contains: ['forbidden_origin'],
   },
-  { path: '/admin?return=//evil.com', status: 302, location: '/' },
   { path: '/api/nope', status: 404 },
   // 조회수 자리는 프리렌더 HTML 에 들어 있다 (숫자는 브라우저가 채움)
   { path: '/', status: 200, contains: ['class="lobby-views meta-list"', '오늘', 'data-state="loading"'] },
@@ -46,7 +45,7 @@ export const CHECKS: SmokeCheck[] = [
 
 // sitemap 에서 고른 실제 글 하나로 글 페이지와 산출물을 본다.
 // 특정 글의 제목이나 쓴 문법에는 기대지 않는다. Markdown 문법별 렌더 결과는 src/markdown/render.test.ts 가 본다
-function postChecks({ slug, en }: SmokePost): SmokeCheck[] {
+function postChecks({ slug, en }: SmokePost, production: boolean): SmokeCheck[] {
   const ko: SmokeCheck[] = [
     { path: '/', status: 200, contains: [`href="/${slug}"`] },
     { path: '/posts', status: 200, contains: ['data-post', 'data-year='] },
@@ -59,7 +58,8 @@ function postChecks({ slug, en }: SmokePost): SmokeCheck[] {
       notContains: ['/admin?return='],
     },
     { path: `/${slug}/`, status: 307, location: `/${slug}` },
-    { path: `/admin?return=/${slug}`, status: 302, location: `/${slug}` },
+    // 운영에서는 Access 가 먼저 받으므로 되돌림은 preview 에서만 본다
+    ...(production ? [] : [{ path: `/admin?return=/${slug}`, status: 302, location: `/${slug}` }]),
     { path: '/rss.xml', status: 200, contains: ['content:encoded', `https://nabichan.me/${slug}`] },
     { path: '/llms.txt', status: 200, contains: [`https://nabichan.me/${slug}.md`] },
     { path: '/llms-full.txt', status: 200, contains: [`URL: https://nabichan.me/${slug}`] },
@@ -87,12 +87,21 @@ function postChecks({ slug, en }: SmokePost): SmokeCheck[] {
   ]
 }
 
+// 운영에서는 Access 가 Worker 보다 먼저 /admin 을 받아 로그인으로 보낸다. 되돌림 경로 검사는 Access 가 없는 preview 에서만 한다
+const isProduction = (baseUrl: string) => new URL(baseUrl).hostname === 'nabichan.me'
+
+function adminCheck(baseUrl: string): SmokeCheck {
+  return isProduction(baseUrl)
+    ? { path: '/admin?return=//evil.com', status: 302, locationIncludes: '.cloudflareaccess.com/cdn-cgi/access/login/' }
+    : { path: '/admin?return=//evil.com', status: 302, location: '/' }
+}
+
 async function main(baseUrl: string) {
   const sitemap = await (await fetch(new URL('/sitemap.xml', baseUrl))).text()
   const posts = sitemapPosts(sitemapUrls(sitemap))
   // 영어판까지 볼 수 있게 번역이 있는 글을 먼저 고른다
   const post = posts.find((entry) => entry.en) ?? posts[0]
-  const checks = post ? [...CHECKS, ...postChecks(post)] : CHECKS
+  const checks = [...CHECKS, adminCheck(baseUrl), ...(post ? postChecks(post, isProduction(baseUrl)) : [])]
   console.log(post ? `글 페이지는 /${post.slug} 로 확인` : '글이 없어 글 페이지 검사를 건너뜀')
   const failures: string[] = []
   for (const check of checks) {

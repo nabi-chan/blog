@@ -92,6 +92,16 @@ describe('sitemapPosts', () => {
   })
 })
 
+describe('checkResponse 의 locationIncludes', () => {
+  it('Location 에 문자열이 들어 있는지 본다', () => {
+    const check = { path: '/admin', status: 302, locationIncludes: '.cloudflareaccess.com/cdn-cgi/access/login/' }
+    expect(checkResponse(check, { status: 302, location: 'https://team.cloudflareaccess.com/cdn-cgi/access/login/x?a=1', body: '' })).toEqual([])
+    expect(checkResponse(check, { status: 302, location: '/', body: '' })).toEqual([
+      '/admin: Location 에 ".cloudflareaccess.com/cdn-cgi/access/login/" 이 있어야 합니다 (실제 /)',
+    ])
+  })
+})
+
 describe('extractStylesheets', () => {
   it('stylesheet 링크의 주소만 문서 순서대로 고른다', () => {
     const html = '<link rel="preload" href="/fonts/a.woff2"/><link rel="stylesheet" href="/assets/app-abc.css"/><link href="/assets/b.css" rel="stylesheet">'
