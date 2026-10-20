@@ -37,6 +37,8 @@ export default defineConfig({
         autoStaticPathsDiscovery: false,
         autoSubfolderIndex: false,
         failOnError: true,
+        // ?tag= 와 #헤딩 링크는 같은 페이지라 따로 프리렌더하지 않는다
+        filter: ({ path }) => !path.includes('?') && !path.includes('#'),
       },
       pages: [{ path: '/' }, { path: '/en' }],
     }),

@@ -14,7 +14,7 @@ kitchen-sink-ko
 ![이 블로그의 구성도](./diagram.svg "Markdown 을 빌드할 때 HTML 로 만들어 Workers 에서 서빙합니다")
 
 > [!TIP]
-> 처음 오셨다면 [구성](/posts/how-this-blog-is-built#구성) 부터 보세요.
+> 처음 오셨다면 [구성](/261020#구성) 부터 보세요.
 
 ### 렌더링
 

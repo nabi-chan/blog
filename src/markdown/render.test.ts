@@ -72,9 +72,9 @@ describe('renderMarkdown 본문 기능 통합', () => {
         '',
         '![외부](https://example.com/x.png)',
         '',
-        '[다른 글](/posts/both) [외부](https://example.com)',
+        '[다른 글](/260301) [외부](https://example.com)',
       ].join('\n'),
-      { ...opts, filePath, locale: 'en', enSlugs: new Set(['both']) },
+      { ...opts, filePath, locale: 'en', enSlugs: new Set(['260301']) },
     )
     expect(r.html).toMatch(/<aside class="callout" data-callout="tip" role="note">\s*<p class="callout-title">Tip<\/p>/)
     expect(r.html).toContain('<blockquote>\n<p>그냥 인용</p>')
@@ -84,7 +84,7 @@ describe('renderMarkdown 본문 기능 통합', () => {
     )
     expect(r.html).toMatch(/문장 안 <picture>.*<img src="\/content-assets\/x\/a\.[0-9a-f]{8}\.png" alt="작은" width="1" height="1" loading="lazy" fetchpriority="low"/)
     expect(r.html).toContain('src="https://example.com/x.png"')
-    expect(r.html).toContain('href="/en/posts/both"')
+    expect(r.html).toContain('href="/en/260301"')
     expect(r.html).toMatch(/href="https:\/\/example\.com" target="_blank" rel="noopener"/)
     expect(r.assets).toEqual(
       expect.arrayContaining([

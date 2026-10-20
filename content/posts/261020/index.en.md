@@ -1,7 +1,7 @@
 ---
 title: "How this blog is built"
 description: "Notes on building this blog with TanStack Start and Cloudflare Workers."
-sourceHash: "6f51268fd4c4f9599b7525a76f3ee1d46dffb62454fceec5782947083bde90c8"
+sourceHash: "f6fe3c7b207f6b297ea71ca835d5bd2e6e4883f045588266a763823d4b45235c"
 translationStatus: machine
 ---
 
@@ -14,7 +14,7 @@ The body will be rewritten in plan 4.
 ![Diagram of this blog](./diagram.svg "Markdown is turned into HTML at build time and served from Workers")
 
 > [!TIP]
-> New here? Start with [the structure](/posts/how-this-blog-is-built#structure).
+> New here? Start with [the structure](/261020#structure).
 
 ### Rendering
 

@@ -3,33 +3,35 @@
 import { checkResponse, type SmokeCheck } from '../src/lib/smoke.ts'
 
 export const CHECKS: SmokeCheck[] = [
-  { path: '/', status: 200, contains: ['<html', 'lang="ko"', 'href="/posts/how-this-blog-is-built"'] },
-  { path: '/en', status: 200, contains: ['lang="en"', 'href="/en/posts/how-this-blog-is-built"'] },
+  { path: '/', status: 200, contains: ['<html', 'lang="ko"', 'href="/261020"'] },
+  { path: '/en', status: 200, contains: ['lang="en"', 'href="/en/261020"'] },
   { path: '/posts', status: 200, contains: ['lang="ko"'] },
   { path: '/en/posts', status: 200, contains: ['lang="en"'] },
   { path: '/en/', status: 307, location: '/en' },
   { path: '/fr/posts', status: 404 },
   { path: '/EN/posts', status: 404 },
+  { path: '/fr', status: 404 },
+  { path: '/posts/261020', status: 404 },
   {
-    path: '/posts/how-this-blog-is-built',
+    path: '/261020',
     status: 200,
     contains: ['lang="ko"', 'kitchen-sink-ko', 'data-rehype-pretty-code', '<nav'],
   },
-  { path: '/en/posts/how-this-blog-is-built', status: 200, contains: ['lang="en"', 'kitchen-sink-en'] },
+  { path: '/en/261020', status: 200, contains: ['lang="en"', 'kitchen-sink-en'] },
   {
-    path: '/posts/how-this-blog-is-built',
+    path: '/261020',
     status: 200,
     contains: [
       'data-callout="tip"',
       '<figcaption',
-      'src="/content-assets/how-this-blog-is-built/diagram.',
+      'src="/content-assets/261020/diagram.',
       '<source type="image/webp"',
       'fetchpriority="high"',
     ],
   },
-  { path: '/en/posts/how-this-blog-is-built', status: 200, contains: ['href="/en/posts/how-this-blog-is-built#'] },
+  { path: '/en/261020', status: 200, contains: ['href="/en/261020#'] },
   {
-    path: '/posts/how-this-blog-is-built',
+    path: '/261020',
     status: 200,
     contains: [
       '<details class="details">',
@@ -41,16 +43,23 @@ export const CHECKS: SmokeCheck[] = [
     ],
   },
   {
-    path: '/en/posts/how-this-blog-is-built',
+    path: '/en/261020',
     status: 200,
     contains: ['class="quote-original" lang="en"'],
     notContains: ['class="quote-translation"'],
   },
-  { path: '/posts/how-this-blog-is-built/', status: 307, location: '/posts/how-this-blog-is-built' },
-  { path: '/posts/does-not-exist', status: 404 },
-  { path: '/en/posts/does-not-exist', status: 404 },
+  { path: '/261020/', status: 307, location: '/261020' },
+  { path: '/does-not-exist', status: 404 },
+  { path: '/en/does-not-exist', status: 404 },
+  { path: '/', status: 200, contains: ['href="/posts"'] },
+  { path: '/posts', status: 200, contains: ['data-chip="meta"', 'data-year="2026"', 'html[data-tag="meta"]'] },
+  { path: '/posts?tag=meta', status: 200, contains: ['data-post'] },
+  { path: '/261020', status: 200, contains: ['href="/en/261020"'] },
+  { path: '/en/261020', status: 200, contains: ['href="/261020"'] },
+  { path: '/261099', status: 404, contains: ['lang="ko"'] },
+  { path: '/en/261099', status: 404, contains: ['lang="en"'] },
   // 깨진 퍼센트 인코딩은 Workers 정적 에셋 계층이 Worker 앞에서 400 으로 끊는다 (500 이 아니면 된다)
-  { path: '/posts/%E0', status: 400 },
+  { path: '/%E0', status: 400 },
 ]
 
 async function main(baseUrl: string) {

@@ -3,9 +3,10 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { type Context, type WriterHook, defineCollection, defineConfig } from '@content-collections/core'
 import { z } from 'zod'
-import { DESCRIPTION_MAX, SLUG_PATTERN, TAG_PATTERN } from './src/content/constants'
+import { DESCRIPTION_MAX, TAG_PATTERN } from './src/content/constants'
 import { parseKstDate } from './src/content/date'
 import { resolveEnPost } from './src/content/resolve-en-post'
+import { sameDayConflicts, validateSlug } from './src/content/slug'
 import { computeSourceHash } from './src/content/source-hash'
 import { writeAssets } from './src/markdown/assets'
 import { type Glossary, renderMarkdown } from './src/markdown/render'
@@ -14,13 +15,6 @@ import { widgetNames } from './src/widgets/names'
 type CacheFn = Context['cache']
 
 const isProduction = () => process.env.NODE_ENV === 'production'
-
-function slugOf(directory: string): string {
-  if (!SLUG_PATTERN.test(directory)) {
-    throw new Error(`${directory}: 글 폴더 이름은 소문자 kebab-case 여야 합니다`)
-  }
-  return directory
-}
 
 type RenderInput = {
   markdown: string
@@ -100,9 +94,14 @@ const koPosts = defineCollection({
     draft: z.boolean().default(false),
     content: z.string(),
   }),
-  transform: async (doc, { cache, documents, skip }) => {
+  transform: async (doc, { cache, collection, documents, skip }) => {
+    const slug = doc._meta.directory
+    const date = parseKstDate(doc.date)
+    validateSlug(slug, date)
+    // 하루 한 편: draft 여부와 상관없이 같은 날짜 폴더가 둘이면 멈춘다
+    const conflicts = sameDayConflicts(slug, (await collection.documents()).map((sibling) => sibling._meta.directory))
+    if (conflicts.length > 0) throw new Error(`${slug}: 같은 날짜의 글이 이미 있습니다 (${conflicts.join(', ')}). 하루에 한 편만 씁니다`)
     if (doc.draft && isProduction()) return skip('draft')
-    const slug = slugOf(doc._meta.directory)
     // 한국어 본문의 내부 링크는 언제나 한국어 글을 가리키므로 영어 번역본 목록이 필요 없다
     const body = await render(cache, {
       markdown: doc.content,
@@ -117,7 +116,7 @@ const koPosts = defineCollection({
       locale: 'ko' as const,
       title: doc.title,
       description: doc.description,
-      date: parseKstDate(doc.date),
+      date,
       updated: doc.updated === undefined ? undefined : parseKstDate(doc.updated),
       tags: doc.tags,
       draft: doc.draft,
@@ -142,7 +141,8 @@ const enPosts = defineCollection({
     content: z.string(),
   }),
   transform: async (doc, { cache, collection, documents, skip }) => {
-    const slug = slugOf(doc._meta.directory)
+    // slug 형식과 날짜는 원문(koPosts) 쪽에서 검사한다. 원문이 없으면 resolveEnPost 가 멈춘다
+    const slug = doc._meta.directory
     // documents() 는 변환 전 문서를 돌려주므로 원문 content 가 들어 있다 (아래 content 순서 참고)
     const koDocs = documents(koPosts)
     const ko = koDocs.find((candidate) => candidate._meta.directory === slug)

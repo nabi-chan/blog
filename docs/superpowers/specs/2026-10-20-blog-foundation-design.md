@@ -27,7 +27,7 @@
 1. 세 화면 [은솔]. 영어는 같은 구조를 `/en` 아래에 둔다.
    - `/` Lobby: 짧은 글 목록
    - `/posts` Posts: 전체 목록
-   - `/posts/$slug` Post: 글 상세
+   - `/$slug` Post: 글 상세 (slug = YYMMDD, 예: `/261020`) [은솔]
 2. Markdown 글 [은솔]
    - 코드 하이라이팅, Callout(`> [!TIP]` 문법), Figure(이미지+캡션), 목차(TOC)
    - jihoon-blog 의 디렉티브 블록: 접기(`:::details`), See Also(`:::see-also`), 원문·번역 병기 인용(`::::quote`), 용어 툴팁(`:term`), 인터랙티브 위젯 자리(`:::widget-*`)
@@ -131,7 +131,7 @@
 - **SEO/GEO 산출물도 빌드할 때 만든다.** sitemap, robots, RSS, llms.txt, `.md` 원문, OG 이미지가 대상이다. 서버 라우트 + 프리렌더로 할지 빌드 스크립트로 할지는 빌더 재량이지만, 요청마다 Worker 에서 다시 만들지 않는다.
 - **메타에 실리는 URL 은 리다이렉트되면 안 된다.**
   - canonical, hreflang, OG 이미지, sitemap 에 들어가는 URL 은 전부 200 이어야 한다.
-  - 정적 에셋의 trailing slash 처리(`html_handling`)와 프리렌더 출력 형식(`autoSubfolderIndex`)을 맞춰, `/posts/foo` 와 `/posts/foo/` 사이에 리다이렉트가 생기지 않게 한다.
+  - 정적 에셋의 trailing slash 처리(`html_handling`)와 프리렌더 출력 형식(`autoSubfolderIndex`)을 맞춰, `/<slug>` 와 `/<slug>/` 사이에 리다이렉트가 생기지 않게 한다.
   - 정규 형태는 **슬래시 없음**이다.
 
 ### 4.2 라우트
@@ -140,29 +140,32 @@
 |---|---|
 | `/`, `/en` | Lobby |
 | `/posts`, `/en/posts` | Posts (`?tag=` 로 태그 필터) |
-| `/posts/<slug>`, `/en/posts/<slug>` | Post |
-| `/posts/<slug>.md`, `/en/posts/<slug>.md` | 글 원문 (GEO) |
+| `/<slug>`, `/en/<slug>` | Post |
+| `/<slug>.md`, `/en/<slug>.md` | 글 원문 (GEO) |
 | `/rss.xml`, `/en/rss.xml` | RSS |
 | `/sitemap.xml`, `/robots.txt`, `/llms.txt`, `/en/llms.txt`, `/llms-full.txt` | SEO/GEO |
 | `/admin` | Cloudflare Access 로그인 입구 (4.7) |
 | 그 외 | 404. 해당 언어 레이아웃, 상태 코드 404 |
 
-- **라우트 파일은 언어 없이 한 벌만 정의한다** (`src/routes/index.tsx`, `posts/index.tsx`, `posts/$slug.tsx`).
+- **라우트 파일은 언어 없이 한 벌만 정의한다** (`src/routes/index.tsx`, `posts/index.tsx`, `$slug.tsx`). 글은 루트 바로 아래 `/<slug>` 다 [은솔].
   - 언어 접두사는 TanStack Router 의 `rewrite` 옵션과 Paraglide 의 `deLocalizeUrl` / `localizeUrl` 로 처리한다 (4.5).
   - `{-$locale}` 파라미터는 쓰지 않는다.
 - 깨진 퍼센트 인코딩(`/posts/%E0`)과 없는 언어 접두사(`/fr/posts`)는 500 이 아니라 404 로 끝나야 한다.
-- 영어 번역본이 없는 글의 `/en/posts/<slug>` 는 404 다 [은솔: 번역 없으면 숨김].
+- 영어 번역본이 없는 글의 `/en/<slug>` 는 404 다 [은솔: 번역 없으면 숨김].
 
 ### 4.3 콘텐츠 모델
 
 ```
-content/posts/<slug>/
+content/posts/<YYMMDD>/
   index.ko.md       # 필수, 원문
   index.en.md       # 선택, 번역본
   diagram.png       # 글 옆 이미지 [은솔]
 ```
 
-- slug 는 폴더 이름이다. 소문자 kebab-case ASCII 를 권장한다 [이로하]. 날짜는 frontmatter 에만 두고, 두 언어가 같은 slug 를 쓴다.
+- slug 는 폴더 이름이고, 형식은 `YYMMDD` 또는 `YYMMDD-kebab-case` 다 [은솔]. 예: `261020`, `261020-hello`
+  - `YYMMDD` 는 frontmatter `date`(KST)와 같아야 하고, 다르면 빌드 오류다.
+  - 하루에 한 편만 쓴다. 같은 날짜로 시작하는 폴더가 둘이면 빌드 오류다 [은솔].
+  - 두 언어가 같은 slug 를 쓴다.
 
 **ko frontmatter** [은솔: 기본 + 선택 필드]
 
@@ -260,8 +263,8 @@ translationStatus: machine   # machine | reviewed
   - 파일이 없으면 빌드가 실패한다.
 - **링크**
   - 내부 링크 현지화는 빌드할 때 한다.
-    - 작성자는 `/posts/<slug>` 로 쓴다.
-    - 영어 본문에서 대상 글에 영어 번역본이 있으면 `/en/posts/<slug>` 로 바꾸고, 없으면 한국어 글로 두고 `hreflang="ko"` 를 단다.
+    - 작성자는 `/<slug>` 로 쓴다.
+    - 영어 본문에서 대상 글에 영어 번역본이 있으면 `/en/<slug>` 로 바꾸고, 없으면 한국어 글로 두고 `hreflang="ko"` 를 단다.
   - 외부 링크는 새 탭 + `rel="noopener"`.
 - **산출물에 Shiki 와 Markdown 파서 런타임이 들어가면 안 된다.**
 - 렌더링: `dangerouslySetInnerHTML` 로 넣는다.
@@ -512,7 +515,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 
 - `llms.txt`(언어별): 사이트 설명, 작성자, 라이선스, 주요 링크(RSS, sitemap), 글 목록(제목 + 설명).
 - `llms-full.txt`: 공개 글 전체 원문.
-- 글별 원문 `/posts/<slug>.md` 와 `<link rel="alternate" type="text/markdown">`. 원문은 frontmatter 를 뺀 Markdown 그대로다. 글 옆 이미지 경로는 절대 URL 로 바꾼다.
+- 글별 원문 `/<slug>.md` 와 `<link rel="alternate" type="text/markdown">`. 원문은 frontmatter 를 뺀 Markdown 그대로다. 글 옆 이미지 경로는 절대 URL 로 바꾼다.
 - **배포 때 Cloudflare 설정을 확인한다.** AI 봇 차단(AI Crawl Control)과 managed robots.txt 가 꺼져 있어야 한다.
 
 **OG 이미지**
@@ -639,7 +642,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 
 1. 초안을 읽고 주제와 논지를 잡는다.
 2. 현재 시점 기준으로 사실관계와 최신성을 웹에서 확인한다.
-3. **은솔 문체 가이드**(5.3)대로 `content/posts/<slug>/index.ko.md` 를 쓴다. 이미지는 글 옆에 두고, frontmatter 는 스키마대로 쓴다.
+3. **은솔 문체 가이드**(5.3)대로 `content/<slug>/index.ko.md` 를 쓴다. 이미지는 글 옆에 두고, frontmatter 는 스키마대로 쓴다.
 4. 체크리스트를 점검한다.
    - SEO: 제목·설명 길이, 첫 문단에 대상 독자와 얻을 것
    - 사람과 AI 가 신뢰하기 쉬운 글: 1차 경험, 근거, 재현 조건, 1차 출처
@@ -711,7 +714,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
   - 주요 경로 200 과 TTFB (5회 중앙값 + `cf-cache-status`)
   - 보안 헤더
   - sitemap 에 draft 유출
-  - 번역 없는 `/en/posts/<slug>` 가 404 인지
+  - 번역 없는 `/en/<slug>` 가 404 인지
   - 리다이렉트되는 메타 URL
   - 원격 D1 미적용 마이그레이션
   - API 헬스
@@ -845,7 +848,6 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
   - 정규 URL 은 슬래시 없음
   - `www.nabichan.me` 는 apex 로 리다이렉트
 - 콘텐츠 모델
-  - slug 는 kebab-case 폴더 이름이고, 날짜는 frontmatter 에만 둔다(KST)
   - 태그는 키 + 표시 이름 데이터 컬렉션
   - en 번역본은 title/description 만 갖고 나머지는 상속한다. 해시 범위는 본문 + title + description, 매니페스트는 없다
 - 댓글과 조회수
