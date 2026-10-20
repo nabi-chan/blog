@@ -131,7 +131,7 @@ scripts/indexnow.ts
   //   verification: { google: '', naver: '' }   // 비어 있으면 메타를 그리지 않는다 (스펙 4.9: 자리만)
   //   indexNowKey: '<32자 hex>'                  // Task 9 가 같은 값의 public/<key>.txt 를 만든다
   //   locales: { ko: 'ko_KR', en: 'en_US' }      // og:locale
-  // messages: site_description (ko "eunsol 의 블로그예요.", en "eunsol's blog.") — 한 줄 소개가 정해지면 바꾼다
+  // messages: site_description (ko "eunsol 개인 블로그", en "eunsol's personal blog") [은솔] — 한 줄 소개가 정해지면 바꾼다
 
   // src/seo/url.ts
   export function absoluteUrl(path: string): string          // new URL(path, site.url).href
