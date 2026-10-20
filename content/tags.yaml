@@ -2,3 +2,6 @@ tags:
   - key: meta
     ko: 블로그
     en: Blog
+  - key: cloudflare
+    ko: Cloudflare
+    en: Cloudflare
