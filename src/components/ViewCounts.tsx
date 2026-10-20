@@ -1,6 +1,7 @@
 import { useRouter, useRouterState } from '@tanstack/react-router'
 import { type ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react'
 import { createApiClient } from '~/lib/api-client'
+import { withMinimumDelay } from '~/lib/min-delay'
 import { type MatchLike, viewTarget } from '~/lib/view-target'
 
 // failed 는 마지막 요청이 실패했는지. 응답 전(스켈레톤)과 실패(빈자리)를 구분한다
@@ -9,6 +10,7 @@ type ViewCounts = { site: number | null; today: number | null; post: { slug: str
 const EMPTY: ViewCounts = { site: null, today: null, post: null, failed: false }
 const ViewCountsContext = createContext<ViewCounts>(EMPTY)
 const client = createApiClient()
+const SKELETON_MIN_MS = 500
 
 // 라우트 이동마다 한 번 센다 (스펙 4.8). 증가 호출은 여기 한 곳에서만 한다
 export function ViewCountsProvider({ children }: { children: ReactNode }) {
@@ -32,8 +34,10 @@ export function ViewCountsProvider({ children }: { children: ReactNode }) {
     }))
     const target = viewTarget(matches)
     if (!target) return
+    // 셀 때마다 숫자 자리를 스켈레톤으로 돌리고, 응답이 성공이든 실패든 최소 SKELETON_MIN_MS 동안 보여 준다 [은솔]
+    setCounts(EMPTY)
     // 요청은 취소하지 않는다. 응답이 왔을 때 이미 다른 화면이면 결과만 버린다
-    void client.recordView(target.slug).then((result) => {
+    void withMinimumDelay(client.recordView(target.slug), SKELETON_MIN_MS).then((result) => {
       if (counted.current !== key) return
       if (!result.ok) {
         setCounts({ ...EMPTY, failed: true })
