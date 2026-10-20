@@ -75,7 +75,7 @@ export const CHECKS: SmokeCheck[] = [
   { path: '/api/nope', status: 404 },
   // 댓글·조회수 자리는 프리렌더 HTML 에 들어 있다 (숫자·댓글은 브라우저가 채움)
   { path: '/261020', status: 200, contains: ['id="comments-title"', 'class="view-count"'], notContains: ['/admin?return='] },
-  { path: '/', status: 200, contains: ['class="lobby-views meta-list"', '오늘'] },
+  { path: '/', status: 200, contains: ['class="lobby-views meta-list"', '오늘', 'data-state="loading"'] },
   { path: '/en', status: 200, contains: ['Today', 'Total'] },
   { path: '/en/261020', status: 200, contains: ['Comments', 'Views'], notContains: ['site-footer'] },
 ]

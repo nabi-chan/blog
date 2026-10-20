@@ -42,7 +42,7 @@ function Post() {
                 {m.post_updated()} <time dateTime={post.updated}>{formatDate(post.updated, locale)}</time>
               </span>
             )}
-            <ViewCount label={m.view_post_label()} value={views.post?.slug === post.slug ? views.post.count : null} />
+            <ViewCount label={m.view_post_label()} value={views.post?.slug === post.slug ? views.post.count : null} failed={views.failed} />
           </p>
           {tags.length > 0 && (
             <ul className="post-tags">

@@ -3,9 +3,10 @@ import { type ReactNode, createContext, useContext, useEffect, useRef, useState 
 import { createApiClient } from '~/lib/api-client'
 import { type MatchLike, viewTarget } from '~/lib/view-target'
 
-type ViewCounts = { site: number | null; today: number | null; post: { slug: string; count: number } | null }
+// failed 는 마지막 요청이 실패했는지. 응답 전(스켈레톤)과 실패(빈자리)를 구분한다
+type ViewCounts = { site: number | null; today: number | null; post: { slug: string; count: number } | null; failed: boolean }
 
-const EMPTY: ViewCounts = { site: null, today: null, post: null }
+const EMPTY: ViewCounts = { site: null, today: null, post: null, failed: false }
 const ViewCountsContext = createContext<ViewCounts>(EMPTY)
 const client = createApiClient()
 
@@ -35,11 +36,11 @@ export function ViewCountsProvider({ children }: { children: ReactNode }) {
     void client.recordView(target.slug).then((result) => {
       if (counted.current !== key) return
       if (!result.ok) {
-        setCounts(EMPTY)
+        setCounts({ ...EMPTY, failed: true })
         return
       }
       const { site, today, post } = result.data
-      setCounts({ site, today, post: target.slug !== undefined && post !== undefined ? { slug: target.slug, count: post } : null })
+      setCounts({ site, today, post: target.slug !== undefined && post !== undefined ? { slug: target.slug, count: post } : null, failed: false })
     })
   }, [idle, key, router])
 
@@ -52,13 +53,14 @@ export function useViewCounts(): ViewCounts {
 
 const numberFormat = new Intl.NumberFormat('en-US')
 
-// 레이블은 프리렌더 HTML 에 들어 있고, 숫자 자리는 폭을 잡아 둔 채 visibility 로만 감춘다 (CLS 0).
+// 레이블은 프리렌더 HTML 에 들어 있다. 숫자 자리는 응답 전에는 스켈레톤, 실패하면 빈자리(visibility)다.
 // 레이블을 숫자 앞에 둬서 영어도 단수·복수(1 view / 2 views)를 가릴 필요가 없다
-export function ViewCount({ label, value }: { label: string; value: number | null }) {
+export function ViewCount({ label, value, failed }: { label: string; value: number | null; failed: boolean }) {
+  const state = value !== null ? 'ready' : failed ? 'failed' : 'loading'
   return (
     <span className="view-count">
       {label}{' '}
-      <span className="view-count-number" style={{ visibility: value === null ? 'hidden' : 'visible' }}>
+      <span className="view-count-number" data-state={state} aria-busy={state === 'loading' || undefined}>
         {numberFormat.format(value ?? 0)}
       </span>
     </span>
