@@ -2,14 +2,14 @@ terms:
   - key: prerender
     ko:
       name: 프리렌더
-      definition: 요청이 오기 전에, 빌드할 때 페이지 HTML 을 미리 만들어 두는 방식입니다.
+      definition: 요청이 오기 전에, 빌드할 때 페이지 HTML을 미리 만들어 두는 방식입니다.
     en:
       name: Prerender
       definition: Generating a page's HTML at build time, before any request arrives.
   - key: hydration
     ko:
       name: 하이드레이션
-      definition: 서버에서 미리 만든 HTML 에 브라우저의 JavaScript 가 붙어 화면이 움직이기 시작하는 단계입니다.
+      definition: 서버에서 미리 만든 HTML에 브라우저의 JavaScript가 붙어 화면이 움직이기 시작하는 단계입니다.
     en:
       name: Hydration
       definition: The step where the browser's JavaScript attaches to server-rendered HTML so the page becomes interactive.

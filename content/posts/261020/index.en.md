@@ -1,7 +1,7 @@
 ---
 title: "How I built this blog with TanStack Start and Cloudflare Workers"
 description: "How this blog runs on TanStack Start and Cloudflare Workers: build-time prerendering, comments and view counts, bilingual posts, and files for search and AI."
-sourceHash: "27c65e6cbd3ab010aa2a3353d938637154bb5ee8032184bfd408e743f14d41af"
+sourceHash: "26f515e5881065b9bc7d8614d1fd8a12e722e4689cbfa98d21d1fd31938a3c46"
 translationStatus: machine
 ---
 
@@ -19,10 +19,16 @@ This post covers what I picked and how I put the pieces together.
 
 ## Structure
 
-![Architecture diagram of this blog](./diagram.svg "Posts become static files at build time; only comments and view counts go through the Worker and D1")
+![Architecture diagram of this blog](./diagram.svg "Posts become static files at build time; comments and view counts are handled by the Worker and D1")
 
 Posts and pages are generated as static files at build time.
-The only thing the Worker handles per request is the comment and view count API.
+When you first open a URL, that file is served as is.
+The Worker handles everything else:
+
+- The comment and view count API
+- Post data used when navigating between pages within the site
+- The 404 page for URLs that don't exist
+- A daily cleanup job for stored records (Cron)
 
 | Role | Choice |
 |---|---|
@@ -42,6 +48,7 @@ For i18n, I compared Intlayer and a hand-rolled implementation before settling o
 
 Post pages and list pages are :term[prerendered]{key="prerender"}.
 Cloudflare Workers blocks `eval` and `new Function`.
+On the free plan, each request gets only 10ms of CPU time.
 So Markdown isn't parsed on every request; it's turned into HTML at build time.
 
 Each post is a folder.
@@ -93,7 +100,7 @@ Reloading the page doesn't increase the number.
 Visitors are told apart by hashing a daily salt together with the IP and browser info, and raw IPs are never stored.
 
 Because the pages are built ahead of time, the browser fills in the counts and comments from the API.
-Requests go out once :term[hydration]{key="hydration"} finishes, and a gray placeholder shows while they load.
+Requests go out once :term[hydration]{key="hydration"} finishes, and gray boxes stand in for the numbers while they load.
 
 ## Written in two languages
 
@@ -129,7 +136,8 @@ Simplicity is prerequisite for reliability.
 :::
 ::::
 
-Posts can also embed small widgets.
+Unlike MDX, posts don't contain component code, but they can mark a spot for a widget.
+The browser then mounts a prebuilt widget in that spot.
 Try the button below.
 
 :::widget-counter-demo
@@ -138,7 +146,7 @@ If widgets can't run in your environment, you'll see this sentence instead.
 
 ## Wrapping up
 
-This blog generates its posts and pages at build time, and only comments and view counts go through the Worker.
+This blog generates its posts and pages at build time, and comments and view counts are handled by the Worker and D1.
 Posts are written in Markdown, and the build stops when an English translation drifts from the original.
 I haven't settled on the About text or social links yet.
 
