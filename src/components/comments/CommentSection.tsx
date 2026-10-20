@@ -59,7 +59,7 @@ export function CommentSection({ slug }: { slug: string }) {
       </h2>
       <div className="comments-list" aria-live="polite">
         {failed ? (
-          <p className="comments-status">{m.comment_error_unavailable()}</p>
+          <p className="comments-status">{m.comments_load_failed()}</p>
         ) : comments === null ? null : comments.length === 0 ? (
           <p className="comments-status">{m.comments_empty()}</p>
         ) : (

@@ -39,8 +39,9 @@
   "comment_error_reserved_name": "쓸 수 없는 이름이에요.",
   "comment_error_not_found": "댓글이나 글을 찾을 수 없어요.",
   "comment_error_too_many_attempts": "시도가 너무 많아요. 10분 뒤에 다시 해 주세요.",
-  "comment_error_unavailable": "댓글을 불러오지 못했어요. 잠시 뒤에 다시 해 주세요.",
+  "comment_error_unavailable": "지금은 처리하지 못했어요. 잠시 뒤에 다시 해 주세요.",
   "comment_error_network": "네트워크 연결을 확인해 주세요.",
   "lobby_views_today": "오늘",
-  "lobby_views_total": "전체"
+  "lobby_views_total": "전체",
+  "comments_load_failed": "댓글을 불러오지 못했어요. 잠시 뒤에 다시 해 주세요."
 }

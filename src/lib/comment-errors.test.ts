@@ -6,6 +6,8 @@ describe('commentErrorMessage', () => {
     expect(commentErrorMessage('wrong_password')).toBe('비밀번호가 맞지 않아요.')
     expect(commentErrorMessage('too_many_attempts')).toBe('시도가 너무 많아요. 10분 뒤에 다시 해 주세요.')
     expect(commentErrorMessage('network')).toBe('네트워크 연결을 확인해 주세요.')
+    // 작성·수정·삭제가 실패한 것이라 "불러오지 못했다"가 아니라 처리하지 못했다고 알린다
+    expect(commentErrorMessage('unavailable')).toBe('지금은 처리하지 못했어요. 잠시 뒤에 다시 해 주세요.')
   })
 
   it('모든 코드에 문구가 있다', () => {
