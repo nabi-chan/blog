@@ -35,6 +35,10 @@ describe('markdownPagePaths', () => {
     expect(markdownPagePaths(dir, { production: true })).toEqual(['/261020.md', '/en/261020.md', '/261021.md'])
   })
 
+  it('글 폴더가 아예 없으면 (글 0편, git 은 빈 폴더를 추적하지 않음) 빈 목록이다', () => {
+    expect(markdownPagePaths(join(dir, 'missing'), { production: true })).toEqual([])
+  })
+
   it('dev 에서는 draft 도 넣는다', () => {
     expect(markdownPagePaths(dir, { production: false })).toEqual(['/261020.md', '/en/261020.md', '/261021.md', '/261022.md', '/en/261022.md'])
   })

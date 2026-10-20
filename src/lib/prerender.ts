@@ -21,6 +21,8 @@ const draftOf = (file: string): boolean => {
 // 글별 .md 원문 경로. <link rel="alternate"> 는 크롤러가 따라가지 않아서 글 폴더를 읽어 만든다.
 // 이 목록이 실제 데이터와 어긋나면 .md 라우트가 404 를 내고 failOnError 로 빌드가 멈춘다 (조용히 빠지지 않는다)
 export function markdownPagePaths(postsDir: string, options: { production: boolean }): string[] {
+  // 글이 0편이면 git 이 빈 폴더를 추적하지 않아 폴더 자체가 없다 (빈 상태 화면은 그대로 떠야 한다)
+  if (!existsSync(postsDir)) return []
   return readdirSync(postsDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && existsSync(join(postsDir, entry.name, 'index.ko.md')))
     .map((entry) => entry.name)
