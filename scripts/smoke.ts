@@ -104,13 +104,16 @@ async function main(baseUrl: string) {
   const checks = [...CHECKS, adminCheck(baseUrl), ...(post ? postChecks(post, isProduction(baseUrl)) : [])]
   console.log(post ? `글 페이지는 /${post.slug} 로 확인` : '글이 없어 글 페이지 검사를 건너뜀')
   const failures: string[] = []
+  const request = (check: SmokeCheck) =>
+    fetch(new URL(check.path, baseUrl), { method: check.method, headers: check.headers, body: check.body, redirect: 'manual' })
   for (const check of checks) {
-    const res = await fetch(new URL(check.path, baseUrl), {
-      method: check.method,
-      headers: check.headers,
-      body: check.body,
-      redirect: 'manual',
-    })
+    let res = await request(check)
+    // preview 가 막 뜬 직후 요청 하나가 500 으로 끝나는 일이 있었다(계획 5, 재현 안 됨). 5xx 는 한 번만 다시 묻고 기록한다
+    if (res.status >= 500 && check.status < 500) {
+      console.log(`${check.path}: ${res.status} 라서 한 번 다시 요청함`)
+      await res.arrayBuffer()
+      res = await request(check)
+    }
     failures.push(
       ...checkResponse(check, {
         status: res.status,

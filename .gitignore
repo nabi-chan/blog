@@ -6,6 +6,7 @@ src/paraglide
 public/content-assets
 .dev.vars
 .audit-report.json
+.audit-preview.log
 project.inlang/cache
 coverage
 .superpowers

@@ -1,7 +1,7 @@
 // 저장소 점검 (스펙 5.2). 결과는 PASS / WARN / FAIL / INFO 로 내고 .audit-report.json 에 쓴다. FAIL 이 있으면 exit 1
 // 사용법: node scripts/audit.ts [--build] [--base <sha>] [--live [--base-url <url>]]
 import { spawn, spawnSync } from 'node:child_process'
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
+import { existsSync, openSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { gzipSync } from 'node:zlib'
 import { parse } from 'yaml'
@@ -237,7 +237,9 @@ async function buildChecks() {
     results.push({ id: 'smoke', status: 'FAIL', message: '4173 포트가 이미 쓰이고 있습니다. 떠 있는 pnpm preview 를 끄고 다시 실행하세요' })
     return
   }
-  const preview = spawn('pnpm', ['preview', '--strictPort'], { detached: true, stdio: 'ignore' })
+  // preview 출력은 .audit-preview.log 에 남긴다. 스모크가 실패하면 원인을 볼 수 있게 한다
+  const previewLog = openSync('.audit-preview.log', 'w')
+  const preview = spawn('pnpm', ['preview', '--strictPort'], { detached: true, stdio: ['ignore', previewLog, previewLog] })
   let exited = false
   preview.on('exit', () => {
     exited = true
@@ -272,7 +274,7 @@ async function buildChecks() {
     results.push(
       smoke.status === 0
         ? { id: 'smoke', status: 'PASS', message: `preview 스모크 (${tail(smoke.stdout, 1)[0] ?? ''})` }
-        : { id: 'smoke', status: 'FAIL', message: 'preview 스모크 실패', details: tail(`${smoke.stdout}${smoke.stderr}`) },
+        : { id: 'smoke', status: 'FAIL', message: 'preview 스모크 실패 (preview 출력은 .audit-preview.log)', details: tail(`${smoke.stdout}${smoke.stderr}`) },
     )
   } finally {
     process.removeListener('SIGINT', onInterrupt)

@@ -22,6 +22,20 @@ describe('withSecurityHeaders', () => {
   })
 })
 
+describe('SECURITY_HEADERS 의 CSP', () => {
+  const directive = (name: string) =>
+    SECURITY_HEADERS['Content-Security-Policy']
+      .split('; ')
+      .find((entry) => entry.startsWith(`${name} `))
+      ?.split(' ')
+      .slice(1) ?? []
+
+  it('Cloudflare 가 끼워 넣는 Web Analytics 비콘을 허용한다', () => {
+    expect(directive('script-src')).toContain('https://static.cloudflareinsights.com')
+    expect(directive('connect-src')).toContain('https://cloudflareinsights.com')
+  })
+})
+
 describe('headersFile', () => {
   it('public/_headers 는 lib 에서 만든 내용과 같다', () => {
     expect(headersFile().startsWith('/*\n')).toBe(true)
