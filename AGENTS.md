@@ -99,6 +99,39 @@ pnpm dev                         # http://localhost:3000
 | 클라이언트 JS (gzip 합) | 170KB | 128.9KB |
 | Worker (압축 전, 소스맵 제외) | 64 MiB | 1.76MB |
 
+## 배포
+
+- main 에 push 하면 GitHub Actions(`.github/workflows/deploy.yml`)가 배포한다. 수동 실행도 된다.
+  - 순서: `pnpm audit:repo --build`(게이트) → 원격 D1 마이그레이션 → `wrangler deploy` → `pnpm smoke https://nabichan.me` → 바뀐 글 IndexNow
+- 손으로 배포할 때는 `pnpm audit:repo --build && pnpm exec wrangler deploy` 처럼 **`&&` 로만** 잇는다. FAIL 이 있으면 배포하지 않는다.
+- 시크릿은 값을 화면에 내지 않고 넣는다.
+
+  | 이름 | 위치 | 넣는 법 |
+  |---|---|---|
+  | `TURNSTILE_SECRET_KEY` | Worker | `wrangler turnstile widget get <사이트 키> --json` 의 `secret` 을 바로 `wrangler secret put` 으로 넘긴다 |
+  | `COMMENT_PEPPER` | Worker | `openssl rand -base64 32` 를 바로 넘긴다. **바꾸면 기존 댓글 비밀번호가 전부 틀리게 된다** |
+  | `VIEW_SALT_SECRET` | Worker | 같은 방법. 바꾸면 그날 방문자를 다시 센다 |
+  | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | GitHub | 은솔이 만들고 등록한다 |
+
+- Access: 팀 `nabi-chan`, `/admin` 앱(이메일 OTP, 세션 24시간)
+  - 허용 이메일을 바꾸면 `wrangler.jsonc` 의 `OWNER_EMAIL`(쉼표 목록)과 Access 정책을 같이 고친다.
+  - 로그아웃해도 세션이 끝날 때까지 API 의 은솔 판정은 남는다(스펙 4.7).
+- 리다이렉트(Single Redirect 규칙, 프록시 `AAAA 100::` 레코드)
+  - `www.nabichan.me` → apex. 경로와 쿼리를 유지한다.
+  - `nabi.kim`, `www.nabi.kim` → `https://nabichan.me/`. 경로를 버린다.
+  - `nabi.kim` 의 MX·TXT 는 메일(`hello@nabi.kim`)용이라 건드리지 않는다.
+- CSP 는 `src/lib/security-headers.ts` 에서만 고치고 `public/_headers` 를 다시 만든다(테스트가 둘이 같은지 본다). Cloudflare 가 끼워 넣는 Web Analytics 비콘을 허용해 두었다.
+
+### 첫 글 공개 때 한 번
+
+계획 5 에서 글 0편으로 배포해서, 아래는 첫 공개 글이 main 에 들어간 뒤에 한다.
+
+1. Actions 실행이 성공했고, IndexNow 가 그 글 주소를 보냈고, `pnpm smoke https://nabichan.me` 가 글 페이지 검사까지 통과하는지 본다.
+2. 실제 Turnstile 로 댓글 작성·수정·삭제를 해 본다. 틀린 비밀번호는 403, 반복하면 429, 예약 이름은 거절, Access 로그인 상태의 댓글에는 배지가 붙는다.
+3. Workers Logs 에서 댓글 작성(`POST /api/posts/<slug>/comments`)의 CPU 시간을 본다. 무료 플랜에서 10ms 를 넘거나 1102 오류가 나면 `PASSWORD_ITERATIONS`(지금 50,000)를 낮춘다. 해시에 횟수가 저장돼 있어 예전 댓글은 그대로 검증된다.
+4. 같은 브라우저로 새로고침해도 글·오늘·전체 조회수가 하루 한 번만 오르는지 본다.
+5. 확인용 행을 원격 D1 에서 지운다. 은솔이 남길 댓글이 있으면 먼저 묻는다.
+
 ## 글 쓰기
 
 - 커맨드: `/write-post`, `/refine-post`, `/translate-post`, `/audit` (`.claude/commands/`)
