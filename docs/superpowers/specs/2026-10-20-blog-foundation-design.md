@@ -13,9 +13,10 @@
 
 스택 [은솔]:
 
-- TanStack Start + Tailwind CSS + Content Collections(MDX)
+- TanStack Start + Tailwind CSS + Content Collections(Markdown)
 - Cloudflare Workers 배포, Cloudflare D1
 - Paraglide JS 다국어. Intlayer 와 직접 구현을 비교한 뒤 골랐다.
+- 처음에는 MDX 였지만, 글에 React 컴포넌트를 넣을 계획이 없어서 일반 Markdown 으로 바꿨다 [은솔].
 
 이번 범위는 "포스트를 띄우는 것"에서 시작해 댓글·조회수·SEO/GEO·다국어·자동 배포·글쓰기 에이전트 커맨드까지 포함한다 [은솔].
 
@@ -27,7 +28,7 @@
    - `/` Lobby: 짧은 글 목록
    - `/posts` Posts: 전체 목록
    - `/posts/$slug` Post: 글 상세
-2. MDX 글: 코드 하이라이팅, Callout, Figure(이미지+캡션), 목차(TOC) [은솔].
+2. Markdown 글: 코드 하이라이팅, Callout(`> [!TIP]` 문법), Figure(이미지+캡션), 목차(TOC) [은솔].
 3. SUIT 기반 무채색 모던 디자인, lucide-react 아이콘, 라이트 모드만 [은솔].
 4. 댓글 [은솔]
    - 누구나 작성자명 + 내용 + 비밀번호로 쓰고, 비밀번호로 수정·삭제한다.
@@ -45,6 +46,7 @@
 ### 비목표
 
 - 대댓글, 관리자 페이지, 다크 모드, 태그 전용 페이지, 페이지네이션, 사이트 검색, 뉴스레터
+- 글 안의 React 컴포넌트 (MDX) [은솔]
 - 브라우저 언어 감지 자동 리다이렉트 [은솔]
 - 영어 글의 "번역본입니다" 표시 [은솔]
 - 예전 글·디자인 이전
@@ -90,7 +92,7 @@
 
 ### 런타임
 
-- **Workers 는 `eval` / `new Function` 을 막는다.** 그래서 `@content-collections/mdx` 의 `MDXContent`(런타임 평가)는 쓸 수 없다. MDX 는 빌드 시점에 실제 JS 모듈로 컴파일한다 (4.4).
+- **Workers 는 `eval` / `new Function` 을 막는다.** 그래서 본문은 빌드할 때 HTML 문자열로 만든다. 런타임에는 Markdown 을 파싱하지도, 코드를 평가하지도 않는다 (4.4).
 - **프리렌더된 페이지는 정적 에셋이 Worker 보다 먼저 서빙한다.** 정적 페이지 요청은 Worker 미들웨어를 타지 않는다.
 - **Paraglide 서버 미들웨어는 AsyncLocalStorage 를 쓴다.** 공식 문서가 "Cloudflare Workers 에서 Node 호환이 켜져 있으면 기본값 그대로"라고 한다. 우리는 `nodejs_compat` 을 켠다.
 - Paraglide + TanStack Start 공식 가이드는 있지만 Cloudflare Workers 와 프리렌더 조합은 언급이 없다. 가장 먼저 검증한다 (7).
@@ -118,6 +120,11 @@
 ### 4.1 렌더링 전략
 
 - **글·목록 페이지는 빌드 시 프리렌더한다** [이로하]. Lobby, Posts, Post × ko/en 이 대상이고, Workers 정적 에셋으로 서빙한다.
+- **글 데이터는 서버 전용이다** [이로하].
+  - Content Collections 생성물에 server-only 표시를 붙여서 클라이언트 번들에 본문 HTML 이 실리지 않게 한다.
+  - 라우트 loader 는 서버 함수로 목록·글·본문을 받는다.
+  - 프리렌더 페이지의 첫 데이터는 HTML 에 같이 실린다. 화면 안 이동 때만 Worker 를 부른다.
+  - 서버 함수에는 언어를 **항상 입력으로 넘긴다.** 서버 함수 요청 URL 에는 언어 접두사가 없기 때문이다.
 - **댓글과 조회수는 브라우저가 Worker API 를 호출해서 채운다.** 프리렌더된 HTML 에는 숫자와 댓글 없이 자리(레이블, 높이)만 있다.
 - **SEO/GEO 산출물도 빌드할 때 만든다.** sitemap, robots, RSS, llms.txt, `.md` 원문, OG 이미지가 대상이다. 서버 라우트 + 프리렌더로 할지 빌드 스크립트로 할지는 빌더 재량이지만, 요청마다 Worker 에서 다시 만들지 않는다.
 - **메타에 실리는 URL 은 리다이렉트되면 안 된다.**
@@ -148,8 +155,8 @@
 
 ```
 content/posts/<slug>/
-  index.ko.mdx      # 필수, 원문
-  index.en.mdx      # 선택, 번역본
+  index.ko.md       # 필수, 원문
+  index.en.md       # 선택, 번역본
   diagram.png       # 글 옆 이미지 [은솔]
 ```
 
@@ -197,26 +204,48 @@ translationStatus: machine   # machine | reviewed
 - `translationStatus` 는 화면에 표시하지 않는다 [은솔: 번역 표시 안 함]. 작업 흐름(은솔 검토 여부)과 audit 에만 쓴다.
 - **번역본 짝 맞추기는 Content Collections 가 경로로 직접 한다.** 별도 매니페스트 파일은 두지 않는다.
 
-### 4.4 MDX 파이프라인
+### 4.4 Markdown 파이프라인
 
-- **MDX 본문은 Vite 단계에서 실제 모듈로 컴파일한다.**
-  - Content Collections 는 frontmatter 와 메타데이터만 맡는다(`parser: "frontmatter-only"`).
-  - MDX 본문은 `@mdx-js/rollup` 이 컴파일하고, 컬렉션 `transform` 에서 그 모듈을 연결한다.
-  - Content Collections 공식 샘플 `samples/tanstack-start-cf-mdx` 구성을 기준으로 하되, TanStack Start 1.169+ / Vite 8 에 맞춘다.
-- **글별 동적 import 로 쪼갠다.** Lobby 가 전체 글 본문을 내려받으면 안 된다.
-- remark/rehype 처리는 전부 빌드 시점에 한다.
+- **본문은 Content Collections `transform` 안에서 unified 로 HTML 을 만든다.**
+  - 파이프라인: remark-parse → remark-rehype → rehype-stringify
+  - 결과(`html`, `toc`, 복사할 이미지 목록)는 `context.cache` 로 캐시한다.
+  - 캐시 키에는 영어 번역본 목록도 넣는다. 링크 현지화 결과가 그 목록에 따라 달라지기 때문이다.
+- **원본 HTML 태그는 허용하지 않는다** [이로하]. Markdown 문법만 쓴다. 이식성과 안전을 위해서다.
+- 빌드 시점 처리
   - GFM
   - 헤딩 id + 앵커 링크, TOC 데이터 추출 (h2~h3)
   - 코드 하이라이팅: rehype-pretty-code + shiki, 무채색 테마, 파일명·줄 강조 [은솔]
-  - 글 옆 이미지(`![](./a.png)`)는 import 로 바꿔 Vite 가 해시된 에셋으로 처리하게 한다. width/height 를 넣고, 첫 이미지만 즉시 로드하고 나머지는 lazy 로 둔다.
-- MDX 에서 import 없이 쓸 수 있는 컴포넌트 [은솔]
-  - `<Callout type="note|tip|warn">`
-  - `<Figure src alt caption>`
-  - `a`: 내부 링크 현지화
+- **Callout**: GitHub 알림 문법 `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`, `> [!CAUTION]` 다섯 가지를 쓴다 [이로하].
+  - GitHub 미리보기에서도 똑같이 보인다.
+  - `<aside>` + lucide 아이콘으로 렌더한다.
+- **Figure**: 문단에 이미지 하나만 있고 title 이 있으면 `<figure>` 로 렌더한다. title 은 `<figcaption>` 이 된다 [이로하].
+  - 문법: `![대체 텍스트](./a.png "캡션")`
+  - 문장 안에 섞인 이미지는 그냥 `<img>` 다.
+- **글 옆 이미지** (jihoon-blog `rehype-image-path` 를 참고했다 [은솔])
+  - 빌드할 때 `public/content-assets/<slug>/<이름>.<내용해시>.<확장자>` 로 복사하고, `src` 를 그 경로로 바꾼다.
+    - 이 폴더는 gitignore 한다.
+    - 복사는 캐시 밖에서 매번 한다.
+    - 프로덕션 빌드 전에 폴더를 비워서, 지운 이미지가 배포에 남지 않게 한다.
+  - **width/height 를 넣는다.**
+    - SVG 는 루트 `<svg>` 태그의 width/height 나 viewBox 에서 직접 읽는다. draw.io 처럼 루트 태그에 큰 속성을 싣는 SVG 는 `image-size` 가 판별하지 못하기 때문이다.
+    - 크기를 못 읽으면 빌드가 실패한다 [이로하].
+  - **로딩 우선순위**: 첫 이미지는 `loading="eager"` + `fetchpriority="high"`, 나머지는 `lazy` + `low` 다. 모두 `decoding="async"` 를 단다.
+  - **WebP 사본**: PNG/JPEG 는 sharp 로 폭별 WebP 사본(720, 1440, 원본 폭 중 원본 이하인 것)을 만든다.
+    - `<picture><source type="image/webp" srcset sizes><img></picture>` 로 감싼다.
+    - `<img>` 의 src 는 원본 그대로라 WebP 를 못 읽는 환경과 RSS 리더는 원본을 받는다.
+    - `sizes` 는 본문 최대 폭 상수와 맞춘다.
+  - **폭 제한**: `![…](./a.png?w=400)` 처럼 쓰면 그 폭을 넘지 않게 `max-width:min(400px, 100%)` 를 건다.
+  - **alt 가 비어 있으면 빌드 경고**를 낸다(실패는 아님).
+  - 파일이 없으면 빌드가 실패한다.
+- **링크**
+  - 내부 링크 현지화는 빌드할 때 한다.
     - 작성자는 `/posts/<slug>` 로 쓴다.
-    - 영어 페이지에서 렌더할 때 대상 글에 영어 번역본이 있으면 `/en/posts/<slug>` 로 바꾸고, 없으면 한국어 글로 두고 `hreflang="ko"` 를 단다.
-    - 외부 링크는 새 탭 + `rel="noopener"`.
-- 산출물에 Shiki 런타임이 들어가면 안 된다.
+    - 영어 본문에서 대상 글에 영어 번역본이 있으면 `/en/posts/<slug>` 로 바꾸고, 없으면 한국어 글로 두고 `hreflang="ko"` 를 단다.
+  - 외부 링크는 새 탭 + `rel="noopener"`.
+- **산출물에 Shiki 와 Markdown 파서 런타임이 들어가면 안 된다.**
+- 렌더링: `dangerouslySetInnerHTML` 로 넣는다.
+  - 프리렌더 HTML 과 hydration 데이터에 같은 문자열이 들어가니까 불일치가 없다.
+  - 본문 HTML 이 페이지에 두 번 실리는 비용은 감수한다.
 
 ### 4.5 다국어 (Paraglide JS)
 
@@ -455,14 +484,14 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
   - `/api/`, `/admin` 은 막는다 [이로하].
   - 맨 아래에 sitemap 줄을 둔다.
 - **RSS**: 언어별로 둔다(`/rss.xml`, `/en/rss.xml`) [이로하].
-  - 제목, 요약, 링크, 날짜, `<copyright>` 만 넣는다.
-  - 전문은 `.md` 원문과 `llms-full.txt` 로 제공한다.
+  - 제목, 요약, **본문 HTML 전문**, 링크, 날짜, `<copyright>` 를 넣는다.
+  - 본문 안의 상대 URL(이미지, 내부 링크)은 절대 URL 로 바꾼다.
 
 **GEO**
 
 - `llms.txt`(언어별): 사이트 설명, 작성자, 라이선스, 주요 링크(RSS, sitemap), 글 목록(제목 + 설명).
 - `llms-full.txt`: 공개 글 전체 원문.
-- 글별 원문 `/posts/<slug>.md` 와 `<link rel="alternate" type="text/markdown">`. 원문은 MDX 소스에서 import/export 줄만 걷어낸다.
+- 글별 원문 `/posts/<slug>.md` 와 `<link rel="alternate" type="text/markdown">`. 원문은 frontmatter 를 뺀 Markdown 그대로다. 글 옆 이미지 경로는 절대 URL 로 바꾼다.
 - **배포 때 Cloudflare 설정을 확인한다.** AI 봇 차단(AI Crawl Control)과 managed robots.txt 가 꺼져 있어야 한다.
 
 **OG 이미지**
@@ -558,7 +587,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 
 **샘플 글** [은솔: 공개]
 
-- ko + en 샘플 글 하나를 공개한다. MDX 기능(하이라이팅, Callout, Figure + 글 옆 이미지, TOC, 내부 링크)을 모두 써 보는 글이다.
+- ko + en 샘플 글 하나를 공개한다. 본문 기능(하이라이팅, Callout, Figure + 글 옆 이미지, TOC, 내부 링크)을 모두 써 보는 글이다.
 - 주제는 "이 블로그를 어떻게 만들었나"로 한다 [이로하]. 은솔 문체 가이드로 쓰고, 번역은 translate-post 흐름으로 만든다.
 - **은솔 이름으로 나가는 글이니, 첫 배포 전에 은솔이 내용을 확인한다.**
 
@@ -578,7 +607,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 - **개발 서버가 떠 있을 때 빌드를 돌리지 않는다.** 빌드는 병렬 작업 전에 혼자 한 번만 돌린다. `.content-collections`, `src/paraglide`, `dist` 를 서로 덮어쓴다.
 - **ko 원문의 본문·제목·설명을 고치면 push 전에 처리한다.** `/translate-post` 또는 `pnpm content:rehash` 중 하나를 하지 않으면 배포가 막힌다.
 - 마이그레이션은 추가만 하는 방향으로 쓰고, 이미 커밋한 마이그레이션은 고치지 않는다.
-- MDX 파이프라인, i18n, Access 검증을 수정할 때 주의할 점 (이 문서 요약)
+- Markdown 파이프라인, i18n, Access 검증을 수정할 때 주의할 점 (이 문서 요약)
 - 새 수제 CSS 는 큰 전역 파일 꼬리에 붙이지 않고 `src/styles/` 의 별도 파일에 둔다. 배포 확인은 배포된 CSS 파일을 직접 본다.
 
 ### 5.2 Claude 커맨드 (`.claude/commands/`)
@@ -589,7 +618,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 
 1. 초안을 읽고 주제와 논지를 잡는다.
 2. 현재 시점 기준으로 사실관계와 최신성을 웹에서 확인한다.
-3. **은솔 문체 가이드**(5.3)대로 `content/posts/<slug>/index.ko.mdx` 를 쓴다. 이미지는 글 옆에 두고, frontmatter 는 스키마대로 쓴다.
+3. **은솔 문체 가이드**(5.3)대로 `content/posts/<slug>/index.ko.md` 를 쓴다. 이미지는 글 옆에 두고, frontmatter 는 스키마대로 쓴다.
 4. 체크리스트를 점검한다.
    - SEO: 제목·설명 길이, 첫 문단에 대상 독자와 얻을 것
    - 사람과 AI 가 신뢰하기 쉬운 글: 1차 경험, 근거, 재현 조건, 1차 출처
@@ -613,7 +642,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 1. 용어집, 원문, 기존 en 을 읽는다.
 2. 1차 번역을 하고 frontmatter 를 현지화한다. `sourceHash` 를 넣고, `translationStatus: machine` 으로 둔다.
 3. 구조 검사가 통과할 때까지 맞춘다.
-   - 검사 대상: 헤딩 레벨, 링크 목적지, 이미지, JSX 컴포넌트와 props, 코드 블록의 **개수와 언어**
+   - 검사 대상: 헤딩 레벨, 링크 목적지, 이미지 경로, Callout 종류, 코드 블록의 **개수와 언어**
    - **코드 블록 안 주석은 영어로 번역해도 된다** [은솔]. 코드 자체가 바뀌지 않았는지는 2차 리뷰가 본다.
 4. 2차 리뷰를 한다.
    - 새 컨텍스트의 서브에이전트가 원문과 대조해 지적만 하고, 수정은 메인이 한다.
@@ -711,9 +740,10 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 
 - **렌더링**: `pnpm dev` 와 프로덕션 빌드 + preview(workerd)에서 세 화면 × 두 언어가 렌더된다. 글이 0편일 때 빈 상태 화면도 확인한다.
 - **404**: 세 경우와 `/posts/%E0` 가 모두 완전한 404 문서를 낸다.
-- **MDX**
+- **Markdown**
   - 하이라이팅, Callout, Figure, TOC, 글 옆 이미지(크기 속성 포함), 내부 링크 현지화가 동작한다.
-  - Worker 번들에 `new Function`/`eval` 경로가 없다.
+  - 원본 HTML 태그는 출력에 나오지 않는다.
+  - 클라이언트 JS 에 본문 텍스트, Shiki, Markdown 파서가 없다.
 - **다국어**
   - 영어 목록에는 번역본 있는 글만 보이고, hreflang 은 실제 쌍만 가리킨다.
   - 원문을 고친 뒤 rehash 를 하지 않으면 빌드가 실패한다.
@@ -734,7 +764,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
   - 메타에 실린 URL 이 전부 200 이다.
 - **성능**
   - 한국어 글 페이지에서 받는 폰트 조각과 총 용량을 기록한다.
-  - Lobby 가 다른 글 본문 청크를 내려받지 않는다.
+  - Lobby 와 Posts 가 글 본문을 내려받지 않는다.
 - `pnpm audit:repo` 가 FAIL 없이 끝난다.
 
 **배포 후**
@@ -752,18 +782,18 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 1. **통합 스파이크**: 다음을 엮어 글 하나와 ko/en Lobby 를 띄운다.
    - TanStack Start + Cloudflare vite plugin
    - Paraglide(rewrite, 미들웨어)
-   - `@mdx-js/rollup`
+   - Content Collections + 서버 함수
    - 프리렌더 + workerd preview
 
    다음 항목을 확인한다.
    - 프리렌더된 `/en/...` 이 rewrite 를 제대로 타는지
    - Worker 에서 요청별 `getLocale()` 이 맞는지
    - hydration 이 일치하는지
-   - 프리렌더 중 eval 이 없는지
+   - 클라이언트 번들에 본문이 없는지
    - trailing slash 리다이렉트가 없는지
 
    Paraglide 부분이 막히면 4.5 탈출 규칙대로 직접 구현으로 되돌리고 은솔에게 알린다. 그 밖의 부분이 막히면 은솔과 방향을 다시 잡는다.
-2. 콘텐츠 모델, MDX 컴포넌트, 화면 세 개, 디자인, 폰트
+2. 콘텐츠 모델, Markdown 파이프라인, 화면 세 개, 디자인, 폰트
 3. 다국어 마감: 번역 쌍, 링크 현지화, hreflang, 해시 검사
 4. D1, 조회수, 댓글, Turnstile, 시도 제한, Access 검증, Cron
 5. SEO/GEO 산출물, OG 이미지, IndexNow
@@ -794,8 +824,13 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
   - 언어와 무관하게 slug 단위로 공유
   - 댓글 길이 제한, 실제 삭제, Turnstile 지연 로드, PBKDF2 + pepper
   - 사이트 PV 는 중복을 거르지 않음
+- Markdown 파이프라인
+  - 글 데이터는 서버 전용이고 서버 함수로만 읽는다. 언어는 항상 입력으로 넘긴다
+  - 원본 HTML 태그는 허용하지 않는다
+  - Callout 은 GitHub 알림 문법 다섯 가지, Figure 는 이미지 title 을 캡션으로 쓴다
+  - 글 옆 이미지는 `public/content-assets/` 에 해시 이름으로 복사한다. 크기를 못 읽으면 빌드 실패
 - 피드와 크롤링
-  - RSS 는 요약만 담고, 전문은 `.md` 와 `llms-full.txt` 로 제공
+  - RSS 에 본문 전문을 넣는다
   - robots 에서 `/api/`, `/admin` 차단
   - IndexNow 는 미리보기가 기본이고, CI 에서만 바뀐 글을 실제로 전송
 - 폰트: SUIT 조각은 스크립트로 한 번 만들어 커밋하고, 내부 폰트 이름을 바꾼다. 코드 폰트는 시스템 monospace
