@@ -24,6 +24,11 @@ import { remarkWidget } from './remark-widget'
 
 export type { Glossary, GlossaryEntry, TocItem }
 
+const FOOTNOTE_LABELS = {
+  ko: { footnoteLabel: '각주', footnoteBackLabel: '본문으로 돌아가기' },
+  en: { footnoteLabel: 'Footnotes', footnoteBackLabel: 'Back to content' },
+} as const
+
 export type RenderOptions = {
   filePath: string
   slug: string
@@ -54,15 +59,19 @@ export async function renderMarkdown(markdown: string, opts: RenderOptions): Pro
     .use(remarkTerm, { locale: opts.locale, glossary: opts.glossary })
     .use(remarkWidget, { names: opts.widgetNames })
     .use(remarkCallouts, { locale: opts.locale })
-    // 원본 HTML 은 허용하지 않는다 (allowDangerousHtml 을 쓰지 않음)
-    .use(remarkRehype)
+    // 원본 HTML 은 허용하지 않는다 (allowDangerousHtml 을 쓰지 않음). 각주 라벨은 글 언어로
+    .use(remarkRehype, FOOTNOTE_LABELS[opts.locale])
     .use(rehypeSlug)
     .use(rehypeToc)
     .use(rehypeLocalImages, { filePath: opts.filePath, slug: opts.slug })
     .use(rehypeFigure)
     .use(rehypeLinks, { locale: opts.locale, enSlugs: opts.enSlugs })
     .use(rehypePrettyCode, { theme: monochromeTheme, keepBackground: false })
-    .use(rehypeAutolinkHeadings, { behavior: 'wrap' })
+    .use(rehypeAutolinkHeadings, {
+      behavior: 'wrap',
+      // 숨김 각주 제목은 링크로 감싸지 않는다
+      test: (node) => node.properties.id !== 'footnote-label',
+    })
     .use(rehypeStringify)
     .process(file)
   return {

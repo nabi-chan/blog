@@ -442,3 +442,24 @@
   color: var(--ink);
   font-weight: 700;
 }
+
+/* GFM 각주 제목은 화면에서는 숨기고 스크린 리더에만 읽힌다. 본문 HTML 은 Tailwind 가 스캔하지 않아 직접 정의한다 */
+.prose .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.prose [data-footnotes] {
+  margin-top: 3em;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.9rem;
+}

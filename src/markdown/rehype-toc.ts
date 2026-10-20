@@ -18,7 +18,8 @@ export function rehypeToc() {
     visit(tree, 'element', (node: Element) => {
       if (node.tagName !== 'h2' && node.tagName !== 'h3') return
       const id = node.properties.id
-      if (typeof id !== 'string') return
+      // GFM 각주 제목(remark-rehype 가 만드는 숨김 제목)은 목차에 넣지 않는다
+      if (typeof id !== 'string' || id === 'footnote-label') return
       toc.push({ depth: node.tagName === 'h2' ? 2 : 3, id, text: toString(node) })
     })
     file.data.toc = toc

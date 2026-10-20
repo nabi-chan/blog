@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   resolve: { tsconfigPaths: true },
   test: {
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',
       include: [
@@ -13,7 +13,7 @@ export default defineConfig({
         'src/widgets/**/*.{ts,tsx}',
       ],
       exclude: [
-        '**/*.test.ts',
+        '**/*.test.{ts,tsx}',
         'src/markdown/test-utils.ts',
         'src/content/posts.server.ts',
         'src/content/posts.functions.ts',

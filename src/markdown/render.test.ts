@@ -41,6 +41,15 @@ describe('renderMarkdown', () => {
     expect(r.html).toContain('<del>지움</del>')
   })
 
+  it('각주 제목과 돌아가기 라벨을 글 언어로 단다', async () => {
+    const ko = await renderMarkdown('본문[^1]\n\n[^1]: 각주 내용', opts)
+    expect(ko.html).toMatch(/<h2[^>]*class="sr-only"[^>]*>각주<\/h2>/)
+    expect(ko.html).toContain('aria-label="본문으로 돌아가기"')
+    expect(ko.toc).toEqual([])
+    const en = await renderMarkdown('Body[^1]\n\n[^1]: Note', { ...opts, locale: 'en' })
+    expect(en.html).toMatch(/<h2[^>]*class="sr-only"[^>]*>Footnotes<\/h2>/)
+  })
+
   it('원본 HTML 태그는 출력에 나오지 않는다', async () => {
     const r = await renderMarkdown('안녕 <script>alert(1)</script> <b>굵게</b>\n\n<div>블록</div>', opts)
     expect(r.html).not.toContain('<script')

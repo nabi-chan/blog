@@ -131,7 +131,7 @@
 - **SEO/GEO 산출물도 빌드할 때 만든다.** sitemap, robots, RSS, llms.txt, `.md` 원문, OG 이미지가 대상이다. 서버 라우트 + 프리렌더로 할지 빌드 스크립트로 할지는 빌더 재량이지만, 요청마다 Worker 에서 다시 만들지 않는다.
 - **메타에 실리는 URL 은 리다이렉트되면 안 된다.**
   - canonical, hreflang, OG 이미지, sitemap 에 들어가는 URL 은 전부 200 이어야 한다.
-  - 정적 에셋의 trailing slash 처리(`html_handling`)와 프리렌더 출력 형식(`autoSubfolderIndex`)을 맞춰, `/<slug>` 와 `/<slug>/` 사이에 리다이렉트가 생기지 않게 한다.
+  - 정적 에셋의 trailing slash 처리(`html_handling`)와 프리렌더 출력 형식(`autoSubfolderIndex`)을 맞춰, 정규 URL(`/<slug>`)은 200 으로 바로 응답하고 슬래시가 붙은 변형(`/<slug>/`)은 정규 URL 로 한 번만 리다이렉트되게 한다.
   - 정규 형태는 **슬래시 없음**이다.
 
 ### 4.2 라우트
@@ -150,7 +150,7 @@
 - **라우트 파일은 언어 없이 한 벌만 정의한다** (`src/routes/index.tsx`, `posts/index.tsx`, `$slug.tsx`). 글은 루트 바로 아래 `/<slug>` 다 [은솔].
   - 언어 접두사는 TanStack Router 의 `rewrite` 옵션과 Paraglide 의 `deLocalizeUrl` / `localizeUrl` 로 처리한다 (4.5).
   - `{-$locale}` 파라미터는 쓰지 않는다.
-- 깨진 퍼센트 인코딩(`/posts/%E0`)과 없는 언어 접두사(`/fr/posts`)는 500 이 아니라 404 로 끝나야 한다.
+- 없는 언어 접두사(`/fr/posts`)는 404 다. 깨진 퍼센트 인코딩(`/%E0`)은 500 이 아니어야 한다. 실제로는 Workers 정적 에셋 계층이 Worker 보다 먼저 빈 400 으로 끊는다(계획 1 판정). Worker 까지 온 경우는 서버 엔트리 가드가 레이아웃 없는 평문 404 를 낸다.
 - 영어 번역본이 없는 글의 `/en/<slug>` 는 404 다 [은솔: 번역 없으면 숨김].
 
 ### 4.3 콘텐츠 모델
@@ -645,14 +645,15 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 
 1. 초안을 읽고 주제와 논지를 잡는다.
 2. 현재 시점 기준으로 사실관계와 최신성을 웹에서 확인한다.
-3. **은솔 문체 가이드**(5.3)대로 `content/<slug>/index.ko.md` 를 쓴다. 이미지는 글 옆에 두고, frontmatter 는 스키마대로 쓴다.
+3. **은솔 문체 가이드**(5.3)대로 `content/posts/<slug>/index.ko.md` 를 쓴다. 이미지는 글 옆에 두고, frontmatter 는 스키마대로 쓴다.
 4. 체크리스트를 점검한다.
    - SEO: 제목·설명 길이, 첫 문단에 대상 독자와 얻을 것
    - 사람과 AI 가 신뢰하기 쉬운 글: 1차 경험, 근거, 재현 조건, 1차 출처
    - AI 문체 신호 걷어내기
    - 맞춤법 교정 규칙 (5.3)
-5. 콘텐츠 검사를 돌린다.
-6. 번역은 `/translate-post` 로 넘긴다.
+5. 글에서 쓴 태그 키와 `:term` 키 중 `content/tags.yaml`, `content/glossary.yaml` 에 없는 것을 찾아 두 파일에 항목을 추가한다 [은솔]. 태그는 ko/en 표시 이름, 용어는 ko/en 이름·정의를 함께 쓰고, 추가한 항목은 은솔에게 따로 보여준다.
+6. 콘텐츠 검사를 돌린다.
+7. 번역은 `/translate-post` 로 넘긴다.
 
 **`/refine-post <경로>`**
 
@@ -679,7 +680,8 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 4. 2차 리뷰를 한다.
    - 새 컨텍스트의 서브에이전트가 원문과 대조해 지적만 하고, 수정은 메인이 한다.
    - 보는 것: 누락, 확신 정도의 변화, 수치·인과, 용어, 자연스러움, 검색 의도, 코드 변경 여부
-5. 은솔이 확인한 뒤에만 `reviewed` 로 바꾼다. 커밋은 자동으로 하지 않는다.
+5. 번역하면서 새로 필요해진 태그 표시 이름(en)이나 용어(en 이름·정의)가 비어 있으면 `content/tags.yaml`, `content/glossary.yaml` 에 채운다 [은솔].
+6. 은솔이 확인한 뒤에만 `reviewed` 로 바꾼다. 커밋은 자동으로 하지 않는다.
 
 - 헬퍼 `pnpm content:rehash --post <slug>`: 번역에 영향 없는 원문 수정 뒤 해시만 갱신한다.
 - 용어집: `content/glossary.yaml`. `:term` 툴팁과 번역 용어 통일에 같이 쓴다. 키는 고정하고 ko/en 의 이름·정의를 둔다. Content Collections 데이터 컬렉션 + zod 로 두 언어 모두 필수로 한다.
@@ -771,7 +773,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 **로컬**
 
 - **렌더링**: `pnpm dev` 와 프로덕션 빌드 + preview(workerd)에서 세 화면 × 두 언어가 렌더된다. 글이 0편일 때 빈 상태 화면도 확인한다.
-- **404**: 세 경우와 `/posts/%E0` 가 모두 완전한 404 문서를 낸다.
+- **404**: 없는 글·없는 영어 번역·없는 언어 접두사는 완전한 404 문서를 낸다. 깨진 퍼센트 인코딩(`/%E0`)은 500 이 아니다(정적 에셋 계층의 400).
 - **Markdown**
   - 하이라이팅, Callout, Figure, TOC, 글 옆 이미지(크기 속성 포함), 내부 링크 현지화가 동작한다.
   - details, See Also, 원문 병기 인용, 용어 툴팁, 위젯 마운트가 동작한다.

@@ -29,10 +29,31 @@ export function svgSize(source: string): { width?: number; height?: number } {
   return {}
 }
 
+// 휴대폰 사진은 EXIF 회전값(5~8)이면 가로세로가 바뀌어 보인다. 보이는 크기를 돌려준다
 function readSize(buffer: Buffer, path: string, src: string): { width: number; height: number } {
-  const size = extname(path).toLowerCase() === '.svg' ? svgSize(buffer.toString('utf8')) : imageSize(buffer)
+  const size: { width?: number; height?: number; orientation?: number } =
+    extname(path).toLowerCase() === '.svg' ? svgSize(buffer.toString('utf8')) : imageSize(buffer)
   if (!size.width || !size.height) throw new Error(`${src}: 이미지 크기를 읽을 수 없습니다`)
-  return { width: size.width, height: size.height }
+  return (size.orientation ?? 1) >= 5 ? { width: size.height, height: size.width } : { width: size.width, height: size.height }
+}
+
+// 공개 파일 이름은 URL·srcset 에 안전한 ASCII 로 만든다 (srcset 은 공백으로 후보를 나눈다)
+function publicStem(name: string): string {
+  return (
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'image'
+  )
+}
+
+// remark-rehype 는 src 를 퍼센트 인코딩한다(한글·공백). 파일을 찾을 때는 되돌린다
+function decodePath(path: string): string {
+  try {
+    return decodeURIComponent(path)
+  } catch {
+    return path
+  }
 }
 
 function parseSrc(src: string): { path: string; cap: number | null } {
@@ -70,13 +91,13 @@ export function rehypeLocalImages(opts: { filePath: string; slug: string }) {
       let picture: Element | undefined
       if (!NOT_LOCAL.test(src)) {
         const { path, cap } = parseSrc(src)
-        const from = resolve(dirname(opts.filePath), path)
+        const from = resolve(dirname(opts.filePath), decodePath(path))
         if (!existsSync(from)) throw new Error(`${src}: 이미지 파일을 찾을 수 없습니다 (${opts.filePath})`)
         const buffer = readFileSync(from)
         const { width, height } = readSize(buffer, from, src)
         const hash = createHash('sha256').update(buffer).digest('hex').slice(0, 8)
         const ext = extname(from)
-        const stem = `${basename(from, ext)}.${hash}`
+        const stem = `${publicStem(basename(from, ext))}.${hash}`
         const to = `public/content-assets/${opts.slug}/${stem}${ext}`
         assets.set(to, { kind: 'copy', from, to })
 

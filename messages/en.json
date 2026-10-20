@@ -12,5 +12,6 @@
   "post_read_in_other_language": "한국어",
   "not_found_title": "Page not found",
   "not_found_description": "The page may have moved or never existed.",
-  "not_found_back_home": "Go home"
+  "not_found_back_home": "Go home",
+  "posts_tag_filter": "Filter by tag"
 }

@@ -12,5 +12,6 @@
   "post_read_in_other_language": "English",
   "not_found_title": "페이지를 찾을 수 없어요",
   "not_found_description": "주소가 바뀌었거나 없는 페이지예요.",
-  "not_found_back_home": "처음으로"
+  "not_found_back_home": "처음으로",
+  "posts_tag_filter": "태그로 거르기"
 }

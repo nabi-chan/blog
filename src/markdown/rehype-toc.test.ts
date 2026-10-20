@@ -12,6 +12,11 @@ describe('rehypeToc', () => {
     ])
   })
 
+  it('GFM 각주 제목은 목차에 넣지 않는다', async () => {
+    const { data } = await runPlugins('## 본문[^1]\n\n[^1]: 각주 내용', { rehype: [rehypeSlug, rehypeToc] })
+    expect(data.toc).toEqual([{ depth: 2, id: '본문1', text: '본문1' }])
+  })
+
   it('헤딩이 없으면 빈 목차다', async () => {
     const { data } = await runPlugins('본문만', { rehype: [rehypeSlug, rehypeToc] })
     expect(data.toc).toEqual([])

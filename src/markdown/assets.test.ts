@@ -24,6 +24,17 @@ describe('writeAssets', () => {
     expect((await sharp(join(out, 'a.720w.webp')).metadata()).width).toBe(720)
   })
 
+  it('EXIF 회전을 픽셀에 반영해 WebP 사본을 만든다', async () => {
+    const phone = join(out, '..', 'phone.jpg')
+    await sharp({ create: { width: 200, height: 100, channels: 3, background: '#888' } })
+      .jpeg()
+      .withMetadata({ orientation: 6 })
+      .toFile(phone)
+    await writeAssets([{ kind: 'webp', from: phone, to: join(out, 'phone.100w.webp'), width: 100 }])
+    const meta = await sharp(join(out, 'phone.100w.webp')).metadata()
+    expect([meta.width, meta.height]).toEqual([100, 200])
+  })
+
   it('이미 있는 파일은 다시 만들지 않는다', async () => {
     const before = statSync(join(out, 'a.720w.webp')).mtimeMs
     await writeAssets([{ kind: 'webp', from: src, to: join(out, 'a.720w.webp'), width: 720 }])

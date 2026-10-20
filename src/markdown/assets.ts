@@ -12,7 +12,8 @@ export async function writeAssets(assets: Asset[]): Promise<void> {
       await copyFile(asset.from, asset.to)
     } else {
       const { default: sharp } = await import('sharp')
-      await sharp(asset.from).resize({ width: asset.width }).webp({ quality: 82 }).toFile(asset.to)
+      // rotate() 는 EXIF 회전을 픽셀에 반영한다. 없으면 회전 정보가 지워져 사진이 누워 보인다
+      await sharp(asset.from).rotate().resize({ width: asset.width }).webp({ quality: 82 }).toFile(asset.to)
     }
   }
 }
