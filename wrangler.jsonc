@@ -6,15 +6,19 @@
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
   "assets": { "html_handling": "auto-trailing-slash" },
+  // 커스텀 도메인만 연다. workers.dev·미리보기 URL 로 들어오면 Access 를 거치지 않는다 (스펙 4.11)
+  "routes": [{ "pattern": "nabichan.me", "custom_domain": true }],
+  "workers_dev": false,
+  "preview_urls": false,
   // database_id 는 계획 5 에서 wrangler d1 create 로 만든 값을 넣는다 (자동 생성은 쓰지 않는다)
-  "d1_databases": [{ "binding": "DB", "database_name": "eunsol-blog", "migrations_dir": "migrations" }],
+  "d1_databases": [{ "binding": "DB", "database_name": "eunsol-blog", "database_id": "c3aab513-2fa3-4df4-a84f-7fef6f0354b9", "migrations_dir": "migrations" }],
   // 04:00 KST. 지난 조회 중복 기록과 시도 제한 기록을 지운다
   "triggers": { "crons": ["0 19 * * *"] },
   // 공개 값. Access 셋은 계획 5 에서 채운다. 비어 있으면 은솔 판정이 항상 false 다
   "vars": {
-    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
-    "ACCESS_TEAM_DOMAIN": "",
-    "ACCESS_AUD": "",
-    "OWNER_EMAIL": ""
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAFdhmU_utHGz9XC4",
+    "ACCESS_TEAM_DOMAIN": "nabi-chan.cloudflareaccess.com",
+    "ACCESS_AUD": "b88eaab3cb4a53f7f4c173d807964f7a180cf3ea1282cdc5347bfa5b784b258b",
+    "OWNER_EMAIL": "hello@nabi.kim,nabi@cat-hou.se"
   }
 }

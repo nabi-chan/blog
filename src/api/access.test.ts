@@ -40,6 +40,13 @@ describe('verifyAccessToken', () => {
     expect(await verifyAccessToken(await sign({ email: 'Owner@Example.com' }), config, keys, NOW)).toBe(true)
   })
 
+  it('허용 이메일은 쉼표로 여러 개 둘 수 있다', async () => {
+    const two = { ...config, ownerEmail: 'owner@example.com, Second@example.com' }
+    expect(await verifyAccessToken(await sign({ email: 'second@example.com' }), two, keys, NOW)).toBe(true)
+    expect(await verifyAccessToken(await sign({ email: 'owner@example.com' }), two, keys, NOW)).toBe(true)
+    expect(await verifyAccessToken(await sign({ email: 'someone@example.com' }), two, keys, NOW)).toBe(false)
+  })
+
   it('하나라도 틀리면 false', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const tokens = [
@@ -98,7 +105,7 @@ describe('isOwnerRequest', () => {
   it('설정값이 하나라도 비어 있으면 키를 받지 않고 false (fail closed)', async () => {
     const getKeys = vi.fn(() => keys)
     const cookie = `CF_Authorization=${await sign()}`
-    for (const broken of [{ audience: '' }, { teamDomain: '' }, { ownerEmail: '' }]) {
+    for (const broken of [{ audience: '' }, { teamDomain: '' }, { ownerEmail: '' }, { ownerEmail: ' , ' }]) {
       const options = { config: { ...config, ...broken }, keys: getKeys, devOwner: false, now: NOW }
       expect(await isOwnerRequest(request(cookie), options)).toBe(false)
     }
