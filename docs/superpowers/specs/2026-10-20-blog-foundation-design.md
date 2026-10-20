@@ -28,7 +28,9 @@
    - `/` Lobby: 짧은 글 목록
    - `/posts` Posts: 전체 목록
    - `/posts/$slug` Post: 글 상세
-2. Markdown 글: 코드 하이라이팅, Callout(`> [!TIP]` 문법), Figure(이미지+캡션), 목차(TOC) [은솔].
+2. Markdown 글 [은솔]
+   - 코드 하이라이팅, Callout(`> [!TIP]` 문법), Figure(이미지+캡션), 목차(TOC)
+   - jihoon-blog 의 디렉티브 블록: 접기(`:::details`), See Also(`:::see-also`), 원문·번역 병기 인용(`::::quote`), 용어 툴팁(`:term`), 인터랙티브 위젯 자리(`:::widget-*`)
 3. SUIT 기반 무채색 모던 디자인, lucide-react 아이콘, 라이트 모드만 [은솔].
 4. 댓글 [은솔]
    - 누구나 작성자명 + 내용 + 비밀번호로 쓰고, 비밀번호로 수정·삭제한다.
@@ -46,7 +48,7 @@
 ### 비목표
 
 - 대댓글, 관리자 페이지, 다크 모드, 태그 전용 페이지, 페이지네이션, 사이트 검색, 뉴스레터
-- 글 안의 React 컴포넌트 (MDX) [은솔]
+- MDX [은솔]. 글 안의 인터랙티브 요소는 `:::widget-*` 자리에 브라우저가 컴포넌트를 붙이는 방식으로만 넣는다
 - 브라우저 언어 감지 자동 리다이렉트 [은솔]
 - 영어 글의 "번역본입니다" 표시 [은솔]
 - 예전 글·디자인 이전
@@ -212,9 +214,28 @@ translationStatus: machine   # machine | reviewed
   - 캐시 키에는 영어 번역본 목록도 넣는다. 링크 현지화 결과가 그 목록에 따라 달라지기 때문이다.
 - **원본 HTML 태그는 허용하지 않는다** [이로하]. Markdown 문법만 쓴다. 이식성과 안전을 위해서다.
 - 빌드 시점 처리
-  - GFM
-  - 헤딩 id + 앵커 링크, TOC 데이터 추출 (h2~h3)
+  - GFM. `singleTilde: false` 로 `~` 하나는 취소선이 되지 않게 한다 [은솔]. `10~20분` 같은 한국어 범위 표기를 지키기 위해서다.
+  - 헤딩 id, TOC 데이터 추출(h2~h3), 제목 전체를 감싸는 앵커 링크(`wrap`) [은솔]
   - 코드 하이라이팅: rehype-pretty-code + shiki, 무채색 테마, 파일명·줄 강조 [은솔]
+- **디렉티브 블록** (jihoon-blog `src/lib` 플러그인들을 참고 [은솔])
+  - 공통: `remark-directive` 를 쓴다.
+    - 모르는 블록(`:::이름`)은 빌드 오류다.
+    - 모르는 텍스트·리프 디렉티브는 원문 텍스트로 되살린다 [이로하]. 본문의 `key:value` 같은 표현이 사라지지 않게 하기 위해서다.
+  - `:::details`: 첫 문단이 요약 줄인 `<details>` 다.
+  - `:::see-also`: 참고 자료 목록이다 [은솔: ref 를 See Also 로].
+    - `<details open>` 이라 펼쳐진 채로 시작하고 접을 수 있다.
+    - 항목 앞 `[paper]`, `[docs]`, `[repo]`, `[article]` 은 무채색 lucide 아이콘으로 표시한다.
+    - 제목은 두 언어 모두 "See Also" 다 [이로하].
+  - `::::quote` 안의 `:::translation` + `:::original{lang?}`
+    - 한국어 글은 번역과 원문을 같이, 원문과 같은 언어의 글은 원문만 보여준다.
+    - 원문 언어는 기본이 영어다 [이로하].
+  - `:term[라벨]{key="…"}`: 용어집(`content/glossary.yaml`, 키 고정, ko/en 이름·정의)에 있는 키여야 하고, 없으면 빌드 오류다.
+    - 화면: 마우스를 올리거나 포커스하면 정의 툴팁이 뜬다(클라이언트 JS) [은솔].
+    - 터치 기기에서는 탭으로 열고 닫는다.
+  - `:::widget-<이름>`: 브라우저가 등록된 React 컴포넌트를 붙이는 자리다.
+    - 등록되지 않은 이름은 빌드 오류다.
+    - 블록 안 내용은 JS 가 없는 환경과 RSS 에서 보이는 대체 콘텐츠다 [이로하].
+    - 위젯 코드는 그 위젯을 쓰는 글에서만 불러온다.
 - **Callout**: GitHub 알림 문법 `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`, `> [!CAUTION]` 다섯 가지를 쓴다 [이로하].
   - GitHub 미리보기에서도 똑같이 보인다.
   - `<aside>` + lucide 아이콘으로 렌더한다.
@@ -642,7 +663,12 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 1. 용어집, 원문, 기존 en 을 읽는다.
 2. 1차 번역을 하고 frontmatter 를 현지화한다. `sourceHash` 를 넣고, `translationStatus: machine` 으로 둔다.
 3. 구조 검사가 통과할 때까지 맞춘다.
-   - 검사 대상: 헤딩 레벨, 링크 목적지, 이미지 경로, Callout 종류, 코드 블록의 **개수와 언어**
+   - 검사 대상
+     - 헤딩 레벨, 링크 목적지, 이미지 경로, Callout 종류
+     - 코드 블록의 **개수와 언어**
+     - 디렉티브 구조(details, see-also, quote, widget 이름)
+     - `:term` 키 (라벨은 번역)
+     - `:::original` 원문 (글자 하나까지 동일)
    - **코드 블록 안 주석은 영어로 번역해도 된다** [은솔]. 코드 자체가 바뀌지 않았는지는 2차 리뷰가 본다.
 4. 2차 리뷰를 한다.
    - 새 컨텍스트의 서브에이전트가 원문과 대조해 지적만 하고, 수정은 메인이 한다.
@@ -650,7 +676,7 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 5. 은솔이 확인한 뒤에만 `reviewed` 로 바꾼다. 커밋은 자동으로 하지 않는다.
 
 - 헬퍼 `pnpm content:rehash --post <slug>`: 번역에 영향 없는 원문 수정 뒤 해시만 갱신한다.
-- 용어집: 키는 고정하고 ko/en 라벨을 둔다. Content Collections 데이터 컬렉션 + zod 로 두 언어 다 필수로 한다.
+- 용어집: `content/glossary.yaml`. `:term` 툴팁과 번역 용어 통일에 같이 쓴다. 키는 고정하고 ko/en 의 이름·정의를 둔다. Content Collections 데이터 컬렉션 + zod 로 두 언어 모두 필수로 한다.
 
 **`/audit`**
 
@@ -742,6 +768,8 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
 - **404**: 세 경우와 `/posts/%E0` 가 모두 완전한 404 문서를 낸다.
 - **Markdown**
   - 하이라이팅, Callout, Figure, TOC, 글 옆 이미지(크기 속성 포함), 내부 링크 현지화가 동작한다.
+  - details, See Also, 원문 병기 인용, 용어 툴팁, 위젯 마운트가 동작한다.
+  - 모르는 블록은 빌드를 막고, 본문의 `key:value` 는 그대로 남는다.
   - 원본 HTML 태그는 출력에 나오지 않는다.
   - 클라이언트 JS 에 본문 텍스트, Shiki, Markdown 파서가 없다.
 - **다국어**
@@ -828,6 +856,11 @@ view_dedupe(day TEXT, slug TEXT, visitor TEXT, PRIMARY KEY (day, slug, visitor))
   - 글 데이터는 서버 전용이고 서버 함수로만 읽는다. 언어는 항상 입력으로 넘긴다
   - 원본 HTML 태그는 허용하지 않는다
   - Callout 은 GitHub 알림 문법 다섯 가지, Figure 는 이미지 title 을 캡션으로 쓴다
+  - 디렉티브
+    - 모르는 블록은 빌드 오류, 모르는 텍스트 디렉티브는 원문 복원
+    - See Also 제목은 두 언어 모두 "See Also"
+    - quote 원문 언어 기본값은 영어
+    - widget 블록 안 내용은 대체 콘텐츠
   - 글 옆 이미지는 `public/content-assets/` 에 해시 이름으로 복사한다. 크기를 못 읽으면 빌드 실패
 - 피드와 크롤링
   - RSS 에 본문 전문을 넣는다
