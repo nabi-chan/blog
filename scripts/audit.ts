@@ -322,7 +322,11 @@ async function liveChecks() {
   }
   const redirect =
     base === DEFAULT_BASE
-      ? await fetch('https://nabi.kim/', { redirect: 'manual' }).then((res) => ({ status: res.status, location: res.headers.get('location') }))
+      ? await fetch('https://nabi.kim/', { redirect: 'manual' }).then(
+          (res) => ({ status: res.status, location: res.headers.get('location') }),
+          // 이름 풀이·연결 실패도 리다이렉트 실패로 센다. audit 전체를 멈추지 않는다
+          (error: Error) => ({ status: 0, location: `요청 실패: ${error.cause instanceof Error ? error.cause.message : error.message}` }),
+        )
       : undefined
 
   results.push(
