@@ -11,7 +11,7 @@ import type { Asset } from './render'
 declare module 'vfile' {
   interface DataMap {
     assets: Asset[]
-    // 본문에 쓴 src(원문 그대로, '?w=' 포함) → 공개 경로. .md 원문의 이미지 경로를 바꿀 때 쓴다
+    // 본문에 쓴 src(퍼센트 디코딩, '?w=' 포함) → 공개 경로. .md 원문의 이미지 경로를 바꿀 때 쓴다
     images: Record<string, string>
   }
 }
@@ -50,7 +50,7 @@ function publicStem(name: string): string {
 }
 
 // remark-rehype 는 src 를 퍼센트 인코딩한다(한글·공백). 파일을 찾을 때는 되돌린다
-function decodePath(path: string): string {
+export function decodePath(path: string): string {
   try {
     return decodeURIComponent(path)
   } catch {
@@ -105,8 +105,10 @@ export function rehypeLocalImages(opts: { filePath: string; slug: string }) {
         assets.set(to, { kind: 'copy', from, to })
 
         const { title } = node.properties
-        images[src] = `/content-assets/${opts.slug}/${stem}${ext}`
-        node.properties = { src: images[src], alt: node.properties.alt, width, height }
+        // 키는 디코딩한 src 다. 여기 src 는 remark-rehype 가 퍼센트 인코딩한 값이라 원문 표기(한글·공백·<>)와 다르다
+        const publicPath = `/content-assets/${opts.slug}/${stem}${ext}`
+        images[decodePath(src)] = publicPath
+        node.properties = { src: publicPath, alt: node.properties.alt, width, height }
         if (title !== undefined) node.properties.title = title
         if (cap !== null) node.properties.style = `max-width:min(${cap}px, 100%);height:auto;`
 

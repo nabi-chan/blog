@@ -20,7 +20,8 @@ type CacheFn = Context['cache']
 
 // 렌더 결과의 모양이나 플러그인 동작이 바뀌면 올린다. 캐시 키에 들어가서 예전 캐시를 쓰지 않게 한다
 // 2: RenderResult.images 추가 (계획 3)
-const RENDER_VERSION = 2
+// 3: images 키를 퍼센트 디코딩한 경로로 (계획 3 리뷰)
+const RENDER_VERSION = 3
 
 // OG 이미지 (스펙 4.9). public/og 는 빌드마다 비우고, 그린 PNG 는 여기 캐시에서 복사한다
 const OG_CACHE_DIR = 'node_modules/.cache/og'

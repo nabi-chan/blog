@@ -48,12 +48,10 @@ describe('rehypeLocalImages', () => {
     ])
   })
 
-  it('본문에 쓴 src(원문 그대로) → 공개 경로 표를 남긴다 (.md 원문의 절대 경로용)', async () => {
+  it('본문에 쓴 src(퍼센트 디코딩) → 공개 경로 표를 남긴다 (.md 원문의 절대 경로용)', async () => {
     const { data } = await run('![a](./a.png)\n\n![b](./a.png?w=400)\n\n![c](./%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-10-20%20%EC%98%A4%ED%9B%84%202.15.30.png)\n\n![d](https://example.com/x.png)')
     const images = data.images ?? {}
-    expect(Object.keys(images).sort()).toEqual(
-      ['./%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-10-20%20%EC%98%A4%ED%9B%84%202.15.30.png', './a.png', './a.png?w=400'].sort(),
-    )
+    expect(Object.keys(images).sort()).toEqual(['./스크린샷 2026-10-20 오후 2.15.30.png', './a.png', './a.png?w=400'].sort())
     expect(images['./a.png']).toMatch(/^\/content-assets\/x\/a\.[0-9a-f]{8}\.png$/)
     expect(images['./a.png?w=400']).toBe(images['./a.png'])
   })

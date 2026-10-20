@@ -1,5 +1,9 @@
+import { mkdtempSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { absolutizeMarkdownImages, countWords } from './agent-markdown'
+import { renderMarkdown } from './render'
 
 const ORIGIN = 'https://nabichan.me'
 const images = { './diagram.svg': '/content-assets/261020/diagram.abc.svg', './photo.png?w=400': '/content-assets/261020/photo.def.png' }
@@ -45,5 +49,33 @@ describe('countWords', () => {
     expect(countWords('# 제목\n\n안녕 세상 hello')).toBe(4)
     expect(countWords('```ts\nconst a = 1\n```')).toBe(4)
     expect(countWords('')).toBe(0)
+  })
+})
+
+describe('renderMarkdown 과 함께 (실제 이미지 표)', () => {
+  // 1x1 투명 PNG
+  const PIXEL = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+  const dir = mkdtempSync(join(tmpdir(), 'agent-md-'))
+  for (const name of ['스크린샷 2026-10-20 오후 2.15.30.png', '사진.png', 'my image.png', 'a_b.png']) writeFileSync(join(dir, name), Buffer.from(PIXEL, 'base64'))
+  const filePath = join(dir, 'index.ko.md')
+
+  const roundTrip = async (markdown: string) => {
+    const { images } = await renderMarkdown(markdown, { filePath, slug: '261020', locale: 'ko', enSlugs: new Set(), glossary: {}, widgetNames: [] })
+    return absolutizeMarkdownImages(markdown, images, ORIGIN)
+  }
+
+  it('한글·공백 파일 이름을 어떤 표기로 써도 절대 URL 로 바꾼다', async () => {
+    for (const markdown of [
+      '![a](./%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-10-20%20%EC%98%A4%ED%9B%84%202.15.30.png)',
+      '![a](<./스크린샷 2026-10-20 오후 2.15.30.png>)',
+      '![a](./사진.png)',
+      '![a](<./my image.png>)',
+    ]) {
+      expect(await roundTrip(markdown)).toMatch(/^!\[a\]\(<?https:\/\/nabichan\.me\/content-assets\/261020\/[a-z0-9.-]+\.png>?\)$/)
+    }
+  })
+
+  it('바꾸지 못한 글 옆 이미지가 남으면 조용히 넘어가지 않고 던진다', async () => {
+    await expect(roundTrip('![a](./a\\_b.png)')).rejects.toThrow(/절대 URL 로 바꾸지 못했습니다/)
   })
 })
