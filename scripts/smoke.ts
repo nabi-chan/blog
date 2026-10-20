@@ -15,9 +15,9 @@ export const CHECKS: SmokeCheck[] = [
   {
     path: '/261020',
     status: 200,
-    contains: ['lang="ko"', 'kitchen-sink-ko', 'data-rehype-pretty-code', '<nav'],
+    contains: ['lang="ko"', '이 블로그를 어떻게 만들었나', 'data-rehype-pretty-code', '<nav'],
   },
-  { path: '/en/261020', status: 200, contains: ['lang="en"', 'kitchen-sink-en'] },
+  { path: '/en/261020', status: 200, contains: ['lang="en"', 'How I built this blog'] },
   {
     path: '/261020',
     status: 200,
@@ -39,7 +39,8 @@ export const CHECKS: SmokeCheck[] = [
       'class="bilingual-quote"',
       'data-term-key="prerender"',
       'data-widget="counter-demo"',
-      'key:value',
+      // 알 수 없는 텍스트 디렉티브(:en)는 글자로 남는다
+      'ko:en',
     ],
   },
   {
@@ -86,7 +87,8 @@ export const CHECKS: SmokeCheck[] = [
   { path: '/llms.txt', status: 200, contains: ['https://nabichan.me/261020.md'] },
   { path: '/en/llms.txt', status: 200, contains: ['https://nabichan.me/en/261020.md'] },
   { path: '/llms-full.txt', status: 200, contains: ['URL: https://nabichan.me/261020', 'URL: https://nabichan.me/en/261020'] },
-  { path: '/261020.md', status: 200, contains: ['https://nabichan.me/content-assets/'], notContains: ['title:'] },
+  // frontmatter 가 빠졌는지는 실제 frontmatter 에만 있는 설명 줄로 본다 (본문 코드 예시에도 title: 이 있다)
+  { path: '/261020.md', status: 200, contains: ['https://nabichan.me/content-assets/'], notContains: ['description: "TanStack Start와'] },
   { path: '/en/261020.md', status: 200 },
   { path: '/og/ko/261020.png', status: 200 },
   { path: '/261020', status: 200, count: { '<title': 1 }, contains: ['application/ld+json', 'rel="canonical"'] },
