@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createApiClient } from './api-client'
+import { createApiClient } from './client'
 
 type Call = { url: string; method: string; headers: Record<string, string>; body: string | null }
 

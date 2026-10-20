@@ -9,20 +9,7 @@ import { type ContentPostInput, collectContentProblems, collectContentWarnings, 
 import { splitFrontmatter } from '../src/content/rehash.ts'
 import { computeSourceHash } from '../src/content/source-hash.ts'
 import { compareStructure, translationStructure } from '../src/content/translation-structure.ts'
-import {
-  type AuditResult,
-  type TranslationState,
-  budgetResults,
-  formatResult,
-  leakedPostText,
-  liveResults,
-  migrationCheck,
-  pendingMigrations,
-  summarize,
-  translationResults,
-} from '../src/lib/audit.ts'
-import { sitemapUrls } from '../src/lib/indexnow.ts'
-import { extractMetaUrls } from '../src/lib/smoke.ts'
+import { type AuditResult, type TranslationState, budgetResults, extractMetaUrls, formatResult, leakedPostText, liveResults, migrationCheck, pendingMigrations, sitemapUrls, summarize, translationResults } from '../src/shared/tooling/index.ts'
 
 const args = process.argv.slice(2)
 const POSTS_DIR = 'content/posts'

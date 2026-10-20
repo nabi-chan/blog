@@ -1,8 +1,8 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { handleCreateComment, handleDeleteComment, handleEditComment, handleListComments, handleMe } from './comments'
-import type { ApiContext } from './router'
-import { createTestDb, testContext } from './test-utils'
-import type { CommentDto } from './types'
+import type { ApiContext } from '~/shared/api/index.server'
+import { createTestDb, testContext } from '../shared/api/index.testing'
+import type { CommentDto } from '../shared/api'
 
 let db: D1Database
 let dispose: () => Promise<void>

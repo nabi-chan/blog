@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { ATTEMPT_WINDOW_SECONDS, recordFailure } from './attempts'
+import { ATTEMPT_WINDOW_SECONDS, recordFailure } from '../shared/api/index.server'
 import { cleanup } from './cleanup'
-import { createTestDb } from './test-utils'
+import { createTestDb } from '../shared/api/index.testing'
 import { recordView } from './views'
 
 let db: D1Database

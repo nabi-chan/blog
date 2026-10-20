@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { type CommentRow, deleteComment, getComment, insertComment, listComments, toCommentDto, updateCommentBody } from './comments-repo'
-import { createTestDb } from './test-utils'
+import { createTestDb } from '../shared/api/index.testing'
 
 let db: D1Database
 let dispose: () => Promise<void>

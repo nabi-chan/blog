@@ -1,4 +1,4 @@
-import type { Locale } from './runtime'
+import type { Locale } from '~/shared/i18n'
 
 // 언어 메뉴에 보일 이름. 그 언어를 읽는 사람이 알아보도록 그 언어 자체 표기로 쓴다
 export const LANGUAGE_NAMES: Record<Locale, string> = { ko: '한국어', en: 'English' }

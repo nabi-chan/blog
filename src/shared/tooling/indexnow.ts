@@ -1,5 +1,5 @@
 // scripts/indexnow.ts 가 Node 로 바로 불러서 경로 별칭(~/) 대신 상대 경로를 쓴다
-import { site } from '../shared/config/index.ts'
+import { site } from '../config/index.ts'
 
 // IndexNow (https://www.indexnow.org). 한 번 보내면 Bing·네이버 등 참여 검색엔진이 같이 받는다. Google 은 받지 않는다
 export function sitemapUrls(xml: string): string[] {

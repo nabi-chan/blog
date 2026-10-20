@@ -1,4 +1,4 @@
-import { SLUG_PATTERN } from '../shared/config/index.ts'
+import { SLUG_PATTERN } from '../config/index.ts'
 
 export type SmokeCheck = {
   path: string

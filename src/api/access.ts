@@ -1,5 +1,5 @@
 import { type JWTVerifyGetKey, createRemoteJWKSet, jwtVerify } from 'jose'
-import { readCookie } from './http'
+import { readCookie } from '../shared/api/index.server'
 
 export type AccessConfig = { teamDomain: string; audience: string; ownerEmail: string }
 

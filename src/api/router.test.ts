@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { routeApi } from './router'
-import { createTestDb, testContext } from './test-utils'
+import { createTestDb, testContext } from '../shared/api/index.testing'
 
 let db: D1Database
 let dispose: () => Promise<void>

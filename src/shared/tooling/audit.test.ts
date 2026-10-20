@@ -14,7 +14,7 @@ import {
   summarize,
   translationResults,
 } from './audit'
-import { SECURITY_HEADERS } from '../shared/lib/security-headers'
+import { SECURITY_HEADERS } from '../lib/security-headers'
 
 describe('summarize', () => {
   it('FAIL 이 하나라도 있으면 exitCode 1 이다', () => {

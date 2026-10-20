@@ -6,7 +6,7 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { SEO_PAGES, markdownPagePaths, shouldPrerender } from './src/lib/prerender.ts'
-import { ogSitePlugin } from './src/og/site-plugin.ts'
+import { ogSitePlugin } from './src/shared/og/index.ts'
 
 export default defineConfig(({ mode }) => ({
   server: { port: 3000 },

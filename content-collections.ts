@@ -10,8 +10,7 @@ import { computeSourceHash } from './src/content/source-hash'
 import { absolutizeMarkdownImages, countWords, localizeMarkdownLinks } from './src/markdown/agent-markdown'
 import { writeAssets } from './src/markdown/assets'
 import { type Glossary, renderMarkdown } from './src/markdown/render'
-import { postCard } from './src/og/card'
-import { writeOgImage } from './src/og/render'
+import { postCard, writeOgImage } from './src/shared/og'
 import { widgetNames } from './src/widgets/names'
 
 type CacheFn = Context['cache']

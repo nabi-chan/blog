@@ -1,7 +1,7 @@
 import handler from '@tanstack/react-start/server-entry'
 import { cleanup } from '~/api/cleanup'
 import { createApiContext } from '~/api/context'
-import { safeReturnPath } from '~/api/http'
+import { safeReturnPath } from '~/shared/api/index.server'
 import { routeApi } from '~/api/router'
 import { postIndex } from '~/content/posts.server'
 import { discoveryLinks, markdownAlternate, prefersMarkdown } from '~/lib/markdown-negotiation'

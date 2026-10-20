@@ -1,6 +1,6 @@
 import { useRouter, useRouterState } from '@tanstack/react-router'
 import { type ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react'
-import { createApiClient } from '~/lib/api-client'
+import { createApiClient } from '~/shared/api'
 import { withMinimumDelay } from '~/lib/min-delay'
 import { type MatchLike, viewKey, viewTarget } from '~/lib/view-target'
 

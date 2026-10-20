@@ -1,6 +1,7 @@
 import { useMatch, useRouterState } from '@tanstack/react-router'
 import { useEffect, useId, useRef, useState } from 'react'
-import { LANGUAGE_NAMES, getLocale, languageOptions, locales, localizeHref, m } from '~/shared/i18n'
+import { getLocale, locales, localizeHref, m } from '~/shared/i18n'
+import { LANGUAGE_NAMES, languageOptions } from '~/shared/lib/language-options'
 
 // 언어 고르기 팝오버. 언어가 늘어도 목록만 길어지게 만든다 [은솔].
 // 링크는 닫혀 있어도 HTML 에 있다 (프리렌더 크롤러가 다른 언어 페이지를 찾는 길). 언어를 바꾸면 문서를 새로 받는다

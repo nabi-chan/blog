@@ -1,7 +1,6 @@
 // 프리뷰(또는 배포) URL 에 요청을 보내 응답을 검사하는 스모크 스크립트
 // 사용법: node scripts/smoke.ts <baseUrl>
-import { checkResponse, extractMetaUrls, extractStylesheets, type SmokeCheck, type SmokePost, sitemapPosts } from '../src/lib/smoke.ts'
-import { sitemapUrls } from '../src/lib/indexnow.ts'
+import { type SmokeCheck, type SmokePost, checkResponse, extractMetaUrls, extractStylesheets, sitemapPosts, sitemapUrls } from '../src/shared/tooling/index.ts'
 import { SECURITY_HEADERS } from '../src/shared/lib/security-headers/index.ts'
 
 // 글이 있든 없든 늘 맞아야 하는 것

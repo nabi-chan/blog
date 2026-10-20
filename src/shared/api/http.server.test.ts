@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { apiError, clientIp, isSameOrigin, json, readCookie, readJson, safeReturnPath } from './http'
+import { apiError, clientIp, isSameOrigin, json, readCookie, readJson, safeReturnPath } from './http.server'
 
 const SITE = 'https://nabichan.me'
 

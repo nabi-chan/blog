@@ -1,5 +1,6 @@
 import type { FeedItem } from '~/content/post-queries'
-import { LANGUAGE_NAMES, type Locale, locales } from '~/shared/i18n'
+import { type Locale, locales } from '~/shared/i18n'
+import { LANGUAGE_NAMES } from '~/shared/lib/language-options'
 import { site } from '~/shared/config'
 import { absoluteUrl, pageUrl } from './url'
 

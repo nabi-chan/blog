@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { CommentDto, MeDto } from '~/api/types'
+import { type CommentDto, type MeDto, createApiClient } from '~/shared/api'
 import { m } from '~/shared/i18n'
-import { createApiClient } from '~/lib/api-client'
 import { CommentForm } from './CommentForm'
 import { CommentItem, type PanelMode } from './CommentItem'
 

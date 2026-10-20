@@ -1,7 +1,7 @@
 // vite.config(ogSitePlugin)가 불러서 경로 별칭(~/) 대신 상대 경로를 쓴다
-import { formatDate } from '../shared/lib/date/index.ts'
-import type { Locale } from '../shared/i18n/index.ts'
-import { site } from '../shared/config/index.ts'
+import { formatDate } from '../lib/date/index.ts'
+import type { Locale } from '../i18n/index.ts'
+import { site } from '../config/index.ts'
 
 // satori 에 넘길 요소 트리. JSX 없이 { type, props } 객체로 만든다
 export type OgNode = { type: string; props: { style?: Record<string, string | number>; children?: OgNode | string | Array<OgNode | string> } }

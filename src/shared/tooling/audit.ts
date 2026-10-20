@@ -1,5 +1,5 @@
 // pnpm audit:repo 의 판정 (스펙 5.2). scripts/audit.ts 가 Node 로 바로 불러서 상대 경로만 import 한다
-import { SECURITY_HEADERS } from '../shared/lib/security-headers/index.ts'
+import { SECURITY_HEADERS } from '../lib/security-headers/index.ts'
 
 export type AuditStatus = 'PASS' | 'WARN' | 'FAIL' | 'INFO'
 export type AuditResult = { id: string; status: AuditStatus; message: string; details?: string[] }

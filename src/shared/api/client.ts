@@ -1,4 +1,4 @@
-import type { ApiErrorCode, CommentDto, MeDto, ViewCountsDto } from '~/api/types'
+import type { ApiErrorCode, CommentDto, MeDto, ViewCountsDto } from './types'
 
 export type ApiResult<T> = { ok: true; data: T } | { ok: false; status: number; error: ApiErrorCode | 'network' }
 

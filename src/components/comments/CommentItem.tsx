@@ -1,9 +1,8 @@
 import { type FormEvent, useState } from 'react'
 import { COMMENT_LIMITS } from '~/api/comment-input'
-import type { CommentDto } from '~/api/types'
+import { type CommentDto, createApiClient } from '~/shared/api'
 import { formatDateTime } from '~/shared/lib/date'
 import { getLocale, m } from '~/shared/i18n'
-import { createApiClient } from '~/lib/api-client'
 import { commentErrorMessage } from '~/lib/comment-errors'
 import { Turnstile } from './Turnstile'
 

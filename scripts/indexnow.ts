@@ -3,7 +3,7 @@
 // 빌드 뒤에 실행한다. 주소는 dist/client/sitemap.xml 에서 읽어서 draft·삭제된 글은 보내지 않는다
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
-import { changedSlugs, indexNowPayload, selectIndexNowUrls, sitemapUrls } from '../src/lib/indexnow.ts'
+import { changedSlugs, indexNowPayload, selectIndexNowUrls, sitemapUrls } from '../src/shared/tooling/index.ts'
 
 const ENDPOINT = 'https://api.indexnow.org/indexnow'
 

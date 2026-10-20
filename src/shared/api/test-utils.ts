@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { getPlatformProxy } from 'wrangler'
-import type { ApiContext } from './router'
+import type { ApiContext } from './api-context'
 
 const MIGRATIONS_DIR = 'migrations'
 

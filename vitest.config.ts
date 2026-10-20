@@ -13,7 +13,6 @@ export default defineConfig({
         'src/widgets/**/*.{ts,tsx}',
         'src/api/**/*.ts',
         'src/seo/**/*.ts',
-        'src/og/**/*.ts',
         'src/shared/**/*.ts',
       ],
       exclude: [
@@ -23,9 +22,10 @@ export default defineConfig({
         'src/content/posts.functions.ts',
         'src/widgets/*.tsx',
         // 테스트 도우미, env 배선, 타입만 있는 파일
-        'src/api/test-utils.ts',
+        'src/shared/api/test-utils.ts',
         'src/api/context.ts',
-        'src/api/types.ts',
+        'src/shared/api/types.ts',
+        'src/shared/api/api-context.ts',
         // 지금도 커버리지 밖이던 Paraglide 연결과 사이트 설정
         'src/shared/i18n/messages.ts',
         'src/shared/i18n/runtime.ts',

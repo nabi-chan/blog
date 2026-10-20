@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { createTestDb, testContext } from './test-utils'
+import { createTestDb, testContext } from '../shared/api/index.testing'
 import { handleRecordView, isBotUserAgent, kstDay, pruneViews, readViews, recordView, visitorKey } from './views'
 
 let db: D1Database

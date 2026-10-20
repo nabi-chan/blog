@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { ATTEMPT_LIMITS, ATTEMPT_WINDOW_SECONDS, isLimited, pruneAttempts, recordFailure } from './attempts'
+import { ATTEMPT_LIMITS, ATTEMPT_WINDOW_SECONDS, isLimited, pruneAttempts, recordFailure } from './attempts.server'
 import { createTestDb } from './test-utils'
 
 let db: D1Database
