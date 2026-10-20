@@ -81,14 +81,16 @@ export function compareStructure(ko: Structure, en: Structure): string[] {
   const check = (label: string, a: Array<string | number | null>, b: Array<string | number | null>) => {
     if (!same(a, b)) problems.push(`${label}가 다릅니다: ko ${list(a)} / en ${list(b)}`) // 항목 이름이 모두 받침 없이 끝난다
   }
+  // 링크와 :term 은 한국어·영어 어순에 따라 순서가 바뀌는 게 정상이라 정렬해서 개수와 값만 본다
+  const sorted = (values: string[]) => [...values].sort()
   check('헤딩 깊이', ko.headings, en.headings)
-  check('링크 목적지', ko.links, en.links)
+  check('링크 목적지', sorted(ko.links), sorted(en.links))
   check('이미지 경로', ko.images, en.images)
   check('Callout 종류', ko.callouts, en.callouts)
   if (ko.code.length !== en.code.length) problems.push(`코드 블록 개수가 다릅니다: ko ${ko.code.length} / en ${en.code.length}`)
   else check('코드 블록 언어', ko.code, en.code)
   check('디렉티브 구조', ko.directives, en.directives)
-  if (!same(ko.terms, en.terms)) problems.push(`:term key 가 다릅니다: ko ${list(ko.terms)} / en ${list(en.terms)}`)
+  if (!same(sorted(ko.terms), sorted(en.terms))) problems.push(`:term key 가 다릅니다: ko ${list(sorted(ko.terms))} / en ${list(sorted(en.terms))}`)
   if (!same(ko.originals, en.originals)) problems.push(':::original 원문이 다릅니다')
   return problems
 }

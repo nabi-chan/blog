@@ -92,6 +92,14 @@ describe('compareStructure', () => {
     expect(en(EN)).toEqual([])
   })
 
+  it('링크와 :term 은 어순에 따라 순서가 바뀌어도 된다 (개수와 목적지는 같아야 한다)', () => {
+    const ko2 = translationStructure('[인트라](/a)와 [직접](/b)을 비교한 뒤 [파라](/c)로 정했습니다. :term[하나]{key="x"} 와 :term[둘]{key="y"}\n')
+    const en2 = translationStructure('I picked [Paraglide](/c) after comparing [Intlayer](/a) and [hand-rolled](/b). :term[two]{key="y"} and :term[one]{key="x"}\n')
+    expect(compareStructure(ko2, en2)).toEqual([])
+    const missing = translationStructure('I picked [Paraglide](/c) after comparing [Intlayer](/a). :term[one]{key="x"}\n')
+    expect(compareStructure(ko2, missing)).toEqual(['링크 목적지가 다릅니다: ko [/a, /b, /c] / en [/a, /c]', ':term key 가 다릅니다: ko [x, y] / en [x]'])
+  })
+
   it('다른 구조는 항목마다 한 줄씩 알려 준다', () => {
     expect(en(EN.replace('### Rendering', '## Rendering'))).toEqual(['헤딩 깊이가 다릅니다: ko [2, 3] / en [2, 2]'])
     expect(en(EN.replace("```ts\n// greeting\nconst greeting = 'Hello'\n```", ''))).toEqual(['코드 블록 개수가 다릅니다: ko 1 / en 0'])
