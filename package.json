@@ -10,7 +10,7 @@
     "dev": "vite dev",
     "build": "rm -rf public/content-assets public/og && vite build",
     "preview": "vite preview",
-    "cf-typegen": "wrangler types --strict-vars=false",
+    "cf-typegen": "wrangler types --strict-vars=false --env-file .dev.vars.example",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
     "check": "pnpm i18n:compile && content-collections build && tsc --noEmit",
     "test": "pnpm i18n:compile && vitest run --coverage",
@@ -18,7 +18,8 @@
     "indexnow": "node scripts/indexnow.ts",
     "i18n:compile": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide",
     "content:rehash": "node scripts/content-rehash.ts",
-    "content:check": "node scripts/content-check.ts"
+    "content:check": "node scripts/content-check.ts",
+    "audit:repo": "node scripts/audit.ts"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.170.45",

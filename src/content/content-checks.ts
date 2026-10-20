@@ -108,7 +108,12 @@ export type ContentPostInput = {
 }
 
 // 글마다 문제를 모은다. content:check 와 audit:repo 가 같이 쓴다
-export function collectContentProblems(input: { posts: ContentPostInput[]; tagKeys: string[]; termKeys: string[] }): Array<{ slug: string; problems: string[] }> {
+// options.translation 이 false 면 낡은 번역·구조 불일치는 빼고 본다 (audit 이 번역 검사에서 따로 낸다)
+export function collectContentProblems(
+  input: { posts: ContentPostInput[]; tagKeys: string[]; termKeys: string[] },
+  options: { translation?: boolean } = {},
+): Array<{ slug: string; problems: string[] }> {
+  const translation = options.translation ?? true
   const site: SiteAnchors = {
     posts: new Map(input.posts.map((post) => [post.slug, { ko: headingAnchors(post.ko.body), en: post.en ? headingAnchors(post.en.body) : undefined }])),
   }
@@ -124,10 +129,10 @@ export function collectContentProblems(input: { posts: ContentPostInput[]; tagKe
       for (const line of brokenInternalLinks({ slug: post.slug, locale: 'ko', markdown: post.ko.body }, site)) problems.push(`ko 링크 ${line}`)
       if (post.en && enStructure) {
         for (const line of brokenInternalLinks({ slug: post.slug, locale: 'en', markdown: post.en.body }, site)) problems.push(`en 링크 ${line}`)
-        if (computeSourceHash(post.ko) !== post.en.sourceHash) {
+        if (translation && computeSourceHash(post.ko) !== post.en.sourceHash) {
           problems.push(`en 번역이 낡았습니다 (pnpm content:rehash --post ${post.slug} 또는 /translate-post)`)
         }
-        for (const line of compareStructure(koStructure, enStructure)) problems.push(`en 구조: ${line}`)
+        if (translation) for (const line of compareStructure(koStructure, enStructure)) problems.push(`en 구조: ${line}`)
       }
       return { slug: post.slug, problems }
     })

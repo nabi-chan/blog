@@ -83,3 +83,17 @@ describe('collectContentProblems', () => {
     ])
   })
 })
+
+describe('collectContentProblems 의 translation 옵션', () => {
+  it('translation: false 면 낡은 번역과 구조 불일치는 빼고 본다 (audit 이 번역 검사에서 따로 본다)', () => {
+    const problems = collectContentProblems(
+      {
+        tagKeys: ['meta'],
+        termKeys: [],
+        posts: [{ slug: '261020', ko: { title: 't', description: 'd', body: '## 구성\n', tags: ['meta'] }, en: { body: '## A\n## B\n', sourceHash: 'old' } }],
+      },
+      { translation: false },
+    )
+    expect(problems).toEqual([])
+  })
+})
