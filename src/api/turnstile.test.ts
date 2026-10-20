@@ -36,6 +36,15 @@ describe('verifyTurnstile', () => {
     expect(JSON.stringify(warn.mock.calls)).toContain('timeout-or-duplicate')
   })
 
+  it('시크릿이 없거나 틀렸으면 방문자 탓이 아니라 장애(unavailable)로 보고 원인을 남긴다', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    for (const code of ['invalid-input-secret', 'missing-input-secret']) {
+      const { fetchFn } = fakeFetch(() => Response.json({ success: false, 'error-codes': [code] }))
+      expect(await verifyTurnstile('tok', { secret: 's', remoteIp: '', fetchFn })).toBe('unavailable')
+    }
+    expect(JSON.stringify(error.mock.calls)).toContain('invalid-input-secret')
+  })
+
   it('siteverify 가 2xx 가 아니거나 연결이 안 되면 unavailable', async () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => {})
     const down = fakeFetch(() => new Response('oops', { status: 500 }))
