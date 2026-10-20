@@ -1,9 +1,11 @@
 // scripts/* 가 Node 로 바로 읽으므로 .ts 확장자를 붙인다
 export {
   type AuditResult,
+  type SteigerDiagnostic,
   type TranslationState,
   budgetResults,
   formatResult,
+  fsdResults,
   leakedPostText,
   liveResults,
   migrationCheck,

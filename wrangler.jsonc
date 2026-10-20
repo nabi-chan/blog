@@ -5,7 +5,7 @@
   "compatibility_date": "2026-10-19",
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
-  // 홈과 글(YYMMDD 로 시작)은 Worker 가 먼저 받아 Accept 로 HTML / Markdown 을 고른다 (src/server.ts negotiate)
+  // 홈과 글(YYMMDD 로 시작)은 Worker 가 먼저 받아 Accept 로 HTML / Markdown 을 고른다 (src/app/server/worker.ts negotiate)
   "assets": {
     "html_handling": "auto-trailing-slash",
     "binding": "ASSETS",

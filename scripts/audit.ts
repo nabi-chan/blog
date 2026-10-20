@@ -18,10 +18,12 @@ import {
 } from '../src/entities/post/index.scripts.ts'
 import {
   type AuditResult,
+  type SteigerDiagnostic,
   type TranslationState,
   budgetResults,
   extractMetaUrls,
   formatResult,
+  fsdResults,
   leakedPostText,
   liveResults,
   migrationCheck,
@@ -111,6 +113,14 @@ function baseChecks() {
       ? { id: 'messages', status: 'PASS', message: 'Paraglide 메시지 ko·en 키' }
       : { id: 'messages', status: 'FAIL', message: 'Paraglide 메시지 키가 다릅니다', details: [...onlyKo.map((key) => `ko 에만: ${key}`), ...onlyEn.map((key) => `en 에만: ${key}`)] },
   )
+
+  // FSD 구조 (Steiger). 레이어 방향·공개 API 우회·슬라이스 규칙을 본다
+  const steiger = run('pnpm', ['exec', 'steiger', './src', '--reporter', 'json'])
+  try {
+    results.push(fsdResults(JSON.parse(steiger.stdout) as SteigerDiagnostic[], process.cwd()))
+  } catch {
+    results.push({ id: 'fsd', status: 'FAIL', message: 'Steiger 실행 실패', details: tail(`${steiger.stdout}${steiger.stderr}`) })
+  }
 
   // 개인 .dev.vars 가 아니라 커밋된 .dev.vars.example 로 만든 타입과 비교해서, 로컬과 CI 가 같은 결론을 낸다
   const types = run('pnpm', ['exec', 'wrangler', 'types', '--strict-vars=false', '--env-file', '.dev.vars.example', '--check'])

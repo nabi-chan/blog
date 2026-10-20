@@ -75,7 +75,7 @@ export const CHECKS: SmokeCheck[] = [
 ]
 
 // sitemap 에서 고른 실제 글 하나로 글 페이지와 산출물을 본다.
-// 특정 글의 제목이나 쓴 문법에는 기대지 않는다. Markdown 문법별 렌더 결과는 src/markdown/render.test.ts 가 본다
+// 특정 글의 제목이나 쓴 문법에는 기대지 않는다. Markdown 문법별 렌더 결과는 src/entities/post/markdown/render.test.ts 가 본다
 function postChecks({ slug, en }: SmokePost, production: boolean): SmokeCheck[] {
   const ko: SmokeCheck[] = [
     { path: '/', status: 200, contains: [`href="/${slug}"`] },

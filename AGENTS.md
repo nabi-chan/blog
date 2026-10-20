@@ -5,10 +5,48 @@ eunsol(Nabi)의 개인 블로그 `nabichan.me` 저장소다. 사람과 에이전
 ## 스택 한눈에
 
 - TanStack Start + Cloudflare Workers(`@cloudflare/vite-plugin` ^1). 글·목록 페이지는 빌드할 때 프리렌더한다.
-- 글은 Content Collections 가 Markdown 을 빌드 시점에 HTML 로 만든다(`content-collections.ts`, `src/markdown/`). 글 데이터는 서버 전용이다.
+- 글은 Content Collections 가 Markdown 을 빌드 시점에 HTML 로 만든다(`content-collections.ts`, `src/entities/post/markdown/`). 글 데이터는 서버 전용이다.
 - 다국어는 Paraglide JS. 한국어가 기본(접두사 없음), 영어는 `/en/...` 이다. 언어는 URL 로만 정한다.
-- 댓글·조회수는 D1 + Worker API(`src/api/`). 은솔 구분은 Cloudflare Access, 스팸은 Turnstile 이다.
+- 댓글·조회수는 D1 + Worker API(`src/features/{comment,view-count}`, `src/app/server/`). 은솔 구분은 Cloudflare Access, 스팸은 Turnstile 이다.
 - SEO·GEO 산출물(sitemap, robots, RSS, llms, `.md` 원문, OG 이미지)도 빌드할 때 만든다.
+- 코드는 FSD(Feature-Sliced Design) 레이어로 나누고 Steiger 로 검사한다(아래 "FSD 구조").
+
+## FSD 구조
+
+`src` 를 레이어로 나눈다. 설계는 `docs/superpowers/specs/2026-10-20-fsd-refactor-design.md` 에 있다.
+
+| 레이어 | 두는 것 |
+|---|---|
+| `app` | 라우트(`routes`), 엔트리(`router.tsx`·`client.tsx`), Worker 진입과 API 조립(`server`), SEO 산출물(`seo`), 프리렌더 목록(`build`), 전역 CSS(`styles`) |
+| `pages` | 화면(`home`·`posts`·`post`·`not-found`). 한 화면에서만 쓰는 코드(태그 필터, 목차 등)도 여기 |
+| `widgets` | 여러 화면이 같이 쓰는 큰 블록(`site-layout`) |
+| `features` | 사용자 동작(`comment`·`view-count`·`term-tooltip`·`embeds`). 화면과 그 API 처리·D1 쿼리가 같이 산다 |
+| `entities` | 글(`post`): 모델, 서버 함수, Markdown 렌더 파이프라인, 원문 검사 |
+| `shared` | `config`·`i18n`·`api`·`lib`·`og`·`tooling` |
+
+- import 는 위에서 아래로만 한다(`app → pages → widgets → features → entities → shared`). 같은 레이어의 다른 슬라이스는 import 하지 않는다.
+- 한 곳에서만 쓰는 코드는 쓰는 페이지 안에 둔다. 두 곳 이상에서 쓰게 되면 아래 레이어로 내린다(Steiger `insignificant-slice` 가 본다).
+- 슬라이스 밖에서는 공개 API 로만 들어온다. 이름을 하나씩 적어 재수출하고 `export *` 는 쓰지 않는다. `shared` 는 세그먼트마다(`shared/lib` 는 모듈 폴더마다) `index.ts` 를 둔다.
+
+  | 공개 API | 누가 부르나 |
+  |---|---|
+  | `index.ts` | 화면과 서버 |
+  | `index.server.ts` | Worker 만(D1·시크릿·`jose`·Access) |
+  | `index.build.ts` | `content-collections.ts` 만 |
+  | `index.scripts.ts` | `scripts/*` 만 |
+  | `index.testing.ts` | 다른 슬라이스의 테스트 |
+
+- Worker 전용 파일은 `*.server.ts` 로 끝낸다. 브라우저 번들이 import 하면 TanStack Start import 보호가 빌드를 멈춘다. `app/server` 는 폴더째 막는다(`vite.config.ts` 의 `importProtection`). `tanstackStart` 의 `srcDirectory` 는 바꾸지 않는다. 바꾸면 슬라이스가 보호 밖으로 빠진다.
+- Node 쪽 소비자는 저마다의 공개 API 로 들어온다. 이 경로의 모듈은 상대 경로에 `.ts` 를 붙여 import 하고, `~` 별칭과 Paraglide 생성물은 `import type` 으로만 쓴다. 설정 로더와 Node 는 별칭을 읽지 못하고, CI 는 `i18n:compile` 보다 먼저 `scripts/audit.ts` 를 불러온다.
+
+  | 소비자 | 들어오는 곳 |
+  |---|---|
+  | `vite.config.ts` | `src/app/build/prerender.ts`, `src/shared/og` |
+  | `content-collections.ts` | `src/entities/post/index.build.ts`, `src/features/embeds/index.build.ts`, `src/shared/og`, `src/shared/config`, `src/shared/lib/date` |
+  | `scripts/*` | `src/entities/post/index.scripts.ts`, `src/shared/tooling`, `src/shared/lib/security-headers` |
+
+- 공개 API 를 바꾸면 `audit:repo --build` 의 클라이언트 JS 를 본다. 진입 청크만 쓰는 모듈을 지연 청크도 쓰는 공개 API 에 넣으면 Rolldown 이 공통 청크를 떼어 낸다(`language-options` 를 `shared/i18n` 에 넣었을 때 +1.5KB). 그래서 `language-options` 는 `shared/lib` 에 따로 있다.
+- `pnpm lint:fsd` 가 구조를 검사하고 `audit:repo` 의 `fsd` 가 위반을 FAIL 로 낸다. 검사에서 빼는 건 `src/paraglide` 와 `src/app/routeTree.gen.ts` 두 개뿐이다(`steiger.config.ts`). 규칙을 끄지 않는다.
 
 ## 로컬 준비
 
@@ -28,6 +66,7 @@ pnpm dev                         # http://localhost:3000
 | `pnpm check` | Paraglide 컴파일 + Content Collections 빌드 + 타입 검사 |
 | `pnpm test` | vitest + 커버리지(함수 100%, 줄 90%) |
 | `pnpm audit:repo` | 저장소 점검(아래). `--build`, `--live [--base-url <url>]` |
+| `pnpm lint:fsd` | FSD 구조 검사(Steiger). `audit:repo` 도 돌린다 |
 | `pnpm content:check [--post <slug>]` | 글 검사: 번역 구조, 빠진 태그·용어, 깨진 내부 링크, 낡은 번역. 볼드 깨짐·맞춤법은 경고만 |
 | `pnpm content:rehash --post <slug>` | 번역에 영향 없는 ko 수정 뒤 en 의 `sourceHash` 만 갱신 |
 | `pnpm build` / `pnpm preview` | 프로덕션 빌드 / workerd 로 미리보기(:4173) |
@@ -57,20 +96,20 @@ pnpm dev                         # http://localhost:3000
 
 ## 영역별 주의
 
-### Markdown 파이프라인 (`src/markdown/`, `content-collections.ts`)
+### Markdown 파이프라인 (`src/entities/post/markdown/`, `content-collections.ts`)
 
 - 원본 HTML 태그는 허용하지 않는다(`allowDangerousHtml` 금지). 모르는 컨테이너 디렉티브는 빌드 오류다.
 - 렌더 결과의 모양이나 플러그인 동작을 바꾸면 `content-collections.ts` 의 `RENDER_VERSION` 을 올린다. 렌더 캐시가 예전 결과를 내지 않게 한다.
-- OG 카드 디자인을 바꾸면 `src/og/render.ts` 의 `OG_VERSION` 을 올린다.
+- OG 카드 디자인을 바꾸면 `src/shared/og/render.ts` 의 `OG_VERSION` 을 올린다.
 - 글 옆 이미지는 글 폴더에 둔다. 한글·공백 파일 이름도 되지만 `.md` 원문에서 절대 URL 로 바꾸지 못하면 빌드가 멈춘다.
 
-### 다국어 (`src/i18n/`, `project.inlang/paraglide.config.ts`)
+### 다국어 (`src/shared/i18n/`, `project.inlang/paraglide.config.ts`)
 
 - Paraglide 설정(전략·URL 패턴)은 `project.inlang/paraglide.config.ts` 한 곳에만 둔다. CLI(`pnpm check`·`pnpm test`)와 vite 플러그인이 같이 읽는다. vite 설정에 옵션을 따로 두면 CLI 가 기본값으로 런타임을 덮어써서 dev 의 `/en` 이 깨진다.
 - 서버 함수에는 언어를 항상 입력으로 넘긴다. 서버 함수 URL 에는 언어 접두사가 없다.
 - 새 UI 문구는 `messages/ko.json`, `messages/en.json` 에 같은 키로 넣는다(`audit:repo` 가 키를 대조한다).
 
-### 댓글·조회수 API (`src/api/`)
+### 댓글·조회수 API (`src/features/*/api/`, `src/app/server/`, `src/shared/api/`)
 
 - 쓰기 요청은 같은 Origin 과 `application/json` 만 받는다.
 - 은솔 판정(Access JWT)은 실패하면 닫힌다. 설정값이 비었거나 검증이 실패하면 은솔이 아니다.
@@ -81,18 +120,19 @@ pnpm dev                         # http://localhost:3000
 ### 프리렌더·산출물
 
 - `/api/*`, `/admin` 은 프리렌더하지 않는다. 정적 에셋이 Worker 보다 먼저 응답하므로, 프리렌더되면 Worker 코드가 실행되지 않는다.
-- 크롤러는 `<a href>` 만 따라간다. SEO 산출물과 글별 `.md` 는 `src/lib/prerender.ts` 의 목록으로 넣는다.
-- `vite.config.ts` 가 불러오는 모듈(`src/lib/prerender.ts`, `src/og/*`)과 Node 로 바로 실행하는 스크립트가 불러오는 lib 은 `~/` 별칭 대신 상대 경로(`.ts` 확장자 포함)로 import 한다. 설정 로더와 Node 는 별칭을 읽지 못한다.
+- 크롤러는 `<a href>` 만 따라간다. SEO 산출물과 글별 `.md` 는 `src/app/build/prerender.ts` 의 목록으로 넣는다.
+- `vite.config.ts`·`scripts/*` 가 불러오는 모듈은 `~/` 별칭 대신 상대 경로(`.ts` 확장자 포함)로 import 한다(위 "FSD 구조"의 Node 쪽 소비자 표).
 
-### CSS (`src/styles/`)
+### CSS (`src/app/styles/`, 슬라이스의 `ui/*.css`)
 
-- 새 수제 CSS 는 큰 전역 파일 꼬리에 붙이지 않는다. `src/styles/` 에 별도 파일로 두고 `app.css` 에서 import 한다.
+- 전역(폰트·토큰·기본)은 `src/app/styles/`, 나머지는 그 CSS 를 쓰는 슬라이스의 `ui` 옆에 둔다. `src/app/styles/app.css` 가 모두 `@import` 한다.
+- `app.css` 의 `@import` 순서가 캐스케이드 순서다. 새 파일은 쓰는 슬라이스 자리에 넣고, 같은 요소를 건드리는 규칙끼리 순서가 바뀌지 않게 한다.
 - 배포 확인은 배포된 CSS 파일을 직접 받아 본다.
 - 무채색, 굵기는 400·700 만 쓴다.
 
 ## 예산
 
-`src/lib/audit.ts` 의 `BUDGETS` 와 이 표를 같이 고친다.
+`src/shared/tooling/audit.ts` 의 `BUDGETS` 와 이 표를 같이 고친다.
 
 | 항목 | 예산 | 측정(2026-10-20) |
 |---|---|---|
@@ -123,10 +163,10 @@ pnpm dev                         # http://localhost:3000
 - Workers 는 **무료 플랜**이다(2026-10-20 은솔 확인). 요청당 CPU 10ms, Worker 요청 하루 10만 건이 한도다.
 - Markdown 협상: 홈(`/`, `/en`)과 글(`/<slug>`, `/en/<slug>`)은 Worker 가 먼저 받는다(`wrangler.jsonc` 의 `run_worker_first`).
   - `Accept` 에 `text/markdown` 을 직접 적고 HTML 보다 낮게 두지 않은 요청은 글의 `.md` 원문, 홈은 `llms.txt` 를 받는다. 나머지는 프리렌더 HTML 그대로다.
-  - 응답에 `Vary: Accept` 와 `Content-Signal` 헤더가 붙는다. 판단은 `src/lib/markdown-negotiation.ts`, 연결은 `src/server.ts` 의 `negotiate`.
+  - 응답에 `Vary: Accept` 와 `Content-Signal` 헤더가 붙는다. 판단은 `src/app/server/markdown-negotiation.ts`, 연결은 `src/app/server/worker.ts` 의 `negotiate`.
   - 글 경로 패턴은 첫 자리 숫자(`/0*`~`/9*`)로 잡는다. 패턴이 숫자 범위를 지원하지 않아서다.
-- Content Signals 는 `src/site.ts` 의 `contentSignal` 한 곳에서 정한다(검색·AI 답변 허용, 학습 거부). robots.txt 의 모든 그룹과 Markdown 응답 헤더에 같은 값이 들어간다.
-- CSP 는 `src/lib/security-headers.ts` 에서만 고치고 `public/_headers` 를 다시 만든다(테스트가 둘이 같은지 본다). Cloudflare 가 끼워 넣는 Web Analytics 비콘을 허용해 두었다.
+- Content Signals 는 `src/shared/config/site.ts` 의 `contentSignal` 한 곳에서 정한다(검색·AI 답변 허용, 학습 거부). robots.txt 의 모든 그룹과 Markdown 응답 헤더에 같은 값이 들어간다.
+- CSP 는 `src/shared/lib/security-headers/security-headers.ts` 에서만 고치고 `public/_headers` 를 다시 만든다(테스트가 둘이 같은지 본다). Cloudflare 가 끼워 넣는 Web Analytics 비콘을 허용해 두었다.
   - 이미지는 같은 출처와 `data:` 만 된다. 글에 외부 이미지 주소를 쓰면 `content:check` 가 문제로 잡는다.
   - 스모크와 `audit:repo --live` 가 정적 응답·Worker 응답·404 의 헤더 값을 lib 과 글자까지 비교한다.
 

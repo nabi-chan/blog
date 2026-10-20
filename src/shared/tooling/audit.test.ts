@@ -5,6 +5,7 @@ import {
   budgetResults,
   changedMigrations,
   formatResult,
+  fsdResults,
   leakedPostText,
   liveResults,
   median,
@@ -187,5 +188,32 @@ describe('migrationCheck', () => {
   it('고친 적이 없으면 PASS, 이력을 못 읽으면(얕은 clone 등) INFO', () => {
     expect(migrationCheck({ working: '', history: '' })).toMatchObject({ status: 'PASS' })
     expect(migrationCheck({ working: '', history: null })).toMatchObject({ status: 'INFO' })
+  })
+})
+
+describe('fsdResults', () => {
+  const root = '/repo'
+  const diag = (severity: 'error' | 'warn', line?: number) => ({
+    message: '금지된 import',
+    severity,
+    ruleName: 'fsd/forbidden-imports',
+    location: { path: '/repo/src/entities/post/index.ts', ...(line ? { start: { line, column: 1 } } : {}) },
+  })
+  it('진단이 없으면 PASS', () => {
+    expect(fsdResults([], root)).toEqual({ id: 'fsd', status: 'PASS', message: 'FSD 구조 (Steiger)' })
+  })
+  it('오류가 있으면 FAIL 이고 상대 경로와 줄을 적는다', () => {
+    expect(fsdResults([diag('warn'), diag('error', 3)], root)).toEqual({
+      id: 'fsd',
+      status: 'FAIL',
+      message: 'FSD 구조 위반 (pnpm lint:fsd)',
+      details: [
+        'fsd/forbidden-imports src/entities/post/index.ts 금지된 import',
+        'fsd/forbidden-imports src/entities/post/index.ts:3 금지된 import',
+      ],
+    })
+  })
+  it('경고만 있으면 WARN', () => {
+    expect(fsdResults([diag('warn')], root).status).toBe('WARN')
   })
 })

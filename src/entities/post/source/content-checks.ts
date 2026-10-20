@@ -108,7 +108,7 @@ export function messageKeyDiff(ko: Record<string, unknown>, en: Record<string, u
 
 const EXTERNAL_IMAGE = /^(https?:)?\/\//i
 
-// CSP 의 img-src 는 'self' 와 data: 만 허용한다(src/lib/security-headers.ts). 외부 주소 이미지는 브라우저가 막는다
+// CSP 의 img-src 는 'self' 와 data: 만 허용한다(src/shared/lib/security-headers/security-headers.ts). 외부 주소 이미지는 브라우저가 막는다
 export function externalImages(markdown: string): string[] {
   const tree = parse(markdown)
   const definitions = new Map<string, string>()

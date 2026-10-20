@@ -1,6 +1,6 @@
 // 모든 응답에 다는 보안 헤더. 정적 에셋은 public/_headers(headersFile 출력)가, Worker 응답은 withSecurityHeaders 가 단다.
 // script-src 'unsafe-inline' 은 TanStack Start 가 페이지마다 넣는 인라인 하이드레이션 스크립트 때문이다. 프리렌더 페이지라 nonce 를 쓸 수 없다.
-// Turnstile 은 challenges.cloudflare.com 의 스크립트와 iframe 을 쓴다 (src/components/comments/Turnstile.tsx).
+// Turnstile 은 challenges.cloudflare.com 의 스크립트와 iframe 을 쓴다 (src/features/comment/ui/Turnstile.tsx).
 // Cloudflare Web Analytics 는 Cloudflare 가 운영 응답에 비콘을 끼워 넣는다(static.cloudflareinsights.com 스크립트, cloudflareinsights.com 전송)
 const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",

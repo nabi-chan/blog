@@ -10,7 +10,7 @@
   --font-sans: 'Eunsol Sans', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* 콘텐츠 폭. src/content/constants.ts 의 CONTENT_VW·SPLIT_MIN_VIEWPORT·BODY_MAX_WIDTH(이미지 sizes)와 맞춘다 */
+  /* 콘텐츠 폭. src/shared/config/content.ts 의 CONTENT_VW·SPLIT_MIN_VIEWPORT·BODY_MAX_WIDTH(이미지 sizes)와 맞춘다 */
   --content-width: min(1200px, 90vw);
   --gutter: 7rem;
 

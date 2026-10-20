@@ -1,4 +1,5 @@
 // pnpm audit:repo 의 판정 (스펙 5.2). scripts/audit.ts 가 Node 로 바로 불러서 상대 경로만 import 한다
+import { relative } from 'node:path'
 import { SECURITY_HEADERS } from '../lib/security-headers/index.ts'
 
 export type AuditStatus = 'PASS' | 'WARN' | 'FAIL' | 'INFO'
@@ -180,4 +181,24 @@ export function liveResults(input: LiveInput): AuditResult[] {
     )
   }
   return results
+}
+
+// Steiger(--reporter json) 진단 한 건
+export type SteigerDiagnostic = {
+  message: string
+  severity: 'error' | 'warn'
+  ruleName: string
+  // 파일 안 위치는 start 에 1부터 센 줄·칸으로 온다. 폴더 단위 진단에는 없다
+  location: { path: string; start?: { line?: number; column?: number } }
+}
+
+// FSD 구조 검사. 오류가 하나라도 있으면 FAIL, 경고만 있으면 WARN 이다
+export function fsdResults(diagnostics: SteigerDiagnostic[], root: string): AuditResult {
+  if (diagnostics.length === 0) return { id: 'fsd', status: 'PASS', message: 'FSD 구조 (Steiger)' }
+  const details = diagnostics.map(
+    (d) => `${d.ruleName} ${relative(root, d.location.path)}${d.location.start?.line ? `:${d.location.start.line}` : ''} ${d.message}`,
+  )
+  return diagnostics.some((d) => d.severity === 'error')
+    ? { id: 'fsd', status: 'FAIL', message: 'FSD 구조 위반 (pnpm lint:fsd)', details }
+    : { id: 'fsd', status: 'WARN', message: 'FSD 구조 경고 (pnpm lint:fsd)', details }
 }
