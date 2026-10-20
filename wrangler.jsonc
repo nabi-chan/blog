@@ -5,5 +5,16 @@
   "compatibility_date": "2026-10-19",
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
-  "assets": { "html_handling": "auto-trailing-slash" }
+  "assets": { "html_handling": "auto-trailing-slash" },
+  // database_id 는 계획 5 에서 wrangler d1 create 로 만든 값을 넣는다 (자동 생성은 쓰지 않는다)
+  "d1_databases": [{ "binding": "DB", "database_name": "eunsol-blog", "migrations_dir": "migrations" }],
+  // 04:00 KST. 지난 조회 중복 기록과 시도 제한 기록을 지운다
+  "triggers": { "crons": ["0 19 * * *"] },
+  // 공개 값. Access 셋은 계획 5 에서 채운다. 비어 있으면 은솔 판정이 항상 false 다
+  "vars": {
+    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUD": "",
+    "OWNER_EMAIL": ""
+  }
 }

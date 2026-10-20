@@ -1,0 +1,8 @@
+# 로컬 전용 값이다. 프로덕션 시크릿으로 쓰지 말 것. `cp .dev.vars.example .dev.vars` 로 복사해서 쓴다
+# Turnstile 공식 테스트 키 (항상 통과)
+TURNSTILE_SITE_KEY=1x00000000000000000000AA
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+COMMENT_PEPPER=dev-comment-pepper
+VIEW_SALT_SECRET=dev-view-salt
+# 1 이면 vite dev 에서 은솔로 동작한다. 프로덕션 빌드에서는 읽지 않는다
+DEV_OWNER=0
