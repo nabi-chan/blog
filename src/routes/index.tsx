@@ -25,7 +25,7 @@ export const Route = createFileRoute('/')({
     return pageHead({
       locale,
       path: '/',
-      title: site.name,
+      title: m.site_title(),
       description: m.site_description(),
       type: 'website',
       image: absoluteUrl(`/og/${locale}/site.png`),

@@ -43,7 +43,8 @@
   "lobby_views_today": "오늘",
   "lobby_views_total": "전체",
   "comments_load_failed": "댓글을 불러오지 못했어요. 잠시 뒤에 다시 해 주세요.",
-  "site_description": "eunsol 개인 블로그",
+  "site_description": "은솔의 이것저것 하는 블로그",
+  "site_title": "eunsol — 은솔의 이것저것 하는 블로그",
   "language_menu_label": "언어",
   "language_unavailable": "번역 없음",
   "post_draft": "초안"
