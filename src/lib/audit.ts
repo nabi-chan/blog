@@ -1,4 +1,6 @@
 // pnpm audit:repo 의 판정 (스펙 5.2). scripts/audit.ts 가 Node 로 바로 불러서 상대 경로만 import 한다
+import { SECURITY_HEADERS } from './security-headers.ts'
+
 export type AuditStatus = 'PASS' | 'WARN' | 'FAIL' | 'INFO'
 export type AuditResult = { id: string; status: AuditStatus; message: string; details?: string[] }
 
@@ -87,15 +89,16 @@ export function median(values: number[]): number {
   return sorted.length % 2 === 1 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2
 }
 
-const SECURITY_HEADERS = ['strict-transport-security', 'x-content-type-options', 'referrer-policy', 'content-security-policy']
+const SECURITY_HEADER_NAMES = Object.keys(SECURITY_HEADERS).map((name) => name.toLowerCase())
 
 export function securityHeaderGaps(headers: Headers): string[] {
-  return SECURITY_HEADERS.filter((name) => !headers.has(name))
+  return SECURITY_HEADER_NAMES.filter((name) => !headers.has(name))
 }
 
 export type LiveInput = {
   pages: Array<{ path: string; status: number; ttfbMs: number[]; cache: string | null }>
-  headers: Headers
+  // 정적 에셋 응답과 Worker 응답을 따로 본다 (헤더를 다는 곳이 다르다)
+  headers: Array<{ path: string; headers: Headers }>
   sitemapUrls: string[]
   draftSlugs: string[]
   untranslated: Array<{ slug: string; status: number }>
@@ -119,11 +122,11 @@ export function liveResults(input: LiveInput): AuditResult[] {
     message: 'TTFB 중앙값 (5회)',
     details: input.pages.map((page) => `${page.path} ${Math.round(median(page.ttfbMs))}ms (cf-cache-status ${page.cache ?? '없음'})`),
   })
-  const gaps = securityHeaderGaps(input.headers)
+  const gaps = input.headers.flatMap(({ path, headers }) => securityHeaderGaps(headers).map((name) => `${path}: ${name}`))
   results.push(
     gaps.length === 0
-      ? { id: 'live:headers', status: 'PASS', message: '보안 헤더' }
-      : { id: 'live:headers', status: 'WARN', message: '보안 헤더가 없습니다', details: gaps },
+      ? { id: 'live:headers', status: 'PASS', message: `보안 헤더 (응답 ${input.headers.length}개)` }
+      : { id: 'live:headers', status: 'FAIL', message: '보안 헤더가 빠졌습니다', details: gaps },
   )
   const leaked = input.draftSlugs.filter((slug) => input.sitemapUrls.some((url) => new URL(url).pathname.replace(/^\/en/, '') === `/${slug}`))
   results.push(

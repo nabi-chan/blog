@@ -304,6 +304,7 @@ async function liveChecks() {
     pages.push({ path, status, ttfbMs, cache })
   }
   const home = await fetch(new URL('/', base))
+  const api = await fetch(new URL('/api/me', base))
   const sitemap = await (await fetch(new URL('/sitemap.xml', base))).text()
 
   const metaUrls = new Set<string>()
@@ -325,14 +326,17 @@ async function liveChecks() {
   results.push(
     ...liveResults({
       pages,
-      headers: home.headers,
+      headers: [
+        { path: '/', headers: home.headers },
+        { path: '/api/me', headers: api.headers },
+      ],
       sitemapUrls: sitemapUrls(sitemap),
       draftSlugs: postList()
         .filter((post) => post.draft)
         .map((post) => post.slug),
       untranslated,
       metaUrlStatuses,
-      apiStatus: (await fetch(new URL('/api/me', base))).status,
+      apiStatus: api.status,
       redirect,
     }),
   )

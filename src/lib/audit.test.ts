@@ -107,12 +107,17 @@ describe('securityHeaderGaps', () => {
 describe('liveResults', () => {
   const healthy: LiveInput = {
     pages: [{ path: '/', status: 200, ttfbMs: [40, 20, 30, 50, 10], cache: 'HIT' }],
-    headers: new Headers({
-      'strict-transport-security': 'max-age=1',
-      'x-content-type-options': 'nosniff',
-      'referrer-policy': 'strict-origin',
-      'content-security-policy': "default-src 'self'",
-    }),
+    headers: [
+      {
+        path: '/',
+        headers: new Headers({
+          'strict-transport-security': 'max-age=1',
+          'x-content-type-options': 'nosniff',
+          'referrer-policy': 'strict-origin',
+          'content-security-policy': "default-src 'self'",
+        }),
+      },
+    ],
     sitemapUrls: ['https://nabichan.me/261020'],
     draftSlugs: ['261021'],
     untranslated: [{ slug: '261019', status: 404 }],
@@ -137,9 +142,16 @@ describe('liveResults', () => {
     expect(fails({ ...healthy, redirect: { status: 302, location: 'https://nabichan.me/' } })).toEqual(['live:redirect'])
   })
 
-  it('보안 헤더가 없으면 WARN, nabi.kim 검사를 안 하면 INFO 다', () => {
-    const results = liveResults({ ...healthy, headers: new Headers(), redirect: undefined })
-    expect(results.find((result) => result.id === 'live:headers')?.status).toBe('WARN')
+  it('보안 헤더는 응답마다 보고, 빠진 헤더를 경로와 함께 FAIL 로 낸다', () => {
+    const results = liveResults({ ...healthy, headers: [...healthy.headers, { path: '/api/me', headers: new Headers({ 'x-content-type-options': 'nosniff' }) }] })
+    expect(results.find((result) => result.id === 'live:headers')).toMatchObject({
+      status: 'FAIL',
+      details: ['/api/me: strict-transport-security', '/api/me: referrer-policy', '/api/me: content-security-policy'],
+    })
+  })
+
+  it('nabi.kim 검사를 안 하면 INFO 다', () => {
+    const results = liveResults({ ...healthy, redirect: undefined })
     expect(results.find((result) => result.id === 'live:redirect')?.status).toBe('INFO')
   })
 })
