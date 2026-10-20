@@ -42,7 +42,7 @@ export type Asset =
   | { kind: 'copy'; from: string; to: string }
   | { kind: 'webp'; from: string; to: string; width: number }
 
-export type RenderResult = { html: string; toc: TocItem[]; assets: Asset[]; terms: string[] }
+export type RenderResult = { html: string; toc: TocItem[]; assets: Asset[]; terms: string[]; images: Record<string, string> }
 
 // 글 본문을 빌드 시점에 HTML 로 만든다. 런타임에는 파서도 하이라이터도 없다
 export async function renderMarkdown(markdown: string, opts: RenderOptions): Promise<RenderResult> {
@@ -79,5 +79,6 @@ export async function renderMarkdown(markdown: string, opts: RenderOptions): Pro
     toc: result.data.toc ?? [],
     assets: result.data.assets ?? [],
     terms: result.data.terms ?? [],
+    images: result.data.images ?? {},
   }
 }

@@ -2,7 +2,7 @@
 import { allEnPosts, allGlossaries, allKoPosts, allLobbyIntros, allTagLabels } from 'content-collections'
 import type { Locale } from '~/i18n/runtime'
 import { type PostMeta, createPostIndex } from './post-index'
-import { type BodyKey, type PostBody, createPostQueries } from './post-queries'
+import { type BodyKey, type PostBody, type PostSource, createPostQueries } from './post-queries'
 
 const toMeta = ({ slug, locale, title, description, date, updated, tags, draft }: PostMeta): PostMeta => ({
   slug,
@@ -26,6 +26,7 @@ export const queries = createPostQueries({
   bodies: new Map<BodyKey, PostBody>(
     docs.map((doc) => [`${doc.locale}/${doc.slug}`, { html: doc.html, toc: doc.toc, terms: doc.terms }]),
   ),
+  sources: new Map<BodyKey, PostSource>(docs.map((doc) => [`${doc.locale}/${doc.slug}`, { markdown: doc.markdown, wordCount: doc.wordCount }])),
   glossary: Object.fromEntries((allGlossaries[0]?.terms ?? []).map(({ key, ko, en }) => [key, { ko, en }])),
   intros: new Map<Locale, PostBody>(
     allLobbyIntros.map((intro) => [intro.locale as Locale, { html: intro.html, toc: intro.toc, terms: intro.terms }]),

@@ -1,7 +1,7 @@
 import type { Locale } from '~/i18n/runtime'
 import { describe, expect, it } from 'vitest'
 import { type PostMeta, createPostIndex } from './post-index'
-import { type BodyKey, type PostBody, createPostQueries, tagRefs } from './post-queries'
+import { type BodyKey, type PostBody, type PostSource, createPostQueries, tagRefs } from './post-queries'
 
 const meta = (slug: string, locale: PostMeta['locale'], date: string, tags: string[]): PostMeta => ({
   slug,
@@ -23,6 +23,11 @@ const bodies = new Map<BodyKey, PostBody>([
   ['en/both', { html: '<p>en</p>', toc: [], terms: ['hydration'] }],
   ['ko/ko-only', { html: '<p>ko only</p>', toc: [], terms: [] }],
 ])
+const sources = new Map<BodyKey, PostSource>([
+  ['ko/both', { markdown: 'ko md', wordCount: 3 }],
+  ['en/both', { markdown: 'en md', wordCount: 2 }],
+  ['ko/ko-only', { markdown: 'ko only md', wordCount: 5 }],
+])
 const intros = new Map<Locale, PostBody>([['ko', { html: '<p>소개</p>', toc: [], terms: ['hydration'] }]])
 const glossary = {
   hydration: { ko: { name: '하이드레이션', definition: '정의 ko' }, en: { name: 'Hydration', definition: 'def en' } },
@@ -40,7 +45,7 @@ describe('tagRefs', () => {
 
 describe('createPostQueries', () => {
   it('listPosts 는 그 언어 글과 태그 라벨을 돌려준다', () => {
-    const q = createPostQueries({ index: idx, tagLabels: labels, bodies, glossary, intros })
+    const q = createPostQueries({ index: idx, tagLabels: labels, bodies, sources, glossary, intros })
     expect(q.listPosts('en')).toEqual({
       posts: idx.list('en'),
       tags: [
@@ -52,7 +57,7 @@ describe('createPostQueries', () => {
 })
 
 describe('getPostPage', () => {
-  const q = createPostQueries({ index: idx, tagLabels: labels, bodies, glossary, intros })
+  const q = createPostQueries({ index: idx, tagLabels: labels, bodies, sources, glossary, intros })
 
   it('글 메타·있는 언어·태그·본문을 돌려준다', () => {
     expect(q.getPostPage('en', 'both')).toEqual({
@@ -65,6 +70,7 @@ describe('getPostPage', () => {
       html: '<p>en</p>',
       toc: [],
       terms: { hydration: { name: 'Hydration', definition: 'def en' } },
+      wordCount: 2,
     })
   })
 
@@ -78,14 +84,17 @@ describe('getPostPage', () => {
   })
 
   it('메타는 있는데 본문이 없으면 데이터 오류로 던진다', () => {
-    expect(() => createPostQueries({ index: idx, tagLabels: labels, bodies: new Map(), glossary, intros }).getPostPage('ko', 'both')).toThrow(
-      /본문이 없습니다/,
+    expect(() => createPostQueries({ index: idx, tagLabels: labels, bodies: new Map(), sources, glossary, intros }).getPostPage('ko', 'both')).toThrow(
+      /본문이나 원문이 없습니다/,
+    )
+    expect(() => createPostQueries({ index: idx, tagLabels: labels, bodies, sources: new Map(), glossary, intros }).getPostPage('ko', 'both')).toThrow(
+      /본문이나 원문이 없습니다/,
     )
   })
 })
 
 describe('getLobbyIntro', () => {
-  const q = createPostQueries({ index: idx, tagLabels: labels, bodies, glossary, intros })
+  const q = createPostQueries({ index: idx, tagLabels: labels, bodies, sources, glossary, intros })
 
   it('그 언어 소개글 HTML 과 쓴 용어의 정의를 돌려준다', () => {
     expect(q.getLobbyIntro('ko')).toEqual({
@@ -96,5 +105,46 @@ describe('getLobbyIntro', () => {
 
   it('소개글이 없으면 null 이다', () => {
     expect(q.getLobbyIntro('en')).toBeNull()
+  })
+})
+
+describe('listFeed / getMarkdown', () => {
+  const draftIdx = createPostIndex(
+    [...idx.list('ko'), { ...meta('draft', 'ko', '2026-06-01T00:00:00+09:00', []), draft: true }],
+    idx.list('en'),
+  )
+  const q = createPostQueries({
+    index: draftIdx,
+    tagLabels: labels,
+    bodies: new Map([...bodies, ['ko/draft', { html: '<p>d</p>', toc: [], terms: [] }]]),
+    sources: new Map([...sources, ['ko/draft', { markdown: 'draft md', wordCount: 1 }]]),
+    glossary,
+    intros,
+  })
+
+  it('listFeed 는 draft 를 빼고 날짜 내림차순으로 본문·원문·태그를 돌려준다', () => {
+    expect(q.listFeed('ko').map((item) => [item.post.slug, item.html, item.markdown])).toEqual([
+      ['ko-only', '<p>ko only</p>', 'ko only md'],
+      ['both', '<p>ko</p>', 'ko md'],
+    ])
+    expect(q.listFeed('ko')[1].tags).toEqual([
+      { key: 'a', label: '에이' },
+      { key: 'b', label: 'b' },
+    ])
+  })
+
+  it('en 피드에는 번역 있는 글만 있다', () => {
+    expect(q.listFeed('en').map((item) => item.post.slug)).toEqual(['both'])
+  })
+
+  it('getMarkdown 은 없는 글·번역 없는 글·draft 에서 null 이다', () => {
+    expect(q.getMarkdown('ko', 'both')).toBe('ko md')
+    expect(q.getMarkdown('en', 'ko-only')).toBeNull()
+    expect(q.getMarkdown('ko', 'draft')).toBeNull()
+    expect(q.getMarkdown('ko', 'nope')).toBeNull()
+  })
+
+  it('getPostPage 는 단어 수를 같이 돌려준다', () => {
+    expect(q.getPostPage('ko', 'ko-only')?.wordCount).toBe(5)
   })
 })

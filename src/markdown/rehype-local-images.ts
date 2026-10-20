@@ -11,6 +11,8 @@ import type { Asset } from './render'
 declare module 'vfile' {
   interface DataMap {
     assets: Asset[]
+    // 본문에 쓴 src(원문 그대로, '?w=' 포함) → 공개 경로. .md 원문의 이미지 경로를 바꿀 때 쓴다
+    images: Record<string, string>
   }
 }
 
@@ -78,6 +80,7 @@ function sizesFor(cap: number | null): string {
 export function rehypeLocalImages(opts: { filePath: string; slug: string }) {
   return (tree: Root, file: VFile) => {
     const assets = new Map<string, Asset>()
+    const images: Record<string, string> = {}
     let index = 0
 
     visit(tree, 'element', (node: Element, position, parent) => {
@@ -102,7 +105,8 @@ export function rehypeLocalImages(opts: { filePath: string; slug: string }) {
         assets.set(to, { kind: 'copy', from, to })
 
         const { title } = node.properties
-        node.properties = { src: `/content-assets/${opts.slug}/${stem}${ext}`, alt: node.properties.alt, width, height }
+        images[src] = `/content-assets/${opts.slug}/${stem}${ext}`
+        node.properties = { src: images[src], alt: node.properties.alt, width, height }
         if (title !== undefined) node.properties.title = title
         if (cap !== null) node.properties.style = `max-width:min(${cap}px, 100%);height:auto;`
 
@@ -138,5 +142,6 @@ export function rehypeLocalImages(opts: { filePath: string; slug: string }) {
     })
 
     file.data.assets = [...assets.values()]
+    file.data.images = images
   }
 }

@@ -7,11 +7,17 @@ import { parseKstDate } from './src/content/date'
 import { resolveEnPost } from './src/content/resolve-en-post'
 import { sameDayConflicts, validateSlug } from './src/content/slug'
 import { computeSourceHash } from './src/content/source-hash'
+import { absolutizeMarkdownImages, countWords } from './src/markdown/agent-markdown'
 import { writeAssets } from './src/markdown/assets'
 import { type Glossary, renderMarkdown } from './src/markdown/render'
+import { site } from './src/site'
 import { widgetNames } from './src/widgets/names'
 
 type CacheFn = Context['cache']
+
+// 렌더 결과의 모양이나 플러그인 동작이 바뀌면 올린다. 캐시 키에 들어가서 예전 캐시를 쓰지 않게 한다
+// 2: RenderResult.images 추가 (계획 3)
+const RENDER_VERSION = 2
 
 const isProduction = () => process.env.NODE_ENV === 'production'
 
@@ -36,6 +42,7 @@ async function render(cache: CacheFn, input: RenderInput) {
     enSlugs: [...input.enSlugs].sort(),
     siblings: folderFingerprint(input.dir, (name) => /^index\.[a-z]+\.md$/.test(name)),
     widgetNames: [...widgetNames],
+    renderVersion: RENDER_VERSION,
   }
   const result = await cache(key, (value) =>
     renderMarkdown(value.markdown, {
@@ -117,6 +124,9 @@ const koPosts = defineCollection({
       html: body.html,
       toc: body.toc,
       terms: body.terms,
+      // 글 원문(.md, llms-full). 글 옆 이미지 경로만 절대 URL 로 바꾼다
+      markdown: absolutizeMarkdownImages(doc.content, body.images, site.url),
+      wordCount: countWords(doc.content),
     }
   },
 })
@@ -170,7 +180,14 @@ const enPosts = defineCollection({
       enSlugs,
       glossary: toGlossary(documents(glossary)),
     })
-    return { ...result.post, html: body.html, toc: body.toc, terms: body.terms }
+    return {
+      ...result.post,
+      html: body.html,
+      toc: body.toc,
+      terms: body.terms,
+      markdown: absolutizeMarkdownImages(doc.content, body.images, site.url),
+      wordCount: countWords(doc.content),
+    }
   },
 })
 
