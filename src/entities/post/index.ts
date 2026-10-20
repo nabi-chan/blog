@@ -1,6 +1,5 @@
 export { getLobbyIntroFn, getPostFn, listPostsFn } from './api/posts.functions'
-export { localizePath } from './markdown/link'
 export type { GlossaryEntry, TocItem } from './markdown/render'
-export { type PostIndex, type PostMeta, createPostIndex } from './model/post-index'
+export type { PostIndex, PostMeta } from './model/post-index'
 export type { FeedItem, LobbyIntro, PostPage, TagRef } from './model/post-queries'
 export { PostList } from './ui/PostList'

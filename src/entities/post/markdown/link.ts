@@ -1,11 +1,6 @@
 import type { Locale } from '~/shared/i18n'
 import { SLUG_PATTERN } from '../../../shared/config'
-
-// Paraglide urlPatterns(Task 2)와 같은 규칙: 한국어는 접두사 없음, 영어는 /en
-export function localizePath(path: string, locale: Locale): string {
-  if (locale === 'ko') return path
-  return path === '/' ? '/en' : `/en${path}`
-}
+import { localizePath } from '../../../shared/lib/localize-path'
 
 const EXTERNAL = /^[a-z][a-z0-9+.-]*:/i
 // 글이 아닌 경로 중 /en 판이 있는 것. llms-full.txt·sitemap.xml·robots.txt 와 정적 에셋은 한 벌뿐이다

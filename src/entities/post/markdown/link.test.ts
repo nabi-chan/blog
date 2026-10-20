@@ -1,16 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { localizePath, resolvePostLink } from './link'
+import { resolvePostLink } from './link'
 
 // 260301 은 영어 번역본이 있고 260501 은 한국어만 있다
 const enSlugs = new Set(['260301'])
-
-describe('localizePath', () => {
-  it('한국어는 그대로, 영어는 /en 을 붙인다', () => {
-    expect(localizePath('/', 'en')).toBe('/en')
-    expect(localizePath('/posts', 'en')).toBe('/en/posts')
-    expect(localizePath('/posts', 'ko')).toBe('/posts')
-  })
-})
 
 describe('resolvePostLink', () => {
   it('영어 본문에서 영어 번역본이 있는 글은 /en 으로 바꾼다', () => {

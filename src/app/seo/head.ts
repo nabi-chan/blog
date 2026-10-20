@@ -1,6 +1,6 @@
 import { DESCRIPTION_MAX, site } from '~/shared/config'
 import type { Locale } from '~/shared/i18n'
-import { localizePath } from '~/entities/post'
+import { localizePath } from '~/shared/lib/localize-path'
 import { type Graph, jsonLdScript } from './json-ld'
 import { truncateMeta } from './text'
 import { pageUrl } from './url'
