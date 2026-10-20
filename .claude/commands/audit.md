@@ -30,9 +30,9 @@ pnpm audit:repo --build          # 인자에 --live 가 있으면 뒤에 --live 
 
 | 레인 | 볼 것 |
 |---|---|
-| 라우트·i18n | `src/routes/`, `project.inlang/paraglide.config.ts`, 언어 접두사, 404, hreflang, 번역 없는 글 처리, 메시지 키 |
+| 라우트·i18n | `src/app/routes/`, `src/shared/i18n/`, `project.inlang/paraglide.config.ts`, 언어 접두사, 404, hreflang, 번역 없는 글 처리, 메시지 키 |
 | SEO | 프로덕션(`https://nabichan.me`)을 curl 로 본다. 메타, canonical, OG 이미지, sitemap, robots, RSS, llms, `.md` |
-| 런타임·데이터 | `src/api/`, `migrations/`, D1 쿼리, Access 검증(fail closed), Turnstile·시도 제한 순서, 오류 경로(503), 로그 |
+| 런타임·데이터 | `src/app/server/`, `src/features/*/api/`, `src/shared/api/`, `migrations/`, D1 쿼리, Access 검증(fail closed), Turnstile·시도 제한 순서, 오류 경로(503), 로그 |
 | 콘텐츠·번역 | `content/`, 번역 구조, 낡은 번역, 태그·용어집, 깨진 링크, 문체 가이드 위반 |
 
 레인마다 이 형식으로 보고받는다.
@@ -53,5 +53,5 @@ pnpm audit:repo --build          # 인자에 --live 가 있으면 뒤에 --live 
 ## 3. 남기기
 
 - 고친 것과 안 고친 것을 이유와 함께 은솔에게 보고한다.
-- 예산 수치가 바뀌었으면 `src/lib/audit.ts` 의 `BUDGETS` 와 `AGENTS.md` 의 예산 표를 같이 고친다.
+- 예산 수치가 바뀌었으면 `src/shared/tooling/audit.ts` 의 `BUDGETS` 와 `AGENTS.md` 의 예산 표를 같이 고친다.
 - 커밋은 은솔이 확인한 뒤에 한다.

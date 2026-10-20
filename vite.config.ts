@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import { SEO_PAGES, markdownPagePaths, shouldPrerender } from './src/lib/prerender.ts'
+import { SEO_PAGES, markdownPagePaths, shouldPrerender } from './src/app/build/prerender.ts'
 import { ogSitePlugin } from './src/shared/og/index.ts'
 
 export default defineConfig(({ mode }) => ({
@@ -20,6 +20,12 @@ export default defineConfig(({ mode }) => ({
     paraglideVitePlugin({ project: './project.inlang' }),
     cloudflare({ viteEnvironment: { name: 'ssr' } }),
     tanstackStart({
+      // FSD app 레이어. 경로는 srcDirectory(src) 기준이다. srcDirectory 를 바꾸면 슬라이스가 import 보호 밖으로 빠진다
+      router: { routesDirectory: 'app/routes', generatedRouteTree: 'app/routeTree.gen.ts', entry: 'app/router' },
+      client: { entry: 'app/client' },
+      server: { entry: 'app/server/worker' },
+      // 브라우저 번들이 Worker 전용 코드(*.server.*, app/server)를 import 하면 빌드를 멈춘다
+      importProtection: { client: { files: ['**/*.server.*', '**/src/app/server/**'] } },
       // 라우트 자동 탐색은 인덱스 라우트를 '/posts/' 로 만들어 중복 페이지가 생기므로 끄고 링크 크롤링으로만 찾는다
       prerender: {
         enabled: true,
