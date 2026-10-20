@@ -14,6 +14,7 @@ import {
   type TranslationState,
   budgetResults,
   changedMigrations,
+  diffBase,
   formatResult,
   leakedPostText,
   liveResults,
@@ -122,16 +123,23 @@ function baseChecks() {
     )
   }
 
-  // 이미 커밋된 마이그레이션은 고치지 않는다 (작업 트리와 마지막 커밋을 본다)
+  // 이미 커밋된 마이그레이션은 고치지 않는다. 작업 트리와, 기준점(diffBase)부터 HEAD 까지를 본다
+  const upstream = run('git', ['merge-base', 'HEAD', '@{upstream}'])
+  const base = diffBase({
+    arg: args.includes('--base') ? args[args.indexOf('--base') + 1] : undefined,
+    env: process.env.AUDIT_BASE,
+    upstream: upstream.status === 0 ? upstream.stdout.trim() : undefined,
+    previous: run('git', ['rev-parse', '--verify', '--quiet', 'HEAD~1']).status === 0,
+  })
   const working = run('git', ['diff', '--name-status', 'HEAD', '--', 'migrations'])
-  const lastCommit = run('git', ['diff', '--name-status', 'HEAD~1', 'HEAD', '--', 'migrations'])
-  const changed = [...changedMigrations(working.stdout), ...(lastCommit.status === 0 ? changedMigrations(lastCommit.stdout) : [])]
+  const committed = base.ref === null ? undefined : run('git', ['diff', '--name-status', base.ref, 'HEAD', '--', 'migrations'])
+  const changed = [...changedMigrations(working.stdout), ...(committed?.status === 0 ? changedMigrations(committed.stdout) : [])]
   results.push(
     changed.length > 0
-      ? { id: 'migrations', status: 'FAIL', message: '이미 커밋된 마이그레이션을 고쳤습니다 (새 파일로 추가하세요)', details: [...new Set(changed)] }
-      : lastCommit.status === 0
-        ? { id: 'migrations', status: 'PASS', message: '마이그레이션은 추가만' }
-        : { id: 'migrations', status: 'INFO', message: '마이그레이션 수정 검사: 이전 커밋이 없어 작업 트리만 확인함' },
+      ? { id: 'migrations', status: 'FAIL', message: `이미 커밋된 마이그레이션을 고쳤습니다 (새 파일로 추가하세요, 기준: ${base.label})`, details: [...new Set(changed)] }
+      : committed?.status === 0
+        ? { id: 'migrations', status: 'PASS', message: `마이그레이션은 추가만 (기준: ${base.label})` }
+        : { id: 'migrations', status: 'INFO', message: `마이그레이션 수정 검사: ${base.label} — 작업 트리만 확인함` },
   )
 }
 

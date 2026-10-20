@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BUDGETS, type LiveInput, budgetResults, changedMigrations, formatResult, leakedPostText, liveResults, median, pendingMigrations, securityHeaderGaps, summarize, translationResults } from './audit'
+import { BUDGETS, type LiveInput, budgetResults, changedMigrations, diffBase, formatResult, leakedPostText, liveResults, median, pendingMigrations, securityHeaderGaps, summarize, translationResults } from './audit'
 
 describe('summarize', () => {
   it('FAIL 이 하나라도 있으면 exitCode 1 이다', () => {
@@ -50,6 +50,12 @@ describe('pendingMigrations', () => {
   it('wrangler 표에서 미적용 파일 이름을 뽑는다', () => {
     const output = ['Migrations to be applied:', '┌─────────────────┐', '│ Name            │', '├─────────────────┤', '│ 0003_x.sql      │', '│ 0004_y.sql      │', '└─────────────────┘'].join('\n')
     expect(pendingMigrations(output)).toEqual(['0003_x.sql', '0004_y.sql'])
+  })
+
+  it('색 코드가 섞여도 읽고, 표가 있다는데 이름을 못 읽으면 통과로 두지 않는다', () => {
+    const colored = 'Migrations to be applied:\n\u001b[2m│\u001b[22m 0003_x.sql \u001b[2m│\u001b[22m\n'
+    expect(pendingMigrations(colored)).toEqual(['0003_x.sql'])
+    expect(pendingMigrations('Migrations to be applied:\n(알 수 없는 형식)')).toEqual(['(목록을 읽지 못함 — wrangler 출력을 확인하세요)'])
   })
 
   it('적용할 것이 없으면 빈 배열이다', () => {
@@ -135,5 +141,18 @@ describe('liveResults', () => {
     const results = liveResults({ ...healthy, headers: new Headers(), redirect: undefined })
     expect(results.find((result) => result.id === 'live:headers')?.status).toBe('WARN')
     expect(results.find((result) => result.id === 'live:redirect')?.status).toBe('INFO')
+  })
+})
+
+describe('diffBase', () => {
+  it('--base 인자, AUDIT_BASE, upstream merge-base, 직전 커밋 순서로 기준점을 고른다', () => {
+    expect(diffBase({ arg: 'abc', env: 'def', upstream: 'up', previous: true })).toEqual({ ref: 'abc', label: '--base abc' })
+    expect(diffBase({ env: 'def', upstream: 'up', previous: true })).toEqual({ ref: 'def', label: 'AUDIT_BASE def' })
+    expect(diffBase({ upstream: 'up1234567890', previous: true })).toEqual({ ref: 'up1234567890', label: 'upstream 과의 공통 조상 up12345' })
+    expect(diffBase({ previous: true })).toEqual({ ref: 'HEAD~1', label: '직전 커밋' })
+  })
+
+  it('기준점이 없으면(얕은 clone 첫 커밋) null 이다', () => {
+    expect(diffBase({ previous: false })).toEqual({ ref: null, label: '기준점 없음' })
   })
 })

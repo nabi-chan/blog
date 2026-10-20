@@ -35,9 +35,23 @@ export function changedMigrations(nameStatus: string): string[] {
     .map(([, path]) => path)
 }
 
-// `wrangler d1 migrations list` 표에서 미적용 파일 이름
+// 마이그레이션 수정 검사의 기준점. 마지막 커밋만 보면 여러 커밋을 한 번에 push 할 때 놓친다.
+// --base 인자(CI 는 push 이전 sha) → AUDIT_BASE → upstream 과의 공통 조상 → 직전 커밋 순서로 고른다
+export function diffBase(input: { arg?: string; env?: string; upstream?: string; previous: boolean }): { ref: string | null; label: string } {
+  if (input.arg) return { ref: input.arg, label: `--base ${input.arg}` }
+  if (input.env) return { ref: input.env, label: `AUDIT_BASE ${input.env}` }
+  if (input.upstream) return { ref: input.upstream, label: `upstream 과의 공통 조상 ${input.upstream.slice(0, 7)}` }
+  if (input.previous) return { ref: 'HEAD~1', label: '직전 커밋' }
+  return { ref: null, label: '기준점 없음' }
+}
+
+// `wrangler d1 migrations list` 표에서 미적용 파일 이름.
+// 색 코드(FORCE_COLOR 등)를 지우고 읽고, 미적용이 있다는데 이름을 못 읽으면 통과로 두지 않는다
 export function pendingMigrations(listOutput: string): string[] {
-  return [...listOutput.matchAll(/│\s*(\S+\.sql)\s*│/g)].map(([, name]) => name)
+  const text = listOutput.replace(/\u001b\[[0-9;]*m/g, '')
+  const names = [...text.matchAll(/│\s*(\S+\.sql)\s*│/g)].map(([, name]) => name)
+  if (names.length === 0 && /Migrations to be applied/i.test(text)) return ['(목록을 읽지 못함 — wrangler 출력을 확인하세요)']
+  return names
 }
 
 // 예산 (스펙 5.2 --build). 클라이언트 JS 는 계획 4 측정값 128.9KB(gzip)의 1.3배를 10KB 단위로 올린 값이다.
