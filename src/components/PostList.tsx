@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { formatCompactDate, formatDate } from '~/content/date'
 import { type PostMeta, groupByYear as group } from '~/content/post-index'
+import { m } from '~/i18n/messages'
 import type { Locale } from '~/i18n/runtime'
 
 function Item({ post, locale }: { post: PostMeta; locale: Locale }) {
@@ -8,6 +9,8 @@ function Item({ post, locale }: { post: PostMeta; locale: Locale }) {
     <li data-post="" data-tags={post.tags.join(' ')} className="post-item">
       <Link to="/$slug" params={{ slug: post.slug }} className="post-item-title">
         {post.title}
+        {/* dev 에서만 보인다. 프로덕션에는 draft 글이 없다 */}
+        {post.draft && <span className="draft-badge">{m.post_draft()}</span>}
       </Link>
       <time dateTime={post.date} title={formatDate(post.date, locale)}>
         {formatCompactDate(post.date)}

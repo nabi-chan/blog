@@ -56,6 +56,8 @@ function Post() {
         <header className="post-header">
           <h1 className="display">{post.title}</h1>
           <p className="post-meta meta-list">
+            {/* draft 글은 프로덕션 빌드에서 빠지므로 dev 에서만 보인다 (스펙 4.3) */}
+            {post.draft && <span className="draft-badge">{m.post_draft()}</span>}
             <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
             {post.updated && (
               <span>

@@ -45,5 +45,6 @@
   "comments_load_failed": "Comments are unavailable right now. Try again later.",
   "site_description": "eunsol's personal blog",
   "language_menu_label": "Language",
-  "language_unavailable": "Not translated"
+  "language_unavailable": "Not translated",
+  "post_draft": "Draft"
 }

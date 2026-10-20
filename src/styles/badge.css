@@ -1,0 +1,16 @@
+/* dev 에서 draft 글에 다는 "초안" 배지. 댓글 "글쓴이" 배지와 같은 테두리 칩 */
+.draft-badge {
+  display: inline-block;
+  padding: 0 0.5rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 400;
+  line-height: 1.55;
+  vertical-align: 0.15em;
+}
+
+.post-item-title .draft-badge {
+  margin-left: 0.5rem;
+}
