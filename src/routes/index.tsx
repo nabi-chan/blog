@@ -7,6 +7,10 @@ import { WidgetMounter } from '~/components/WidgetMounter'
 import { getLobbyIntroFn, listPostsFn } from '~/content/posts.functions'
 import { m } from '~/i18n/messages'
 import { getLocale } from '~/i18n/runtime'
+import { pageHead } from '~/seo/head'
+import { siteGraph } from '~/seo/json-ld'
+import { absoluteUrl } from '~/seo/url'
+import { site } from '~/site'
 
 const RECENT_COUNT = 5
 
@@ -15,6 +19,19 @@ export const Route = createFileRoute('/')({
     const locale = getLocale()
     const [list, intro] = await Promise.all([listPostsFn({ data: { locale } }), getLobbyIntroFn({ data: { locale } })])
     return { posts: list.posts, intro }
+  },
+  head: () => {
+    const locale = getLocale()
+    return pageHead({
+      locale,
+      path: '/',
+      title: site.name,
+      description: m.site_description(),
+      type: 'website',
+      image: absoluteUrl(`/og/${locale}/site.png`),
+      alternates: ['ko', 'en'],
+      jsonLd: siteGraph(locale),
+    })
   },
   component: Lobby,
 })
@@ -26,6 +43,8 @@ function Lobby() {
   const views = useViewCounts()
   return (
     <main className="lobby">
+      {/* 문서 제목 구조용. 화면에는 헤더의 사이트 이름이 같은 역할을 한다 */}
+      <h1 className="sr-only">{site.name}</h1>
       {/* 사이트 오늘·전체 조회수(방문자 하루 1회). 레이블은 프리렌더하고 숫자는 브라우저가 채운다 */}
       <p className="lobby-views meta-list">
         <ViewCount label={m.lobby_views_today()} value={views.today} failed={views.failed} />

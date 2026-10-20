@@ -10,7 +10,9 @@ import { getPostFn } from '~/content/posts.functions'
 import { m } from '~/i18n/messages'
 import { formatDate } from '~/content/date'
 import { getLocale } from '~/i18n/runtime'
-import { site } from '~/site'
+import { pageHead } from '~/seo/head'
+import { postGraph } from '~/seo/json-ld'
+import { absoluteUrl } from '~/seo/url'
 
 export const Route = createFileRoute('/$slug')({
   loader: async ({ params }) => {
@@ -18,9 +20,27 @@ export const Route = createFileRoute('/$slug')({
     if (!page) throw notFound()
     return page
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData ? [{ title: `${loaderData.post.title} | ${site.name}` }] : [],
-  }),
+  // 글 페이지 제목은 글 제목만 쓴다 (스펙 4.9). 404 면 notFoundComponent 가 제목을 단다
+  head: ({ loaderData }) => {
+    if (!loaderData) return {}
+    const { post, available, tags, wordCount } = loaderData
+    const image = absoluteUrl(`/og/${post.locale}/${post.slug}.png`)
+    const labels = tags.map((tag) => tag.label)
+    return pageHead({
+      locale: post.locale,
+      path: `/${post.slug}`,
+      title: post.title,
+      description: post.description,
+      type: 'article',
+      image,
+      alternates: available,
+      published: post.date,
+      modified: post.updated,
+      tags: labels,
+      jsonLd: postGraph({ ...post, tags: labels, wordCount, image }),
+      markdownPath: `/${post.slug}.md`,
+    })
+  },
   component: Post,
 })
 

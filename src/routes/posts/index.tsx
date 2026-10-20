@@ -5,6 +5,9 @@ import { TAG_PATTERN } from '~/content/constants'
 import { listPostsFn } from '~/content/posts.functions'
 import { m } from '~/i18n/messages'
 import { getLocale } from '~/i18n/runtime'
+import { pageHead } from '~/seo/head'
+import { collectionGraph } from '~/seo/json-ld'
+import { absoluteUrl } from '~/seo/url'
 import { site } from '~/site'
 
 // 페인트 전에 ?tag 를 <html data-tag> 로 옮긴다. readTagParam 과 같은 규칙이다
@@ -14,10 +17,24 @@ export const Route = createFileRoute('/posts/')({
   validateSearch: (search: Record<string, unknown>): { tag?: string } =>
     typeof search.tag === 'string' ? { tag: search.tag } : {},
   loader: () => listPostsFn({ data: { locale: getLocale() } }),
-  head: () => ({
-    meta: [{ title: `${m.posts_title()} | ${site.name}` }],
-    scripts: [{ children: APPLY_TAG_SCRIPT }],
-  }),
+  head: ({ loaderData }) => {
+    const locale = getLocale()
+    const head = pageHead({
+      locale,
+      path: '/posts',
+      title: `${m.posts_title()} | ${site.name}`,
+      description: m.site_description(),
+      type: 'website',
+      image: absoluteUrl(`/og/${locale}/site.png`),
+      alternates: ['ko', 'en'],
+      jsonLd: collectionGraph({
+        locale,
+        title: m.posts_title(),
+        posts: (loaderData?.posts ?? []).map((post) => ({ slug: post.slug, title: post.title })),
+      }),
+    })
+    return { ...head, scripts: [...head.scripts, { children: APPLY_TAG_SCRIPT }] }
+  },
   component: Posts,
 })
 
