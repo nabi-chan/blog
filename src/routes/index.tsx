@@ -66,9 +66,12 @@ function Lobby() {
           <PostList posts={posts.slice(0, RECENT_COUNT)} locale={locale} />
         )}
       </section>
-      <Link to="/posts" className="lobby-more">
-        {m.lobby_view_all()}
-      </Link>
+      {/* 최근 글이 다섯 편 이상일 때만 전체 목록으로 보낸다 [은솔] */}
+      {posts.length >= RECENT_COUNT && (
+        <Link to="/posts" className="lobby-more">
+          {m.lobby_view_all()}
+        </Link>
+      )}
     </main>
   )
 }
