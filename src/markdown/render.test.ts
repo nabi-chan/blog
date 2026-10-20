@@ -4,7 +4,17 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { renderMarkdown } from './render'
 
-const opts = { filePath: '/tmp/x/index.ko.md', slug: 'x', locale: 'ko', enSlugs: new Set<string>() } as const
+const glossary = {
+  hydration: { ko: { name: '하이드레이션', definition: '정의 ko' }, en: { name: 'Hydration', definition: 'def en' } },
+}
+const opts = {
+  filePath: '/tmp/x/index.ko.md',
+  slug: 'x',
+  locale: 'ko',
+  enSlugs: new Set<string>(),
+  glossary,
+  widgetNames: ['counter-demo'],
+} as const
 
 describe('renderMarkdown', () => {
   it('헤딩 id·목차·앵커·하이라이팅을 만든다', async () => {
@@ -64,7 +74,7 @@ describe('renderMarkdown 본문 기능 통합', () => {
         '',
         '[다른 글](/posts/both) [외부](https://example.com)',
       ].join('\n'),
-      { filePath, slug: 'x', locale: 'en', enSlugs: new Set(['both']) },
+      { ...opts, filePath, locale: 'en', enSlugs: new Set(['both']) },
     )
     expect(r.html).toMatch(/<aside class="callout" data-callout="tip" role="note">\s*<p class="callout-title">Tip<\/p>/)
     expect(r.html).toContain('<blockquote>\n<p>그냥 인용</p>')
@@ -82,5 +92,52 @@ describe('renderMarkdown 본문 기능 통합', () => {
         { kind: 'webp', from: join(dir, 'a.png'), to: expect.stringMatching(/a\.[0-9a-f]{8}\.1w\.webp$/), width: 1 },
       ]),
     )
+  })
+})
+
+describe('renderMarkdown 디렉티브 통합', () => {
+  it('다섯 디렉티브와 본문 콜론 표현을 함께 처리한다', async () => {
+    const r = await renderMarkdown(
+      [
+        '비율은 key:value 입니다.',
+        '',
+        ':::details',
+        '로그 보기',
+        '',
+        '긴 내용',
+        ':::',
+        '',
+        ':::see-also',
+        '- [docs] [문서](https://b.example)',
+        ':::',
+        '',
+        '::::quote',
+        ':::translation',
+        '번역문',
+        ':::',
+        ':::original',
+        'Original text',
+        ':::',
+        '::::',
+        '',
+        '이건 :term[하이드레이션]{key="hydration"} 이야',
+        '',
+        ':::widget-counter-demo',
+        '대체 문장',
+        ':::',
+      ].join('\n'),
+      opts,
+    )
+    expect(r.html).toContain('key:value')
+    expect(r.html).toContain('<details class="details"><summary>로그 보기</summary>')
+    expect(r.html).toContain('<details open class="see-also"><summary>See Also</summary>')
+    expect(r.html).toContain('<blockquote class="bilingual-quote"><div class="quote-translation" lang="ko">')
+    expect(r.html).toContain('<span class="term" data-term-key="hydration" tabindex="0">하이드레이션</span>')
+    expect(r.html).toContain('<div class="widget" data-widget="counter-demo"><p>대체 문장</p></div>')
+    expect(r.terms).toEqual(['hydration'])
+  })
+
+  it('모르는 블록은 빌드를 멈춘다', async () => {
+    await expect(renderMarkdown(':::detials\n내용\n:::', opts)).rejects.toThrow(/알 수 없는 블록 :::detials/)
   })
 })

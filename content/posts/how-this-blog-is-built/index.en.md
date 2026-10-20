@@ -1,7 +1,7 @@
 ---
 title: "How this blog is built"
 description: "Notes on building this blog with TanStack Start and Cloudflare Workers."
-sourceHash: "409b6d74c85257840d9341df4f74d3a1ccce98a6ba35f050843e89b68a20f33e"
+sourceHash: "6f51268fd4c4f9599b7525a76f3ee1d46dffb62454fceec5782947083bde90c8"
 translationStatus: machine
 ---
 
@@ -26,6 +26,32 @@ const greeting = 'Hello'
 
 An inline ![small example](./screenshot.png?w=120) image works too.
 
+Pages are :term[prerendered]{key="prerender"} ahead of time. Writing key:value in prose stays intact.
+
+:::details
+Show build log
+
+A placeholder log.
+:::
+
+::::quote
+:::translation
+단순한 것이 신뢰할 수 있는 것의 전제 조건이다.
+:::
+:::original
+Simplicity is prerequisite for reliability.
+:::
+::::
+
+:::widget-counter-demo
+This sentence shows where widgets cannot run.
+:::
+
 ## Wrapping up
 
 A placeholder paragraph.
+
+:::see-also
+- [docs] [TanStack Start](https://tanstack.com/start)
+- [repo] [Content Collections](https://github.com/sdorra/content-collections)
+:::

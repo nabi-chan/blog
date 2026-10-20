@@ -1,0 +1,8 @@
+terms:
+  - key: prerender
+    ko:
+      name: 프리렌더
+      definition: 요청이 오기 전에, 빌드할 때 페이지 HTML 을 미리 만들어 두는 방식입니다.
+    en:
+      name: Prerender
+      definition: Generating a page's HTML at build time, before any request arrives.

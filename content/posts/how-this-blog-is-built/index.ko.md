@@ -26,6 +26,32 @@ const greeting = '안녕하세요'
 
 문장 안 ![작은 예시](./screenshot.png?w=120) 이미지도 됩니다.
 
+글은 미리 :term[프리렌더]{key="prerender"} 해 둡니다. 비율은 key:value 처럼 써도 그대로 남습니다.
+
+:::details
+빌드 로그 보기
+
+자리표시 로그입니다.
+:::
+
+::::quote
+:::translation
+단순한 것이 신뢰할 수 있는 것의 전제 조건이다.
+:::
+:::original
+Simplicity is prerequisite for reliability.
+:::
+::::
+
+:::widget-counter-demo
+위젯을 쓸 수 없는 환경에서는 이 문장이 보입니다.
+:::
+
 ## 마치며
 
 자리표시 문단입니다.
+
+:::see-also
+- [docs] [TanStack Start](https://tanstack.com/start)
+- [repo] [Content Collections](https://github.com/sdorra/content-collections)
+:::

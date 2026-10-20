@@ -18,10 +18,13 @@ const idx = createPostIndex(
 )
 const labels = [{ key: 'a', ko: '에이', en: 'A' }]
 const bodies = new Map<BodyKey, PostBody>([
-  ['ko/both', { html: '<p>ko</p>', toc: [] }],
-  ['en/both', { html: '<p>en</p>', toc: [] }],
-  ['ko/ko-only', { html: '<p>ko only</p>', toc: [] }],
+  ['ko/both', { html: '<p>ko</p>', toc: [], terms: [] }],
+  ['en/both', { html: '<p>en</p>', toc: [], terms: ['hydration'] }],
+  ['ko/ko-only', { html: '<p>ko only</p>', toc: [], terms: [] }],
 ])
+const glossary = {
+  hydration: { ko: { name: '하이드레이션', definition: '정의 ko' }, en: { name: 'Hydration', definition: 'def en' } },
+}
 
 describe('tagRefs', () => {
   it('언어별 라벨을 붙이고, 표에 없으면 키를 라벨로 쓴다', () => {
@@ -35,7 +38,7 @@ describe('tagRefs', () => {
 
 describe('createPostQueries', () => {
   it('listPosts 는 그 언어 글과 태그 라벨을 돌려준다', () => {
-    const q = createPostQueries({ index: idx, tagLabels: labels, bodies })
+    const q = createPostQueries({ index: idx, tagLabels: labels, bodies, glossary })
     expect(q.listPosts('en')).toEqual({
       posts: idx.list('en'),
       tags: [
@@ -47,7 +50,7 @@ describe('createPostQueries', () => {
 })
 
 describe('getPostPage', () => {
-  const q = createPostQueries({ index: idx, tagLabels: labels, bodies })
+  const q = createPostQueries({ index: idx, tagLabels: labels, bodies, glossary })
 
   it('글 메타·있는 언어·태그·본문을 돌려준다', () => {
     expect(q.getPostPage('en', 'both')).toEqual({
@@ -59,7 +62,12 @@ describe('getPostPage', () => {
       ],
       html: '<p>en</p>',
       toc: [],
+      terms: { hydration: { name: 'Hydration', definition: 'def en' } },
     })
+  })
+
+  it('본문에 용어가 없으면 빈 정의 목록이다', () => {
+    expect(q.getPostPage('ko', 'ko-only')?.terms).toEqual({})
   })
 
   it('그 언어로 없는 글은 null 이다', () => {
@@ -68,7 +76,7 @@ describe('getPostPage', () => {
   })
 
   it('메타는 있는데 본문이 없으면 데이터 오류로 던진다', () => {
-    expect(() => createPostQueries({ index: idx, tagLabels: labels, bodies: new Map() }).getPostPage('ko', 'both')).toThrow(
+    expect(() => createPostQueries({ index: idx, tagLabels: labels, bodies: new Map(), glossary }).getPostPage('ko', 'both')).toThrow(
       /본문이 없습니다/,
     )
   })

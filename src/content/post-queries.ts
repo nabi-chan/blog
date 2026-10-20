@@ -1,5 +1,6 @@
 import type { Locale } from '~/i18n/runtime'
 import type { TocItem } from '../markdown/rehype-toc'
+import type { Glossary, GlossaryEntry } from '../markdown/remark-term'
 import { type PostIndex, type PostMeta, collectTags } from './post-index'
 
 export type TagRef = { key: string; label: string }
@@ -10,9 +11,16 @@ export function tagRefs(keys: string[], locale: Locale, labels: TagLabels): TagR
   return keys.map((key) => ({ key, label: table.get(key)?.[locale] ?? key }))
 }
 
-export type PostBody = { html: string; toc: TocItem[] }
+export type PostBody = { html: string; toc: TocItem[]; terms: string[] }
 export type BodyKey = `${Locale}/${string}`
-export type PostPage = { post: PostMeta; available: Locale[]; tags: TagRef[]; html: string; toc: TocItem[] }
+export type PostPage = {
+  post: PostMeta
+  available: Locale[]
+  tags: TagRef[]
+  html: string
+  toc: TocItem[]
+  terms: Record<string, GlossaryEntry>
+}
 
 export type PostQueries = {
   listPosts(locale: Locale): { posts: PostMeta[]; tags: TagRef[] }
@@ -24,6 +32,7 @@ export function createPostQueries(input: {
   index: PostIndex
   tagLabels: TagLabels
   bodies: ReadonlyMap<BodyKey, PostBody>
+  glossary: Glossary
 }): PostQueries {
   return {
     listPosts: (locale) => {
@@ -41,6 +50,8 @@ export function createPostQueries(input: {
         tags: tagRefs(post.tags, locale, input.tagLabels),
         html: body.html,
         toc: body.toc,
+        // 본문에서 쓴 용어의 그 언어 정의만 내려보낸다 (툴팁용)
+        terms: Object.fromEntries(body.terms.map((key) => [key, input.glossary[key][locale]])),
       }
     },
   }

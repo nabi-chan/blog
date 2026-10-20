@@ -8,7 +8,8 @@ import { parseKstDate } from './src/content/date'
 import { resolveEnPost } from './src/content/resolve-en-post'
 import { computeSourceHash } from './src/content/source-hash'
 import { writeAssets } from './src/markdown/assets'
-import { renderMarkdown } from './src/markdown/render'
+import { type Glossary, renderMarkdown } from './src/markdown/render'
+import { widgetNames } from './src/widgets/names'
 
 type CacheFn = Context['cache']
 
@@ -21,7 +22,14 @@ function slugOf(directory: string): string {
   return directory
 }
 
-type RenderInput = { markdown: string; filePath: string; slug: string; locale: 'ko' | 'en'; enSlugs: string[] }
+type RenderInput = {
+  markdown: string
+  filePath: string
+  slug: string
+  locale: 'ko' | 'en'
+  enSlugs: string[]
+  glossary: Glossary
+}
 
 // 글 폴더의 이미지 등 본문 외 파일 내용을 요약한다. 이미지만 바뀌어도 캐시를 다시 만들게 하려는 것이다
 function siblingFingerprint(postDir: string): string {
@@ -37,18 +45,46 @@ function siblingFingerprint(postDir: string): string {
 // 이미지 파일 쓰기는 캐시와 상관없이 매번 한다 (빌드 전에 public/content-assets 를 비우기 때문)
 async function render(cache: CacheFn, input: RenderInput) {
   const filePath = join('content/posts', input.filePath)
-  const key = { ...input, enSlugs: [...input.enSlugs].sort(), siblings: siblingFingerprint(join('content/posts', input.slug)) }
+  const key = {
+    ...input,
+    enSlugs: [...input.enSlugs].sort(),
+    siblings: siblingFingerprint(join('content/posts', input.slug)),
+    widgetNames: [...widgetNames],
+  }
   const result = await cache(key, (value) =>
     renderMarkdown(value.markdown, {
       filePath,
       slug: value.slug,
       locale: value.locale,
       enSlugs: new Set(value.enSlugs),
+      glossary: value.glossary,
+      widgetNames: value.widgetNames,
     }),
   )
   await writeAssets(result.assets)
   return result
 }
+
+const glossary = defineCollection({
+  name: 'glossary',
+  directory: 'content',
+  include: 'glossary.yaml',
+  parser: 'yaml',
+  schema: z.object({
+    terms: z.array(
+      z.object({
+        key: z.string().regex(TAG_PATTERN),
+        ko: z.object({ name: z.string().min(1), definition: z.string().min(1) }),
+        en: z.object({ name: z.string().min(1), definition: z.string().min(1) }),
+      }),
+    ),
+  }),
+})
+
+type GlossaryDoc = { terms: Array<{ key: string; ko: Glossary[string]['ko']; en: Glossary[string]['en'] }> }
+
+const toGlossary = (docs: GlossaryDoc[]): Glossary =>
+  Object.fromEntries((docs[0]?.terms ?? []).map(({ key, ko, en }) => [key, { ko, en }]))
 
 const koPosts = defineCollection({
   name: 'koPosts',
@@ -64,11 +100,18 @@ const koPosts = defineCollection({
     draft: z.boolean().default(false),
     content: z.string(),
   }),
-  transform: async (doc, { cache, skip }) => {
+  transform: async (doc, { cache, documents, skip }) => {
     if (doc.draft && isProduction()) return skip('draft')
     const slug = slugOf(doc._meta.directory)
     // 한국어 본문의 내부 링크는 언제나 한국어 글을 가리키므로 영어 번역본 목록이 필요 없다
-    const body = await render(cache, { markdown: doc.content, filePath: doc._meta.filePath, slug, locale: 'ko', enSlugs: [] })
+    const body = await render(cache, {
+      markdown: doc.content,
+      filePath: doc._meta.filePath,
+      slug,
+      locale: 'ko',
+      enSlugs: [],
+      glossary: toGlossary(documents(glossary)),
+    })
     return {
       slug,
       locale: 'ko' as const,
@@ -81,6 +124,7 @@ const koPosts = defineCollection({
       sourceHash: computeSourceHash({ title: doc.title, description: doc.description, body: doc.content }),
       html: body.html,
       toc: body.toc,
+      terms: body.terms,
     }
   },
 })
@@ -124,8 +168,15 @@ const enPosts = defineCollection({
         const source = koDocs.find((candidate) => candidate._meta.directory === sibling)
         return source !== undefined && !(source.draft && isProduction())
       })
-    const body = await render(cache, { markdown: doc.content, filePath: doc._meta.filePath, slug, locale: 'en', enSlugs })
-    return { ...result.post, html: body.html, toc: body.toc }
+    const body = await render(cache, {
+      markdown: doc.content,
+      filePath: doc._meta.filePath,
+      slug,
+      locale: 'en',
+      enSlugs,
+      glossary: toGlossary(documents(glossary)),
+    })
+    return { ...result.post, html: body.html, toc: body.toc, terms: body.terms }
   },
 })
 
@@ -148,6 +199,7 @@ const serverOnlyHook: WriterHook = async ({ fileType, content }) => {
 export default defineConfig({
   // 컬렉션은 이 순서대로 하나씩 변환되고, 변환이 끝난 컬렉션의 documents() 는 변환 결과를 돌려준다.
   // enPosts 가 원문의 content 와 draft 를 그대로 봐야 하므로 koPosts 보다 먼저 둔다
-  content: [enPosts, koPosts, tagLabels],
+  // glossary 는 글보다 먼저 둔다. 글 변환이 용어집을 읽는다
+  content: [glossary, enPosts, koPosts, tagLabels],
   hooks: { writer: [serverOnlyHook] },
 })
