@@ -24,6 +24,12 @@ describe('parseNewComment', () => {
     for (const author of ['', '   ', 'a\u0007b', 'a\nb']) expect(parseNewComment({ ...valid, author }, false)).toBeNull()
   })
 
+  it('글자 방향을 바꾸는 제어 문자(bidi)가 든 이름은 받지 않는다', () => {
+    for (const author of ['abc\u202Edef', 'abc\u2066def', 'abc\u200Fdef']) expect(parseNewComment({ ...valid, author }, false)).toBeNull()
+    // 이모지 조합(ZWJ)은 이름에 쓸 수 있다
+    expect(parseNewComment({ ...valid, author: '👩\u200D💻' }, false)?.author).toBe('👩\u200D💻')
+  })
+
   it('본문은 줄바꿈을 \\n 으로 맞추고 앞뒤 공백을 자른다', () => {
     expect(parseNewComment({ ...valid, body: '  첫 줄\r\n\t둘째 줄  ' }, false)?.body).toBe('첫 줄\n\t둘째 줄')
   })
@@ -91,6 +97,12 @@ describe('parseCommentDeletion', () => {
 describe('isReservedName', () => {
   it('은솔 이름은 대소문자·공백·전각을 가리지 않고 막는다', () => {
     for (const name of ['eunsol', ' E u n S o l ', 'ＥＵＮＳＯＬ', 'nabi', '은솔', '나 비', 'eunsol (Nabi)']) {
+      expect(isReservedName(name)).toBe(true)
+    }
+  })
+
+  it('보이지 않는 문자를 끼워도 막는다 (ZWSP, soft hyphen, word joiner, ZWJ)', () => {
+    for (const name of ['eun\u200Bsol', 'eun\u00ADsol', 'eun\u2060sol', '은\u200D솔', '\uFEFFnabi']) {
       expect(isReservedName(name)).toBe(true)
     }
   })

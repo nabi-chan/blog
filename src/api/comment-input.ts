@@ -18,10 +18,13 @@ const within = (text: string, limit: Limit) => length(text) >= limit.min && leng
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
+// 글자 방향을 바꾸는 제어 문자(LRM·RLM, embedding/override, isolate). 이름을 다르게 보이게 만들 수 있다
+const BIDI_CONTROLS = /[\u200E\u200F\u202A-\u202E\u2066-\u2069]/u
+
 function readAuthor(value: unknown): string | null {
   if (typeof value !== 'string') return null
   const author = value.trim()
-  return within(author, COMMENT_LIMITS.author) && !/\p{Cc}/u.test(author) ? author : null
+  return within(author, COMMENT_LIMITS.author) && !/\p{Cc}/u.test(author) && !BIDI_CONTROLS.test(author) ? author : null
 }
 
 // 줄바꿈과 탭만 남기고 다른 제어 문자는 받지 않는다
@@ -70,7 +73,12 @@ export function parseCommentDeletion(value: unknown, owner: boolean): CommentDel
   return { password, turnstileToken }
 }
 
-const normalizeName = (name: string) => name.normalize('NFKC').toLowerCase().replace(/\s+/g, '')
+// 공백과 보이지 않는 문자(ZWSP, soft hyphen, ZWJ 등 Default_Ignorable_Code_Point)를 지운 뒤 비교한다
+const normalizeName = (name: string) =>
+  name
+    .normalize('NFKC')
+    .toLowerCase()
+    .replace(/[\s\p{Default_Ignorable_Code_Point}]+/gu, '')
 
 // 은솔이 아닌 사람은 은솔 이름을 쓸 수 없다. 정규화한 뒤 정확히 같을 때만 막는다
 const RESERVED_NAMES = new Set(['eunsol', 'nabi', '은솔', '나비', normalizeName(site.author)])
