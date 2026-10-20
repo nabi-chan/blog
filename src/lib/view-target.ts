@@ -1,0 +1,9 @@
+export type MatchLike = { routeId: string; status: string; params: Record<string, string>; globalNotFound?: boolean }
+
+// 지금 화면에서 무엇을 셀지. 404 는 세지 않고(null), 글 화면이면 slug 도 센다 (스펙 4.8)
+export function viewTarget(matches: MatchLike[]): { slug?: string } | null {
+  if (matches.length === 0) return null
+  if (matches.some((match) => match.status === 'notFound' || match.globalNotFound)) return null
+  const post = matches.find((match) => match.routeId === '/$slug')
+  return post ? { slug: post.params.slug } : {}
+}

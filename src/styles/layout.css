@@ -62,6 +62,10 @@ a {
 }
 
 .site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
   margin-top: 7rem;
   padding: 2rem 0 3rem;
   color: var(--muted);
@@ -229,4 +233,12 @@ html:not([data-tag]) .tag-filter [data-chip=''] {
   * {
     transition: none !important;
   }
+}
+
+/* 조회수: 숫자는 응답 전·실패 때 visibility 로만 감추고, 폭을 잡아 둬서 레이아웃이 흔들리지 않게 한다 */
+.view-count-number {
+  display: inline-block;
+  min-width: 5ch;
+  font-variant-numeric: tabular-nums;
+  text-align: start;
 }

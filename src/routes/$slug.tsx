@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
 import { useRef } from 'react'
 import { TermTooltips } from '~/components/TermTooltips'
+import { ViewCount, useViewCounts } from '~/components/ViewCounts'
 import { Toc } from '~/components/Toc'
 import { WidgetMounter } from '~/components/WidgetMounter'
 import { useActiveHeading } from '~/hooks/useActiveHeading'
@@ -27,6 +28,7 @@ function Post() {
   const body = useRef<HTMLDivElement>(null)
   const locale = getLocale()
   const activeId = useActiveHeading(toc.map((item) => item.id))
+  const views = useViewCounts()
   return (
     <main className="post">
       <article>
@@ -39,6 +41,7 @@ function Post() {
                 {m.post_updated()} <time dateTime={post.updated}>{formatDate(post.updated, locale)}</time>
               </span>
             )}
+            <ViewCount label={m.view_post_label()} value={views.post?.slug === post.slug ? views.post.count : null} />
           </p>
           {tags.length > 0 && (
             <ul className="post-tags">
