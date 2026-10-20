@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { type MatchLike, viewTarget } from './view-target'
+import { type MatchLike, viewKey, viewTarget } from './view-target'
 
 const root: MatchLike = { routeId: '__root__', status: 'success', params: {} }
 
@@ -16,5 +16,14 @@ describe('viewTarget', () => {
     expect(viewTarget([root, { routeId: '/$slug', status: 'notFound', params: { slug: '261099' } }])).toBeNull()
     expect(viewTarget([{ ...root, globalNotFound: true }])).toBeNull()
     expect(viewTarget([])).toBeNull()
+  })
+})
+
+describe('viewKey', () => {
+  it('해시(목차 이동)는 무시하고 경로와 쿼리로만 화면을 구분한다', () => {
+    const base = { pathname: '/261020', searchStr: '' }
+    expect(viewKey({ ...base, hash: 'intro' })).toBe(viewKey(base))
+    expect(viewKey({ pathname: '/posts', searchStr: '?tag=meta' })).not.toBe(viewKey({ pathname: '/posts', searchStr: '' }))
+    expect(viewKey({ pathname: '/en/261020', searchStr: '' })).not.toBe(viewKey(base))
   })
 })

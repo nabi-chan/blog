@@ -2,7 +2,7 @@ import { useRouter, useRouterState } from '@tanstack/react-router'
 import { type ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react'
 import { createApiClient } from '~/lib/api-client'
 import { withMinimumDelay } from '~/lib/min-delay'
-import { type MatchLike, viewTarget } from '~/lib/view-target'
+import { type MatchLike, viewKey, viewTarget } from '~/lib/view-target'
 
 // failed 는 마지막 요청이 실패했는지. 응답 전(스켈레톤)과 실패(빈자리)를 구분한다
 type ViewCounts = { site: number | null; today: number | null; post: { slug: string; count: number } | null; failed: boolean }
@@ -15,8 +15,8 @@ const SKELETON_MIN_MS = 500
 // 라우트 이동마다 한 번 센다 (스펙 4.8). 증가 호출은 여기 한 곳에서만 한다
 export function ViewCountsProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
-  // 같은 주소로 다시 이동해도 히스토리 항목마다 키가 달라서 다시 센다
-  const key = useRouterState({ select: (state) => state.location.state.__TSR_key ?? state.location.href })
+  // 경로·쿼리가 바뀔 때만 센다. 목차(#id) 이동은 같은 화면이다
+  const key = useRouterState({ select: (state) => viewKey(state.location) })
   const idle = useRouterState({ select: (state) => state.status === 'idle' })
   const [counts, setCounts] = useState<ViewCounts>(EMPTY)
   // StrictMode 에서 effect 가 두 번 돌아도 한 번만 센다
