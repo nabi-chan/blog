@@ -3,8 +3,8 @@
 import { checkResponse, type SmokeCheck } from '../src/lib/smoke.ts'
 
 export const CHECKS: SmokeCheck[] = [
-  { path: '/', status: 200, contains: ['<html', 'lang="ko"'] },
-  { path: '/en', status: 200, contains: ['lang="en"'] },
+  { path: '/', status: 200, contains: ['<html', 'lang="ko"', 'href="/posts/how-this-blog-is-built"'] },
+  { path: '/en', status: 200, contains: ['lang="en"', 'href="/en/posts/how-this-blog-is-built"'] },
   { path: '/posts', status: 200, contains: ['lang="ko"'] },
   { path: '/en/posts', status: 200, contains: ['lang="en"'] },
   { path: '/en/', status: 307, location: '/en' },

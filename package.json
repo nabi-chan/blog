@@ -11,20 +11,25 @@
     "build": "vite build",
     "preview": "vite preview",
     "cf-typegen": "wrangler types",
-    "check": "pnpm i18n:compile && tsc --noEmit",
+    "check": "pnpm i18n:compile && content-collections build && tsc --noEmit",
     "test": "pnpm i18n:compile && vitest run --coverage",
     "smoke": "node scripts/smoke.ts",
-    "i18n:compile": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide"
+    "i18n:compile": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide",
+    "content:rehash": "node scripts/content-rehash.ts"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.170.45",
     "@tanstack/react-start": "^1.169.3",
     "lucide-react": "^1.59.0",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.64.0",
+    "@content-collections/cli": "^0.1.9",
+    "@content-collections/core": "^0.15.3",
+    "@content-collections/vite": "^0.3.1",
     "@inlang/paraglide-js": "2.29.1",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
@@ -38,6 +43,7 @@
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.5",
-    "wrangler": "^4.151.1"
+    "wrangler": "^4.151.1",
+    "yaml": "^2.9.1"
   }
 }
