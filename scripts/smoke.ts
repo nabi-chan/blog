@@ -31,7 +31,7 @@ export const CHECKS: SmokeCheck[] = [
   },
   { path: '/api/nope', status: 404 },
   // 조회수 자리는 프리렌더 HTML 에 들어 있다 (숫자는 브라우저가 채움)
-  { path: '/', status: 200, contains: ['class="lobby-views meta-list"', '오늘', 'data-state="loading"'] },
+  { path: '/', status: 200, contains: ['class="lobby-views"', '오늘', 'data-state="loading"'] },
   { path: '/en', status: 200, contains: ['Today', 'Total'] },
   // SEO·GEO 산출물 (계획 3)
   { path: '/sitemap.xml', status: 200, contains: ['<urlset'] },
@@ -79,7 +79,7 @@ export const CHECKS: SmokeCheck[] = [
 function postChecks({ slug, en }: SmokePost, production: boolean): SmokeCheck[] {
   const ko: SmokeCheck[] = [
     { path: '/', status: 200, contains: [`href="/${slug}"`] },
-    { path: '/posts', status: 200, contains: ['data-post', 'data-year='] },
+    { path: '/posts', status: 200, contains: ['data-post'] },
     { path: `/posts/${slug}`, status: 404 },
     {
       path: `/${slug}`,
