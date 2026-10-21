@@ -40,11 +40,6 @@ export function formatDateTime(iso: string, locale: Locale): string {
   }).format(new Date(iso))
 }
 
-// parseKstDate 결과는 +09:00 오프셋을 가지므로 앞 네 자리가 곧 KST 연도다
-export function kstYear(iso: string): number {
-  return Number(iso.slice(0, 4))
-}
-
 // 목록의 날짜 칸에 쓰는 짧은 표기 (YY.MM.DD). parseKstDate 결과는 KST 오프셋이라 문자열로 자른다
 export function formatCompactDate(iso: string): string {
   return `${iso.slice(2, 4)}.${iso.slice(5, 7)}.${iso.slice(8, 10)}`

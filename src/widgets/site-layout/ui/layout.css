@@ -4,11 +4,19 @@
   margin: 0 auto;
 }
 
+/* 모든 화면에서 위에 붙는다. top 을 0 으로 둬서 스크롤을 시작해도 헤더가 움직이지 않는다.
+   본문과의 간격은 margin 으로 둔다. padding 으로 두면 붙은 헤더가 그만큼 본문을 가린다.
+   z-index 는 body 에 붙는 용어 툴팁(10)보다 낮게 둔다. 높이가 바뀌면 --header-height(tokens.css)도 고친다 */
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding: 2rem 0 4.5rem;
+  margin-bottom: 3.25rem;
+  padding: 2rem 0 1.25rem;
+  background: var(--paper);
 }
 
 .site-name {
@@ -56,6 +64,6 @@
 
 @media (max-width: 560px) {
   .site-header {
-      padding-bottom: 3rem;
+      margin-bottom: 1.75rem;
     }
 }

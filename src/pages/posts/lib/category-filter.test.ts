@@ -2,10 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { applyCategorySelection, categoryFilterCss, readCategoryParam } from './category-filter'
 
 describe('categoryFilterCss', () => {
-  it('카테고리마다 숨김·빈 연도·활성 칩 규칙을 만든다', () => {
+  it('카테고리마다 숨김·활성 칩 규칙을 만든다', () => {
     expect(categoryFilterCss(['meta'])).toBe(
       'html[data-category="meta"] [data-post]:not([data-categories~="meta"]){display:none}' +
-        'html[data-category="meta"] [data-year]:not(:has([data-categories~="meta"])){display:none}' +
         'html[data-category="meta"] [data-chip="meta"]{color:var(--ink);font-weight:700;text-decoration:underline}',
     )
   })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { type PostMeta, collectCategories, createPostIndex, groupByYear } from './post-index'
+import { type PostMeta, collectCategories, createPostIndex } from './post-index'
 
 const meta = (slug: string, locale: PostMeta['locale'], date: string, categories: string[]): PostMeta => ({
   slug,
@@ -38,15 +38,6 @@ describe('createPostIndex', () => {
   it('메서드는 떼어서 콜백으로 넘겨도 동작한다', () => {
     const { locales } = idx
     expect(['both', 'ko-only'].map(locales)).toEqual([['ko', 'en'], ['ko']])
-  })
-})
-
-describe('groupByYear', () => {
-  it('KST 연도로 묶고 연도 내림차순으로 돌려준다', () => {
-    expect(groupByYear(idx.list('ko')).map((g) => [g.year, g.posts.length])).toEqual([
-      [2026, 2],
-      [2025, 1],
-    ])
   })
 })
 
