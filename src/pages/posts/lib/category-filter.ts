@@ -8,7 +8,6 @@ export function categoryFilterCss(keys: string[]): string {
     .map(
       (key) =>
         `html[data-category="${key}"] [data-post]:not([data-categories~="${key}"]){display:none}` +
-        `html[data-category="${key}"] [data-year]:not(:has([data-categories~="${key}"])){display:none}` +
         `html[data-category="${key}"] [data-chip="${key}"]{color:var(--ink);font-weight:700;text-decoration:underline}`,
     )
     .join('')

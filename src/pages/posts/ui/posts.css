@@ -1,15 +1,6 @@
-/* 글 목록 화면: 연도 묶음, 카테고리 필터 */
+/* 글 목록 화면: 카테고리 필터 */
 .posts .display {
   margin-bottom: 2.5rem;
-}
-
-.post-year h2 {
-  margin: 3.5rem 0 0.5rem;
-  color: var(--ink);
-  font-weight: 400;
-  font-size: 2.6rem;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
 }
 
 .category-filter {

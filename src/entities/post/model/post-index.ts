@@ -1,5 +1,4 @@
 import type { Locale } from '~/shared/i18n'
-import { kstYear } from '~/shared/lib/date'
 
 export type PostMeta = {
   slug: string
@@ -33,15 +32,6 @@ export function createPostIndex(ko: PostMeta[], en: PostMeta[]): PostIndex {
     get: (locale, slug) => maps[locale].get(slug),
     locales: (slug) => (['ko', 'en'] as const).filter((locale) => maps[locale].has(slug)),
   }
-}
-
-export function groupByYear(posts: PostMeta[]): Array<{ year: number; posts: PostMeta[] }> {
-  const groups = new Map<number, PostMeta[]>()
-  for (const post of posts) {
-    const year = kstYear(post.date)
-    groups.set(year, [...(groups.get(year) ?? []), post])
-  }
-  return [...groups.entries()].sort(([a], [b]) => b - a).map(([year, items]) => ({ year, posts: items }))
 }
 
 export function collectCategories(posts: PostMeta[]): string[] {

@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { formatCompactDate, formatDate } from '~/shared/lib/date'
-import { type PostMeta, groupByYear as group } from '../model/post-index'
+import type { PostMeta } from '../model/post-index'
 import { type Locale, m } from '~/shared/i18n'
 
 function Item({ post, locale }: { post: PostMeta; locale: Locale }) {
@@ -19,28 +19,12 @@ function Item({ post, locale }: { post: PostMeta; locale: Locale }) {
   )
 }
 
-export function PostList({ posts, locale, groupByYear = false }: { posts: PostMeta[]; locale: Locale; groupByYear?: boolean }) {
-  if (!groupByYear) {
-    return (
-      <ul className="post-list">
-        {posts.map((post) => (
-          <Item key={post.slug} post={post} locale={locale} />
-        ))}
-      </ul>
-    )
-  }
+export function PostList({ posts, locale }: { posts: PostMeta[]; locale: Locale }) {
   return (
-    <>
-      {group(posts).map(({ year, posts: items }) => (
-        <section key={year} data-year={year} className="post-year">
-          <h2>{year}</h2>
-          <ul className="post-list">
-            {items.map((post) => (
-              <Item key={post.slug} post={post} locale={locale} />
-            ))}
-          </ul>
-        </section>
+    <ul className="post-list">
+      {posts.map((post) => (
+        <Item key={post.slug} post={post} locale={locale} />
       ))}
-    </>
+    </ul>
   )
 }
