@@ -18,7 +18,7 @@ export function HomePage({ posts, intro }: { posts: PostMeta[]; intro: LobbyIntr
       {/* 문서 제목 구조용. 화면에는 헤더의 사이트 이름이 같은 역할을 한다 */}
       <h1 className="sr-only">{site.name}</h1>
       {/* 사이트 오늘·전체 조회수(방문자 하루 1회). 레이블은 프리렌더하고 숫자는 브라우저가 채운다 */}
-      <p className="lobby-views meta-list">
+      <p className="lobby-views">
         <ViewCount label={m.lobby_views_today()} value={views.today} failed={views.failed} />
         <ViewCount label={m.lobby_views_total()} value={views.site} failed={views.failed} />
       </p>

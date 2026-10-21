@@ -64,7 +64,7 @@ main {
     }
 }
 
-/* 한 줄 메타 항목 사이의 얇은 세로선 구분자 (글 메타, Lobby 조회수) */
+/* 한 줄 메타 항목 사이의 얇은 세로선 구분자 (글 메타) */
 .meta-list > * + *::before {
   content: '';
   display: inline-block;
