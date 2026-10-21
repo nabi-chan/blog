@@ -184,9 +184,10 @@ async function buildChecks() {
 
   const assets = filesUnder('dist/client/assets').filter((file) => file.endsWith('.js'))
   const clientJsGzipBytes = assets.reduce((sum, file) => sum + gzipSync(readFileSync(file)).length, 0)
-  // 소스맵과 preview 용 .dev.vars 사본은 배포되지 않는다
+  // 배포되는 건 dist/server/wrangler.json 의 rules(**/*.js, **/*.mjs)에 맞는 모듈뿐이다.
+  // 소스맵, preview 용 .dev.vars 사본, SSR 빌드가 남긴 CSS·폰트 사본은 올라가지 않는다
   const workerBytes = filesUnder('dist/server')
-    .filter((file) => !file.endsWith('.map') && !file.endsWith('.dev.vars'))
+    .filter((file) => /\.m?js$/.test(file))
     .reduce((sum, file) => sum + statSync(file).size, 0)
   results.push(...budgetResults({ clientJsGzipBytes, workerBytes }))
 
