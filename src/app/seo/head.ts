@@ -19,7 +19,6 @@ export type HeadInput = {
   alternates: Locale[]
   published?: string
   modified?: string
-  tags?: string[]
   jsonLd: Graph
   // 글이면 '/261020.md'. 언어 접두사는 여기서 붙인다
   markdownPath?: string
@@ -51,7 +50,6 @@ export function pageHead(input: HeadInput): { meta: Tag[]; links: Tag[]; scripts
       ? [
           { property: 'article:published_time', content: input.published },
           { property: 'article:modified_time', content: input.modified ?? input.published },
-          ...(input.tags ?? []).map((tag) => ({ property: 'article:tag', content: tag })),
         ]
       : []),
     { name: 'twitter:card', content: 'summary_large_image' },

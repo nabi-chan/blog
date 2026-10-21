@@ -10,7 +10,7 @@ import { useActiveHeading } from '../lib/useActiveHeading'
 import { Toc } from './Toc'
 
 export function PostPage({ page }: { page: PostPageData }) {
-  const { post, html, toc, terms, tags } = page
+  const { post, html, toc, terms, categories } = page
   const body = useRef<HTMLDivElement>(null)
   const locale = getLocale()
   const activeId = useActiveHeading(toc.map((item) => item.id))
@@ -31,10 +31,10 @@ export function PostPage({ page }: { page: PostPageData }) {
             )}
             <ViewCount label={m.view_post_label()} value={views.post?.slug === post.slug ? views.post.count : null} failed={views.failed} />
           </p>
-          {tags.length > 0 && (
-            <ul className="post-tags">
-              {tags.map((tag) => (
-                <li key={tag.key}>{tag.label}</li>
+          {categories.length > 0 && (
+            <ul className="post-categories">
+              {categories.map((category) => (
+                <li key={category.key}>{category.label}</li>
               ))}
             </ul>
           )}

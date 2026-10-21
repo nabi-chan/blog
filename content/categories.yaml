@@ -1,0 +1,25 @@
+categories:
+  - key: software
+    ko: 소프트웨어
+    en: Software
+  - key: hardware
+    ko: 하드웨어
+    en: Hardware
+  - key: ai
+    ko: AI
+    en: AI
+  - key: frontend
+    ko: 프론트엔드
+    en: Frontend
+  - key: backend
+    ko: 백엔드
+    en: Backend
+  - key: infra
+    ko: 인프라
+    en: Infrastructure
+  - key: hermes-agent
+    ko: Hermes Agent
+    en: Hermes Agent
+  - key: home-server
+    ko: 홈 서버
+    en: Home Server

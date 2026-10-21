@@ -1,15 +1,15 @@
 import type { Locale } from '~/shared/i18n'
 import { describe, expect, it } from 'vitest'
 import { type PostMeta, createPostIndex } from './post-index'
-import { type BodyKey, type PostBody, type PostSource, createPostQueries, tagRefs } from './post-queries'
+import { type BodyKey, type PostBody, type PostSource, categoryRefs, createPostQueries } from './post-queries'
 
-const meta = (slug: string, locale: PostMeta['locale'], date: string, tags: string[]): PostMeta => ({
+const meta = (slug: string, locale: PostMeta['locale'], date: string, categories: string[]): PostMeta => ({
   slug,
   locale,
   title: slug,
   description: slug,
   date,
-  tags,
+  categories,
   draft: false,
 })
 
@@ -33,22 +33,22 @@ const glossary = {
   hydration: { ko: { name: '하이드레이션', definition: '정의 ko' }, en: { name: 'Hydration', definition: 'def en' } },
 }
 
-describe('tagRefs', () => {
+describe('categoryRefs', () => {
   it('언어별 라벨을 붙이고, 표에 없으면 키를 라벨로 쓴다', () => {
-    expect(tagRefs(['a', 'b'], 'ko', labels)).toEqual([
+    expect(categoryRefs(['a', 'b'], 'ko', labels)).toEqual([
       { key: 'a', label: '에이' },
       { key: 'b', label: 'b' },
     ])
-    expect(tagRefs(['a'], 'en', labels)).toEqual([{ key: 'a', label: 'A' }])
+    expect(categoryRefs(['a'], 'en', labels)).toEqual([{ key: 'a', label: 'A' }])
   })
 })
 
 describe('createPostQueries', () => {
-  it('listPosts 는 그 언어 글과 태그 라벨을 돌려준다', () => {
-    const q = createPostQueries({ index: idx, tagLabels: labels, bodies, sources, glossary, intros })
+  it('listPosts 는 그 언어 글과 카테고리 라벨을 돌려준다', () => {
+    const q = createPostQueries({ index: idx, categoryLabels: labels, bodies, sources, glossary, intros })
     expect(q.listPosts('en')).toEqual({
       posts: idx.list('en'),
-      tags: [
+      categories: [
         { key: 'a', label: 'A' },
         { key: 'b', label: 'b' },
       ],
@@ -57,13 +57,13 @@ describe('createPostQueries', () => {
 })
 
 describe('getPostPage', () => {
-  const q = createPostQueries({ index: idx, tagLabels: labels, bodies, sources, glossary, intros })
+  const q = createPostQueries({ index: idx, categoryLabels: labels, bodies, sources, glossary, intros })
 
-  it('글 메타·있는 언어·태그·본문을 돌려준다', () => {
+  it('글 메타·있는 언어·카테고리·본문을 돌려준다', () => {
     expect(q.getPostPage('en', 'both')).toEqual({
       post: idx.get('en', 'both'),
       available: ['ko', 'en'],
-      tags: [
+      categories: [
         { key: 'a', label: 'A' },
         { key: 'b', label: 'b' },
       ],
@@ -84,17 +84,17 @@ describe('getPostPage', () => {
   })
 
   it('메타는 있는데 본문이 없으면 데이터 오류로 던진다', () => {
-    expect(() => createPostQueries({ index: idx, tagLabels: labels, bodies: new Map(), sources, glossary, intros }).getPostPage('ko', 'both')).toThrow(
+    expect(() => createPostQueries({ index: idx, categoryLabels: labels, bodies: new Map(), sources, glossary, intros }).getPostPage('ko', 'both')).toThrow(
       /본문이나 원문이 없습니다/,
     )
-    expect(() => createPostQueries({ index: idx, tagLabels: labels, bodies, sources: new Map(), glossary, intros }).getPostPage('ko', 'both')).toThrow(
+    expect(() => createPostQueries({ index: idx, categoryLabels: labels, bodies, sources: new Map(), glossary, intros }).getPostPage('ko', 'both')).toThrow(
       /본문이나 원문이 없습니다/,
     )
   })
 })
 
 describe('getLobbyIntro', () => {
-  const q = createPostQueries({ index: idx, tagLabels: labels, bodies, sources, glossary, intros })
+  const q = createPostQueries({ index: idx, categoryLabels: labels, bodies, sources, glossary, intros })
 
   it('그 언어 소개글 HTML 과 쓴 용어의 정의를 돌려준다', () => {
     expect(q.getLobbyIntro('ko')).toEqual({
@@ -115,19 +115,19 @@ describe('listFeed / getMarkdown', () => {
   )
   const q = createPostQueries({
     index: draftIdx,
-    tagLabels: labels,
+    categoryLabels: labels,
     bodies: new Map([...bodies, ['ko/draft', { html: '<p>d</p>', toc: [], terms: [] }]]),
     sources: new Map([...sources, ['ko/draft', { markdown: 'draft md', wordCount: 1 }]]),
     glossary,
     intros,
   })
 
-  it('listFeed 는 draft 를 빼고 날짜 내림차순으로 본문·원문·태그를 돌려준다', () => {
+  it('listFeed 는 draft 를 빼고 날짜 내림차순으로 본문·원문·카테고리를 돌려준다', () => {
     expect(q.listFeed('ko').map((item) => [item.post.slug, item.html, item.markdown])).toEqual([
       ['ko-only', '<p>ko only</p>', 'ko only md'],
       ['both', '<p>ko</p>', 'ko md'],
     ])
-    expect(q.listFeed('ko')[1].tags).toEqual([
+    expect(q.listFeed('ko')[1].categories).toEqual([
       { key: 'a', label: '에이' },
       { key: 'b', label: 'b' },
     ])

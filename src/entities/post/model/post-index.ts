@@ -8,7 +8,7 @@ export type PostMeta = {
   description: string
   date: string
   updated?: string
-  tags: string[]
+  categories: string[]
   draft: boolean
 }
 
@@ -44,8 +44,8 @@ export function groupByYear(posts: PostMeta[]): Array<{ year: number; posts: Pos
   return [...groups.entries()].sort(([a], [b]) => b - a).map(([year, items]) => ({ year, posts: items }))
 }
 
-export function collectTags(posts: PostMeta[]): string[] {
+export function collectCategories(posts: PostMeta[]): string[] {
   const counts = new Map<string, number>()
-  for (const tag of posts.flatMap((post) => post.tags)) counts.set(tag, (counts.get(tag) ?? 0) + 1)
-  return [...counts.entries()].sort(([a, x], [b, y]) => y - x || a.localeCompare(b)).map(([tag]) => tag)
+  for (const category of posts.flatMap((post) => post.categories)) counts.set(category, (counts.get(category) ?? 0) + 1)
+  return [...counts.entries()].sort(([a, x], [b, y]) => y - x || a.localeCompare(b)).map(([category]) => category)
 }

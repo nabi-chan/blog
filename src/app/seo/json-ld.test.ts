@@ -7,7 +7,7 @@ const post = {
   title: 'How I built this blog',
   description: 'Notes on the stack',
   date: '2026-10-20T12:00:00+09:00',
-  tags: ['Blog'],
+  categories: ['AI'],
   wordCount: 120,
   image: 'https://nabichan.me/og/en/261020.png',
 }
@@ -46,9 +46,10 @@ describe('postGraph', () => {
       mainEntityOfPage: 'https://nabichan.me/en/261020',
       image: 'https://nabichan.me/og/en/261020.png',
       inLanguage: 'en',
-      keywords: ['Blog'],
+      articleSection: ['AI'],
       wordCount: 120,
     })
+    expect(article).not.toHaveProperty('keywords')
     expect(byType(graph, 'Person')).toHaveLength(1)
   })
 

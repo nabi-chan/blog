@@ -29,8 +29,8 @@ describe('absolutizeHtml', () => {
 })
 
 const item = (slug: string, overrides: Partial<FeedItem['post']> = {}, html = '<p>본문</p>'): FeedItem => ({
-  post: { slug, locale: 'ko', title: slug, description: `${slug} 요약`, date: '2026-10-20T12:00:00+09:00', tags: ['meta'], draft: false, ...overrides },
-  tags: [{ key: 'meta', label: '블로그' }],
+  post: { slug, locale: 'ko', title: slug, description: `${slug} 요약`, date: '2026-10-20T12:00:00+09:00', categories: ['meta'], draft: false, ...overrides },
+  categories: [{ key: 'meta', label: '블로그' }],
   html,
   markdown: '',
 })
@@ -46,7 +46,7 @@ describe('buildRss', () => {
     expect(xml).toContain('<lastBuildDate>Tue, 20 Oct 2026 03:00:00 GMT</lastBuildDate>')
   })
 
-  it('글마다 링크·guid·날짜·요약·본문 전문·태그를 넣는다', () => {
+  it('글마다 링크·guid·날짜·요약·본문 전문·카테고리를 넣는다', () => {
     const xml = buildRss({ locale: 'ko', title: 'eunsol', description: 'd', items: [item('261020', {}, '<p><img src="/content-assets/a.png"></p>')] })
     expect(xml).toContain('<link>https://nabichan.me/261020</link>')
     expect(xml).toContain('<guid isPermaLink="true">https://nabichan.me/261020</guid>')

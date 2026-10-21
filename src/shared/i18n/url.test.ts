@@ -10,6 +10,6 @@ describe('stripTrailingSlash', () => {
   })
 
   it('쿼리와 해시는 보존한다', () => {
-    expect(stripTrailingSlash('/en/?tag=a#x')).toBe('/en?tag=a#x')
+    expect(stripTrailingSlash('/en/?category=a#x')).toBe('/en?category=a#x')
   })
 })

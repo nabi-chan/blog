@@ -8,7 +8,7 @@ export type KoSource = {
   content: string
   date: string
   updated?: string
-  tags: string[]
+  categories: string[]
   draft: boolean
 }
 
@@ -43,7 +43,7 @@ export function resolveEnPost(en: EnSource, ko: KoSource | undefined, opts: { pr
       description: en.description,
       date: ko.date,
       updated: ko.updated,
-      tags: ko.tags,
+      categories: ko.categories,
       draft: ko.draft,
       translationStatus: en.translationStatus,
     },

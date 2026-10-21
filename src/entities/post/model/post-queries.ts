@@ -1,12 +1,12 @@
 import type { Locale } from '~/shared/i18n'
 import type { TocItem } from '../markdown/rehype-toc'
 import type { Glossary, GlossaryEntry } from '../markdown/remark-term'
-import { type PostIndex, type PostMeta, collectTags } from './post-index'
+import { type PostIndex, type PostMeta, collectCategories } from './post-index'
 
-export type TagRef = { key: string; label: string }
-export type TagLabels = Array<{ key: string; ko: string; en: string }>
+export type CategoryRef = { key: string; label: string }
+export type CategoryLabels = Array<{ key: string; ko: string; en: string }>
 
-export function tagRefs(keys: string[], locale: Locale, labels: TagLabels): TagRef[] {
+export function categoryRefs(keys: string[], locale: Locale, labels: CategoryLabels): CategoryRef[] {
   const table = new Map(labels.map((label) => [label.key, label]))
   return keys.map((key) => ({ key, label: table.get(key)?.[locale] ?? key }))
 }
@@ -14,12 +14,12 @@ export function tagRefs(keys: string[], locale: Locale, labels: TagLabels): TagR
 export type PostBody = { html: string; toc: TocItem[]; terms: string[] }
 // 글 원문(이미지 경로를 절대 URL 로 바꾼 Markdown)과 단어 수
 export type PostSource = { markdown: string; wordCount: number }
-export type FeedItem = { post: PostMeta; tags: TagRef[]; html: string; markdown: string }
+export type FeedItem = { post: PostMeta; categories: CategoryRef[]; html: string; markdown: string }
 export type BodyKey = `${Locale}/${string}`
 export type PostPage = {
   post: PostMeta
   available: Locale[]
-  tags: TagRef[]
+  categories: CategoryRef[]
   html: string
   toc: TocItem[]
   terms: Record<string, GlossaryEntry>
@@ -29,7 +29,7 @@ export type PostPage = {
 export type LobbyIntro = { html: string; terms: Record<string, GlossaryEntry> }
 
 export type PostQueries = {
-  listPosts(locale: Locale): { posts: PostMeta[]; tags: TagRef[] }
+  listPosts(locale: Locale): { posts: PostMeta[]; categories: CategoryRef[] }
   getPostPage(locale: Locale, slug: string): PostPage | null
   getLobbyIntro(locale: Locale): LobbyIntro | null
   // RSS·llms 용. draft 를 빼고 날짜 내림차순
@@ -41,7 +41,7 @@ export type PostQueries = {
 // 서버 함수가 쓰는 조회 로직. Content Collections 데이터는 posts.server.ts 가 넣어 준다
 export function createPostQueries(input: {
   index: PostIndex
-  tagLabels: TagLabels
+  categoryLabels: CategoryLabels
   bodies: ReadonlyMap<BodyKey, PostBody>
   sources: ReadonlyMap<BodyKey, PostSource>
   glossary: Glossary
@@ -60,7 +60,7 @@ export function createPostQueries(input: {
   return {
     listPosts: (locale) => {
       const posts = input.index.list(locale)
-      return { posts, tags: tagRefs(collectTags(posts), locale, input.tagLabels) }
+      return { posts, categories: categoryRefs(collectCategories(posts), locale, input.categoryLabels) }
     },
     getPostPage: (locale, slug) => {
       const post = input.index.get(locale, slug)
@@ -69,7 +69,7 @@ export function createPostQueries(input: {
       return {
         post,
         available: input.index.locales(slug),
-        tags: tagRefs(post.tags, locale, input.tagLabels),
+        categories: categoryRefs(post.categories, locale, input.categoryLabels),
         html: body.html,
         toc: body.toc,
         terms: termsFor(body.terms, locale),
@@ -86,7 +86,7 @@ export function createPostQueries(input: {
         .filter((post) => !post.draft)
         .map((post) => ({
           post,
-          tags: tagRefs(post.tags, locale, input.tagLabels),
+          categories: categoryRefs(post.categories, locale, input.categoryLabels),
           html: lookup(input.bodies, locale, post.slug).html,
           markdown: lookup(input.sources, locale, post.slug).markdown,
         })),

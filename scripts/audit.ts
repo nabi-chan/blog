@@ -57,7 +57,7 @@ function baseChecks() {
   results.push(commandResult('typecheck', '타입 검사 (pnpm check)', 'pnpm', ['check']))
   results.push(commandResult('test', '테스트 (pnpm test)', 'pnpm', ['test']))
 
-  // 콘텐츠: 태그·용어·깨진 링크. 낡은 번역과 구조는 아래 번역 검사가 따로 낸다. 스키마·slug 는 pnpm check 의 content-collections build 가 본다
+  // 콘텐츠: 카테고리·용어·깨진 링크. 낡은 번역과 구조는 아래 번역 검사가 따로 낸다. 스키마·slug 는 pnpm check 의 content-collections build 가 본다
   const slugs = existsSync(POSTS_DIR)
     ? readdirSync(POSTS_DIR, { withFileTypes: true })
         .filter((entry) => entry.isDirectory() && existsSync(join(POSTS_DIR, entry.name, 'index.ko.md')))
@@ -66,20 +66,20 @@ function baseChecks() {
     : []
   const posts = slugs.map((slug) => {
     const ko = splitFrontmatter(readFileSync(join(POSTS_DIR, slug, 'index.ko.md'), 'utf8'))
-    const meta = parse(ko.frontmatter) as { title: string; description: string; tags?: string[]; draft?: boolean }
+    const meta = parse(ko.frontmatter) as { title: string; description: string; categories?: string[]; draft?: boolean }
     const enPath = join(POSTS_DIR, slug, 'index.en.md')
     const en = existsSync(enPath) ? splitFrontmatter(readFileSync(enPath, 'utf8')) : undefined
     const enMeta = en ? (parse(en.frontmatter) as { sourceHash: string; translationStatus: 'machine' | 'reviewed' }) : undefined
     const input: ContentPostInput = {
       slug,
-      ko: { title: meta.title, description: meta.description, body: ko.body, tags: meta.tags ?? [], draft: meta.draft === true },
+      ko: { title: meta.title, description: meta.description, body: ko.body, categories: meta.categories ?? [], draft: meta.draft === true },
       en: en && enMeta ? { body: en.body, sourceHash: enMeta.sourceHash } : undefined,
     }
     return { input, translationStatus: enMeta?.translationStatus }
   })
-  const tagKeys = ((parse(readFileSync('content/tags.yaml', 'utf8')) as { tags: Array<{ key: string }> }).tags ?? []).map((tag) => tag.key)
+  const categoryKeys = ((parse(readFileSync('content/categories.yaml', 'utf8')) as { categories: Array<{ key: string }> }).categories ?? []).map((category) => category.key)
   const termKeys = ((parse(readFileSync('content/glossary.yaml', 'utf8')) as { terms: Array<{ key: string }> }).terms ?? []).map((term) => term.key)
-  const content = collectContentProblems({ posts: posts.map((post) => post.input), tagKeys, termKeys }, { translation: false })
+  const content = collectContentProblems({ posts: posts.map((post) => post.input), categoryKeys, termKeys }, { translation: false })
   results.push(
     content.length === 0
       ? { id: 'content', status: 'PASS', message: `콘텐츠 (글 ${slugs.length}편)` }

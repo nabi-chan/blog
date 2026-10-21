@@ -7,15 +7,15 @@ import {
   externalImages,
   headingAnchors,
   messageKeyDiff,
-  missingTagLabels,
+  missingCategoryLabels,
   missingTerms,
   plainTextMarker,
   spellingWarnings,
 } from './content-checks'
 
-describe('missingTagLabels / missingTerms', () => {
+describe('missingCategoryLabels / missingTerms', () => {
   it('표에 없는 키를 낸다', () => {
-    expect(missingTagLabels(['meta', 'llm'], [{ key: 'meta' }])).toEqual(['llm'])
+    expect(missingCategoryLabels(['meta', 'llm'], [{ key: 'meta' }])).toEqual(['llm'])
     expect(missingTerms(['prerender', 'hydration', 'prerender'], [{ key: 'prerender' }])).toEqual(['hydration'])
   })
 })
@@ -35,7 +35,7 @@ describe('brokenInternalLinks', () => {
   }
 
   it('있는 글·앵커·목록·산출물 링크와 외부 링크는 통과한다', () => {
-    const markdown = '[a](/261020#구성) [b](#구성) [c](/posts) [d](/) [e](/posts?tag=meta) [f](https://x.com) [g](/rss.xml) [h](/261020.md) [i](mailto:a@b.c)'
+    const markdown = '[a](/261020#구성) [b](#구성) [c](/posts) [d](/) [e](/posts?category=meta) [f](https://x.com) [g](/rss.xml) [h](/261020.md) [i](mailto:a@b.c)'
     expect(brokenInternalLinks({ slug: '261020', locale: 'ko', markdown }, site)).toEqual([])
   })
 
@@ -66,8 +66,8 @@ describe('externalImages', () => {
   })
 
   it('collectContentProblems 가 ko·en 외부 이미지를 문제로 낸다', () => {
-    const post = { slug: '261020', ko: { title: 't', description: 'd', body: '![a](https://x.com/a.png)\n', tags: [] } }
-    expect(collectContentProblems({ posts: [post], tagKeys: [], termKeys: [] })).toEqual([
+    const post = { slug: '261020', ko: { title: 't', description: 'd', body: '![a](https://x.com/a.png)\n', categories: [] } }
+    expect(collectContentProblems({ posts: [post], categoryKeys: [], termKeys: [] })).toEqual([
       { slug: '261020', problems: ['ko 외부 이미지는 CSP 가 막습니다. 파일을 글 폴더에 두세요: https://x.com/a.png'] },
     ])
   })
@@ -88,16 +88,16 @@ describe('messageKeyDiff', () => {
 })
 
 describe('collectContentProblems', () => {
-  const ko = { title: '제목', description: '설명', body: '## 구성\n\n:term[프리렌더]{key="prerender"}\n', tags: ['meta'] }
-  const base = { tagKeys: ['meta'], termKeys: ['prerender'] }
+  const ko = { title: '제목', description: '설명', body: '## 구성\n\n:term[프리렌더]{key="prerender"}\n', categories: ['meta'] }
+  const base = { categoryKeys: ['meta'], termKeys: ['prerender'] }
 
   it('문제가 없으면 빈 배열이다', () => {
     expect(collectContentProblems({ ...base, posts: [{ slug: '261020', ko }] })).toEqual([])
   })
 
-  it('빠진 태그·용어, 깨진 링크, 낡은 번역, 구조 불일치를 글마다 모은다', () => {
+  it('빠진 카테고리·용어, 깨진 링크, 낡은 번역, 구조 불일치를 글마다 모은다', () => {
     const problems = collectContentProblems({
-      tagKeys: [],
+      categoryKeys: [],
       termKeys: [],
       posts: [{ slug: '261020', ko: { ...ko, body: `${ko.body}\n[x](/261099)\n` }, en: { body: '## Structure\n\n## Extra\n', sourceHash: 'old' } }],
     })
@@ -105,7 +105,7 @@ describe('collectContentProblems', () => {
       {
         slug: '261020',
         problems: [
-          '태그 표시 이름 없음: meta',
+          '카테고리 표시 이름 없음: meta',
           '용어집에 없는 :term: prerender',
           'ko 링크 /261099 → 없는 글',
           'en 번역이 낡았습니다 (pnpm content:rehash --post 261020 또는 /translate-post)',
@@ -122,9 +122,9 @@ describe('collectContentProblems 의 translation 옵션', () => {
   it('translation: false 면 낡은 번역과 구조 불일치는 빼고 본다 (audit 이 번역 검사에서 따로 본다)', () => {
     const problems = collectContentProblems(
       {
-        tagKeys: ['meta'],
+        categoryKeys: ['meta'],
         termKeys: [],
-        posts: [{ slug: '261020', ko: { title: 't', description: 'd', body: '## 구성\n', tags: ['meta'] }, en: { body: '## A\n## B\n', sourceHash: 'old' } }],
+        posts: [{ slug: '261020', ko: { title: 't', description: 'd', body: '## 구성\n', categories: ['meta'] }, en: { body: '## A\n## B\n', sourceHash: 'old' } }],
       },
       { translation: false },
     )
@@ -192,7 +192,7 @@ describe('collectContentWarnings', () => {
   it('ko 는 맞춤법과 볼드를, en 은 볼드만 보고 경고가 있는 글만 낸다', () => {
     const post = (slug: string, koBody: string, enBody?: string) => ({
       slug,
-      ko: { title: 't', description: 'd', body: koBody, tags: [] },
+      ko: { title: 't', description: 'd', body: koBody, categories: [] },
       en: enBody === undefined ? undefined : { body: enBody, sourceHash: 'h' },
     })
     expect(

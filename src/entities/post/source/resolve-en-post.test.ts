@@ -9,7 +9,7 @@ const ko: KoSource = {
   content: '본문',
   date: '2026-05-06T00:00:00+09:00',
   updated: '2026-05-07T00:00:00+09:00',
-  tags: ['meta'],
+  categories: ['meta'],
   draft: false,
 }
 const en: EnSource = {
@@ -42,7 +42,7 @@ describe('resolveEnPost', () => {
     })
   })
 
-  it('날짜·태그·draft 는 원문에서 상속한다', () => {
+  it('날짜·카테고리·draft 는 원문에서 상속한다', () => {
     expect(resolveEnPost(en, ko, { production: true })).toEqual({
       kind: 'ok',
       post: {
@@ -52,7 +52,7 @@ describe('resolveEnPost', () => {
         description: 'Description',
         date: ko.date,
         updated: ko.updated,
-        tags: ['meta'],
+        categories: ['meta'],
         draft: false,
         translationStatus: 'machine',
       },

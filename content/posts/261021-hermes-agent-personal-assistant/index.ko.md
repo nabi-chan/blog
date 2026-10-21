@@ -2,7 +2,7 @@
 title: "Hermes Agent로 나만의 개인 비서 만들기"
 description: "Hermes Agent로 만든 AI 비서 이로하가 통화와 메일을 기억하고, Slack 질문에 답하고, 할 일을 챙기는 과정을 실제 사례로 정리했습니다."
 date: "2026-10-21 12:00"
-tags: ["hermes-agent", "mcp", "automation"]
+categories: ["hermes-agent", "ai"]
 draft: false
 ---
 

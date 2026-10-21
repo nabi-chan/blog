@@ -11,7 +11,6 @@ const base: HeadInput = {
   image: 'https://nabichan.me/og/en/261020.png',
   alternates: ['ko', 'en'],
   published: '2026-10-20T12:00:00+09:00',
-  tags: ['Blog', 'Meta'],
   jsonLd: siteGraph('en'),
   markdownPath: '/261020.md',
 }
@@ -54,13 +53,12 @@ describe('pageHead', () => {
     expect(metaValue(head, 'og:locale:alternate')).toEqual(['ko_KR'])
     expect(metaValue(head, 'article:published_time')).toEqual(['2026-10-20T12:00:00+09:00'])
     expect(metaValue(head, 'article:modified_time')).toEqual(['2026-10-20T12:00:00+09:00'])
-    expect(metaValue(head, 'article:tag')).toEqual(['Blog', 'Meta'])
     expect(metaValue(head, 'twitter:card')).toEqual(['summary_large_image'])
     expect(metaValue(head, 'twitter:image')).toEqual(['https://nabichan.me/og/en/261020.png'])
   })
 
   it('website 타입에는 article 메타가 없고, 설명이 없으면 description 메타도 없다', () => {
-    const head = pageHead({ ...base, type: 'website', description: undefined, published: undefined, tags: undefined, markdownPath: undefined })
+    const head = pageHead({ ...base, type: 'website', description: undefined, published: undefined, markdownPath: undefined })
     expect(head.meta.some((meta) => meta.property?.startsWith('article:'))).toBe(false)
     expect(metaValue(head, 'description')).toEqual([])
     expect(head.links.some((link) => link.type === 'text/markdown')).toBe(false)

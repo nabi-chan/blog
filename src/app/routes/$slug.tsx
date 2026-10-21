@@ -15,9 +15,9 @@ export const Route = createFileRoute('/$slug')({
   // 글 페이지 제목은 글 제목만 쓴다 (스펙 4.9). 404 면 notFoundComponent 가 제목을 단다
   head: ({ loaderData }) => {
     if (!loaderData) return {}
-    const { post, available, tags, wordCount } = loaderData
+    const { post, available, categories, wordCount } = loaderData
     const image = absoluteUrl(`/og/${post.locale}/${post.slug}.png`)
-    const labels = tags.map((tag) => tag.label)
+    const labels = categories.map((category) => category.label)
     return pageHead({
       locale: post.locale,
       path: `/${post.slug}`,
@@ -28,8 +28,7 @@ export const Route = createFileRoute('/$slug')({
       alternates: available,
       published: post.date,
       modified: post.updated,
-      tags: labels,
-      jsonLd: postGraph({ ...post, tags: labels, wordCount, image }),
+      jsonLd: postGraph({ ...post, categories: labels, wordCount, image }),
       markdownPath: `/${post.slug}.md`,
     })
   },
