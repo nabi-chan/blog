@@ -106,6 +106,12 @@ describe('compareStructure', () => {
     expect(en(EN.replace('```ts', '```js'))).toEqual(['코드 블록 언어가 다릅니다: ko [ts] / en [js]'])
     expect(en(EN.replace('[!TIP]', '[!NOTE]'))).toEqual(['Callout 종류가 다릅니다: ko [tip] / en [note]'])
     expect(en(EN.replace('./diagram.svg', './diagram-en.svg'))).toEqual(['이미지 경로가 다릅니다: ko [./diagram.svg] / en [./diagram-en.svg]'])
+    // 확장자 앞의 언어 접미사는 같은 그림의 언어판으로 본다 (?w= 같은 쿼리가 붙어도)
+    expect(en(EN.replace('./diagram.svg', './diagram.en.svg'))).toEqual([])
+    expect(compareStructure(translationStructure('![a](./d.ko.svg?w=400)\n'), translationStructure('![a](./d.en.svg?w=400)\n'))).toEqual([])
+    expect(compareStructure(translationStructure('![a](./d.svg?w=400)\n'), translationStructure('![a](./d.en.svg?w=720)\n'))).toEqual([
+      '이미지 경로가 다릅니다: ko [./d.svg?w=400] / en [./d.en.svg?w=720]',
+    ])
     expect(en(EN.replace('https://tanstack.com/start', 'https://tanstack.com'))).toEqual([
       '링크 목적지가 다릅니다: ko [/261020, https://tanstack.com/start] / en [/261020, https://tanstack.com]',
     ])

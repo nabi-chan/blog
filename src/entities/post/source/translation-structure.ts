@@ -75,6 +75,10 @@ export function translationStructure(markdown: string): Structure {
 const list = (values: Array<string | number | null>) => `[${values.map(String).join(', ')}]`
 const same = (a: unknown[], b: unknown[]) => JSON.stringify(a) === JSON.stringify(b)
 
+// 언어별 그림은 `<이름>.en.svg` 처럼 확장자 앞에 언어 접미사를 붙인다. 접미사를 뺀 경로가 같으면 같은 그림으로 본다
+const LOCALE_SUFFIX = /\.(?:ko|en)(?=\.[a-z0-9]+(?:[?#]|$))/i
+const imageKey = (url: string) => url.replace(LOCALE_SUFFIX, '')
+
 // 다른 항목마다 한국어 한 줄. 빈 배열이면 같은 뼈대다
 export function compareStructure(ko: Structure, en: Structure): string[] {
   const problems: string[] = []
@@ -85,7 +89,7 @@ export function compareStructure(ko: Structure, en: Structure): string[] {
   const sorted = (values: string[]) => [...values].sort()
   check('헤딩 깊이', ko.headings, en.headings)
   check('링크 목적지', sorted(ko.links), sorted(en.links))
-  check('이미지 경로', ko.images, en.images)
+  if (!same(ko.images.map(imageKey), en.images.map(imageKey))) problems.push(`이미지 경로가 다릅니다: ko ${list(ko.images)} / en ${list(en.images)}`)
   check('Callout 종류', ko.callouts, en.callouts)
   if (ko.code.length !== en.code.length) problems.push(`코드 블록 개수가 다릅니다: ko ${ko.code.length} / en ${en.code.length}`)
   else check('코드 블록 언어', ko.code, en.code)
