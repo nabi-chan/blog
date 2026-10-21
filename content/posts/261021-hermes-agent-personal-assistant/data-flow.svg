@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 1010" role="img" aria-labelledby="title desc">
+  <title id="title">이로하의 데이터 흐름</title>
+  <desc id="desc">휴대폰 통화 녹음은 업로드 앱이 Google Drive에 올리고, call-ingest가 글로 옮겨 통화 기록에 저장한 뒤 이로하의 통화 정리를 깨운다. Gmail은 mail-watch가 자동으로 확인해서 새 메일이 있을 때 이로하의 메일 확인을 깨운다. entity-context는 자동으로 새 통화와 메일을 모아 이로하의 맥락 정리를 깨우고, 결과는 맥락 기록에 쌓인다. 통화 정리와 메일 확인은 Structured에 할 일을 넣고 Slack에 메시지를 남긴다. 중요한 메일은 바로, 나머지는 매시 정각에 보낸다. Slack에서 물으면 이로하가 맥락 기록과 Structured를 읽어 답한다. 할 일 정리는 하루 세 번 스크립트가 Structured를 읽어 Slack으로 보낸다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#262626"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; }
+      .box { fill: #ffffff; stroke: #707070; stroke-width: 1.2; }
+      .tool { fill: #f4f4f4; stroke: #707070; stroke-width: 1.2; }
+      .agent { fill: #ffffff; stroke: #000000; stroke-width: 2.8; }
+      .name { font-size: 18px; font-weight: 700; fill: #000000; text-anchor: middle; }
+      .sub { font-size: 14px; font-weight: 400; fill: #707070; text-anchor: middle; }
+      .edge { fill: none; stroke: #262626; stroke-width: 1.6; }
+      .label { font-size: 13px; font-weight: 400; fill: #707070; paint-order: stroke; stroke: #ffffff; stroke-width: 4px; stroke-linejoin: round; }
+      .legend { font-size: 14px; font-weight: 400; fill: #262626; }
+    </style>
+  </defs>
+
+  <rect width="720" height="1010" fill="#ffffff"/>
+
+  <!-- 통화 갈래 (오른쪽, x=600) -->
+  <path class="edge" d="M600,80 V110" marker-end="url(#arrow)"/>
+  <path class="edge" d="M600,170 V200" marker-end="url(#arrow)"/>
+  <path class="edge" d="M600,260 V290" marker-end="url(#arrow)"/>
+  <path class="edge" d="M600,350 V400" marker-end="url(#arrow)"/>
+  <text class="label" x="610" y="380">글로 옮기면</text>
+
+  <!-- 메일 갈래 (왼쪽, x=120) -->
+  <path class="edge" d="M120,80 V200" marker-end="url(#arrow)"/>
+  <path class="edge" d="M120,260 V400" marker-end="url(#arrow)"/>
+  <text class="label" x="130" y="335">새 메일이 있으면</text>
+
+  <!-- 맥락 갈래 (가운데, x=360) -->
+  <path class="edge" d="M220,50 H360 V290" marker-end="url(#arrow)"/>
+  <text class="label" x="370" y="150">메일</text>
+  <path class="edge" d="M500,330 H460" marker-end="url(#arrow)"/>
+  <text class="label" x="480" y="320" text-anchor="middle">통화</text>
+  <path class="edge" d="M360,350 V400" marker-end="url(#arrow)"/>
+  <text class="label" x="370" y="380">자동으로 모아서</text>
+  <path class="edge" d="M360,460 V510" marker-end="url(#arrow)"/>
+
+  <!-- 이로하 → Structured / Slack -->
+  <path class="edge" d="M120,460 V660" marker-end="url(#arrow)"/>
+  <path class="edge" d="M600,460 V660" marker-end="url(#arrow)"/>
+  <path class="edge" d="M120,600 H600"/>
+  <circle cx="120" cy="600" r="3.5" fill="#262626"/>
+  <circle cx="600" cy="600" r="3.5" fill="#262626"/>
+  <text class="label" x="360" y="585" text-anchor="middle">둘 다: Structured에 할 일 · Slack에 메시지</text>
+  <text class="label" x="588" y="628" text-anchor="end">메일은 중요하면 바로,</text>
+  <text class="label" x="588" y="646" text-anchor="end">나머지는 매시 정각에</text>
+
+  <!-- 맥락 기록 → 묻고 답하기 (합류선은 점프로 건넌다) -->
+  <path class="edge" d="M360,570 V594 a6,6 0 0 1 0,12 V660" marker-end="url(#arrow)"/>
+  <text class="label" x="370" y="640">읽기</text>
+
+  <!-- Slack에서 묻고 답하기 -->
+  <path class="edge" d="M500,690 H460" marker-end="url(#arrow)"/>
+  <path class="edge" d="M460,710 H500" marker-end="url(#arrow)"/>
+  <text class="label" x="480" y="682" text-anchor="middle">질문</text>
+  <text class="label" x="480" y="728" text-anchor="middle">답</text>
+  <path class="edge" d="M220,680 H260" marker-end="url(#arrow)"/>
+  <text class="label" x="240" y="673" text-anchor="middle">읽기</text>
+
+  <!-- 할 일 정리 -->
+  <path class="edge" d="M120,720 V850 H260" marker-end="url(#arrow)"/>
+  <text class="label" x="130" y="790">미완료 할 일</text>
+  <path class="edge" d="M460,850 H600 V720" marker-end="url(#arrow)"/>
+  <text class="label" x="610" y="790">정리 메시지</text>
+
+  <!-- 입력 -->
+  <rect class="box" x="20" y="20" width="200" height="60" rx="8"/>
+  <text class="name" x="120" y="48">Gmail</text>
+  <text class="sub" x="120" y="68">계정 2개</text>
+
+  <rect class="box" x="500" y="20" width="200" height="60" rx="8"/>
+  <text class="name" x="600" y="48">통화 녹음</text>
+  <text class="sub" x="600" y="68">휴대폰이 자동으로</text>
+
+  <rect class="box" x="500" y="110" width="200" height="60" rx="8"/>
+  <text class="name" x="600" y="138">Google Drive</text>
+  <text class="sub" x="600" y="158">업로드 앱이 올림</text>
+
+  <!-- 직접 만든 도구 -->
+  <rect class="tool" x="20" y="200" width="200" height="60" rx="8"/>
+  <text class="name" x="120" y="228">mail-watch</text>
+  <text class="sub" x="120" y="248">자동으로 확인</text>
+
+  <rect class="tool" x="500" y="200" width="200" height="60" rx="8"/>
+  <text class="name" x="600" y="228">call-ingest</text>
+  <text class="sub" x="600" y="248">녹음을 글로</text>
+
+  <rect class="box" x="500" y="290" width="200" height="60" rx="8"/>
+  <text class="name" x="600" y="318">통화 기록</text>
+  <text class="sub" x="600" y="338">녹음 · 전사록 전체</text>
+
+  <rect class="tool" x="260" y="290" width="200" height="60" rx="8"/>
+  <text class="name" x="360" y="318">entity-context</text>
+  <text class="sub" x="360" y="338">통화·메일을 모음</text>
+
+  <!-- 이로하가 하는 일 -->
+  <rect class="agent" x="20" y="400" width="200" height="60" rx="8"/>
+  <text class="name" x="120" y="428">메일 확인</text>
+  <text class="sub" x="120" y="448">새 메일마다</text>
+
+  <rect class="agent" x="260" y="400" width="200" height="60" rx="8"/>
+  <text class="name" x="360" y="428">맥락 정리</text>
+  <text class="sub" x="360" y="448">묶음이 있을 때</text>
+
+  <rect class="agent" x="500" y="400" width="200" height="60" rx="8"/>
+  <text class="name" x="600" y="428">통화 정리</text>
+  <text class="sub" x="600" y="448">통화 한 건마다</text>
+
+  <rect class="box" x="260" y="510" width="200" height="60" rx="8"/>
+  <text class="name" x="360" y="538">맥락 기록</text>
+  <text class="sub" x="360" y="558">사람·회사·프로젝트</text>
+
+  <!-- 출력 -->
+  <rect class="box" x="20" y="660" width="200" height="60" rx="8"/>
+  <text class="name" x="120" y="688">Structured</text>
+  <text class="sub" x="120" y="708">플래너 앱</text>
+
+  <rect class="agent" x="260" y="660" width="200" height="60" rx="8"/>
+  <text class="name" x="360" y="688">묻고 답하기</text>
+  <text class="sub" x="360" y="708">물을 때</text>
+
+  <rect class="box" x="500" y="660" width="200" height="60" rx="8"/>
+  <text class="name" x="600" y="688">Slack</text>
+  <text class="sub" x="600" y="708">메시지</text>
+
+  <rect class="tool" x="260" y="820" width="200" height="60" rx="8"/>
+  <text class="name" x="360" y="848">할 일 정리</text>
+  <text class="sub" x="360" y="868">10 · 17 · 22시 자동</text>
+
+  <!-- 범례 -->
+  <rect class="agent" x="20" y="940" width="28" height="18" rx="4"/>
+  <text class="legend" x="57" y="954">이로하가 생각해서 하는 일</text>
+  <rect class="tool" x="20" y="970" width="28" height="18" rx="4"/>
+  <text class="legend" x="57" y="984">직접 만든 프로그램</text>
+  <rect class="box" x="380" y="940" width="28" height="18" rx="4"/>
+  <text class="legend" x="417" y="954">외부 서비스 · 저장소</text>
+</svg>
