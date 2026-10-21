@@ -27,18 +27,21 @@ argument-hint: <slug>
 
 ## 2. 1차 번역하기
 
-- frontmatter 는 `title`, `description`, `sourceHash`, `translationStatus` 만 둔다. `date`, `updated`, `tags`, `draft` 는 ko 에서 상속하므로 쓰지 않는다.
+- frontmatter 는 `title`, `seoTitle`, `description`, `keywords`, `sourceHash`, `translationStatus` 만 둔다. `date`, `updated`, `categories`, `draft` 는 ko 에서 상속하므로 쓰지 않는다.
 
   ```yaml
   ---
   title: "..."
+  seoTitle: "..."
   description: "... (160자 이하)"
+  keywords: ["...", "..."]
   sourceHash: "<아래 명령으로 넣는다>"
   translationStatus: machine
   ---
   ```
 
-- `description` 과 제목은 영어 검색 의도에 맞게 현지화한다. 직역하지 않는다.
+- 제목, `seoTitle`, `description`, `keywords` 는 영어 검색 의도에 맞게 현지화한다. 직역하지 않는다.
+  - `keywords` 는 영어 사용자가 검색창에 입력할 말로 새로 고른다. 개수와 쓰는 기준은 문체 가이드 7절과 같다.
 - 그림 안에 한국어 글자가 있으면 영어판 그림을 따로 만든다. 글 폴더에 `<이름>.en.svg` 처럼 확장자 앞에 `.en` 을 붙여 두고 en 에서는 그 경로를 쓴다. 구조 검사는 언어 접미사를 뺀 경로로 비교하므로 `?w=` 같은 쿼리는 ko 와 같게 둔다. 그림 안의 글자에는 1인칭을 쓰지 않는다(문체 가이드 3절).
 - 내부 링크는 ko 와 같은 경로(`/<slug>`)로 둔다. `/en` 은 빌드가 붙인다.
   - 같은 글 안 앵커(`#…`)는 영어 헤딩의 앵커로 바꾼다.
@@ -76,11 +79,11 @@ pnpm content:check --post <slug>
 
 지적을 반영하고 3단계를 다시 통과시킨다.
 
-## 5. 태그·용어집 채우기
+## 5. 카테고리·용어집 채우기
 
-번역하면서 새로 필요해진 태그 en 표시 이름이나 용어 en 이름·정의가 비어 있으면 채운다.
+번역하면서 새로 필요해진 카테고리 en 표시 이름이나 용어 en 이름·정의가 비어 있으면 채운다.
 
-- 태그: `content/tags.yaml`
+- 카테고리: `content/categories.yaml`
 - 용어: `content/glossary.yaml`
 
 ## 6. 넘기기
@@ -89,4 +92,4 @@ pnpm content:check --post <slug>
 - 다음을 보여 준다.
   - 바꾼 파일
   - 2차 리뷰 지적과 반영 결과
-  - 채운 태그·용어
+  - 채운 카테고리·용어

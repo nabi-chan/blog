@@ -45,14 +45,17 @@ argument-hint: <초안 또는 초안 파일 경로>
 
   ```yaml
   ---
-  title: "검색할 말이 앞에 오는 제목"
+  title: "글 머리와 OG 카드에 보일 짧은 제목"
+  seoTitle: "검색할 말로 시작하는 제목: 핵심 개념"
   description: "160자 이하. 이 글이 답하는 질문"
   date: "2026-10-20 12:00"      # KST
-  tags: ["meta"]                # 태그 키 (소문자 ASCII)
+  categories: ["software"]      # 카테고리 키 (소문자 ASCII), 1개 이상
+  keywords: ["검색어 1", "검색어 2"]  # 5~10개. 화면에는 보이지 않는다
   draft: true                   # 은솔이 확인하기 전까지
   ---
   ```
 
+- `title`, `seoTitle`, `keywords`, `categories` 는 문체 가이드 7절을 따른다. 카테고리는 `content/categories.yaml` 에 있는 것을 먼저 쓴다.
 - 이미지는 글 폴더에 둔다. 상대 경로로 쓰고(`![대체 텍스트](./diagram.png "캡션")`), 대체 텍스트를 꼭 쓴다.
   - 한글·공백 파일 이름도 된다.
   - 폭을 줄이려면 `?w=400` 을 붙인다.
@@ -62,7 +65,8 @@ argument-hint: <초안 또는 초안 파일 경로>
 ## 4. 체크리스트 점검하기
 
 - **SEO**
-  - 제목에 검색할 말이 앞쪽에 있다.
+  - 제목은 짧고, 검색 제목(`seoTitle`)은 검색할 말로 시작한다.
+  - 키워드는 5~10개이고 검색창에 입력할 모양이다.
   - 설명은 160자 이하다.
   - 정의 다음 문단에 글을 쓴 목적과 얻을 것이 있다.
 - **신뢰**
@@ -79,14 +83,14 @@ argument-hint: <초안 또는 초안 파일 경로>
 - **AI 문체 신호**: 문체 가이드 5절 표대로 걷어낸다.
 - **맞춤법**: 문체 가이드 4절대로 교정한다.
 
-## 5. 태그·용어집 채우기
+## 5. 카테고리·용어집 채우기
 
 ```sh
 pnpm content:check --post <slug> --no-build
 ```
 
-- 출력에서 "태그 표시 이름 없음", "용어집에 없는 :term" 항목을 찾는다.
-  - 태그: `content/tags.yaml` 에 `{ key, ko, en }` 을 추가한다.
+- 출력에서 "카테고리 표시 이름 없음", "용어집에 없는 :term" 항목을 찾는다.
+  - 카테고리: 큰 분류이므로 기존 카테고리로 먼저 해결한다. 새로 만들어야 하면 은솔에게 확인한 뒤 `content/categories.yaml` 에 `{ key, ko, en }` 을 추가한다.
   - 용어: `content/glossary.yaml` 에 `{ key, ko: { name, definition }, en: { name, definition } }` 을 추가한다.
 - **추가한 항목은 은솔에게 따로 보여 준다.**
 
@@ -102,6 +106,6 @@ pnpm content:check --post <slug>
 
 - 바꾼 파일 목록과 은솔이 확인할 것을 보여 준다.
   - 사실 확인이 필요한 문장
-  - 추가한 태그·용어
+  - 추가한 카테고리·용어
   - `draft` 상태
 - 번역은 `/translate-post <slug>` 로 넘긴다.

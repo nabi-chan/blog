@@ -18,7 +18,7 @@ eunsol(Nabi)의 개인 블로그 `nabichan.me` 저장소다. 사람과 에이전
 | 레이어 | 두는 것 |
 |---|---|
 | `app` | 라우트(`routes`), 엔트리(`router.tsx`·`client.tsx`), Worker 진입과 API 조립(`server`), SEO 산출물(`seo`), 프리렌더 목록(`build`), 전역 CSS(`styles`) |
-| `pages` | 화면(`home`·`posts`·`post`·`not-found`). 한 화면에서만 쓰는 코드(태그 필터, 목차 등)도 여기 |
+| `pages` | 화면(`home`·`posts`·`post`·`not-found`). 한 화면에서만 쓰는 코드(카테고리 필터, 목차 등)도 여기 |
 | `widgets` | 여러 화면이 같이 쓰는 큰 블록(`site-layout`) |
 | `features` | 사용자 동작(`comment`·`view-count`·`term-tooltip`·`embeds`). 화면과 그 API 처리·D1 쿼리가 같이 산다 |
 | `entities` | 글(`post`): 모델, 서버 함수, Markdown 렌더 파이프라인, 원문 검사 |
@@ -67,7 +67,7 @@ pnpm dev                         # http://localhost:3000
 | `pnpm test` | vitest + 커버리지(함수 100%, 줄 90%) |
 | `pnpm audit:repo` | 저장소 점검(아래). `--build`, `--live [--base-url <url>]` |
 | `pnpm lint:fsd` | FSD 구조 검사(Steiger). `audit:repo` 도 돌린다 |
-| `pnpm content:check [--post <slug>]` | 글 검사: 번역 구조, 빠진 태그·용어, 깨진 내부 링크, 낡은 번역. 볼드 깨짐·맞춤법은 경고만 |
+| `pnpm content:check [--post <slug>]` | 글 검사: 번역 구조, 빠진 카테고리·용어, 깨진 내부 링크, 낡은 번역. 볼드 깨짐·맞춤법은 경고만 |
 | `pnpm content:rehash --post <slug>` | 번역에 영향 없는 ko 수정 뒤 en 의 `sourceHash` 만 갱신 |
 | `pnpm build` / `pnpm preview` | 프로덕션 빌드 / workerd 로 미리보기(:4173) |
 | `pnpm smoke <url>` | 주요 경로·산출물·메타 URL 200 확인 |
@@ -88,7 +88,7 @@ pnpm dev                         # http://localhost:3000
 ## 꼭 지킬 것
 
 - **개발 서버가 떠 있을 때 빌드를 돌리지 않는다.** `.content-collections`, `src/paraglide`, `dist`, `public/og`, `public/content-assets` 를 서로 덮어쓴다. 빌드는 병렬 작업 전에 혼자 한 번만 돌린다.
-- **ko 원문의 본문·제목·설명을 고치면 push 전에 둘 중 하나를 한다.** 하지 않으면 낡은 번역으로 빌드와 배포가 막힌다.
+- **ko 원문의 본문·제목·검색 제목(`seoTitle`)·설명·키워드(`keywords`)를 고치면 push 전에 둘 중 하나를 한다.** 하지 않으면 낡은 번역으로 빌드와 배포가 막힌다.
   - 번역에 영향이 있으면 `/translate-post <slug>`
   - 오타처럼 영향이 없으면 `pnpm content:rehash --post <slug>`
 - **마이그레이션은 추가만 한다.** 이미 커밋한 `migrations/*.sql` 은 고치지 않는다. CI 가 마이그레이션을 먼저 적용하고 배포하므로, 그 사이에는 이전 코드가 새 스키마 위에서 돈다.
@@ -185,4 +185,5 @@ pnpm dev                         # http://localhost:3000
 - 커맨드: `/write-post`, `/refine-post`, `/translate-post`, `/audit` (`.claude/commands/`)
 - 문체: `docs/writing/style-guide.md`
 - 글 폴더: `content/posts/<YYMMDD(-kebab)?>/index.ko.md` (+ `index.en.md`, 글 옆 이미지). `YYMMDD` 는 frontmatter `date`(KST)와 같고, 하루에 한 편만 쓴다.
-- 태그 표시 이름은 `content/tags.yaml`, 용어는 `content/glossary.yaml` 에 ko/en 으로 둔다.
+- 카테고리 표시 이름은 `content/categories.yaml`, 용어는 `content/glossary.yaml` 에 ko/en 으로 둔다.
+- frontmatter 의 `title`·`seoTitle`·`keywords`·`categories` 를 쓰는 기준은 `docs/writing/style-guide.md` 7절에 있다.
