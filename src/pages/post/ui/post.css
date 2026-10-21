@@ -1,4 +1,4 @@
-/* 글 화면: 머리말, 태그, 목차, 본문·목차 배치 */
+/* 글 화면: 머리말, 카테고리, 목차, 본문·목차 배치 */
 .post-header {
   margin-bottom: 3rem;
 }
@@ -13,7 +13,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.post-tags {
+.post-categories {
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem 1rem;
@@ -22,11 +22,6 @@
   list-style: none;
   color: var(--muted);
   font-size: 0.92rem;
-}
-
-.post-tags li::before {
-  content: '#';
-  margin-right: 0.1em;
 }
 
 /* 목차: 넓은 화면은 오른쪽 여백에 고정, 좁은 화면은 본문 위 접기 블록 */

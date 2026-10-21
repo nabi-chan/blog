@@ -4,7 +4,7 @@ import { toString } from 'mdast-util-to-string'
 import { visit } from 'unist-util-visit'
 import type { VFile } from 'vfile'
 import type { Locale } from '~/shared/i18n'
-import { TAG_PATTERN } from '../../../shared/config'
+import { KEY_PATTERN } from '../../../shared/config'
 
 export type GlossaryEntry = { name: string; definition: string }
 export type Glossary = Record<string, Record<Locale, GlossaryEntry>>
@@ -24,7 +24,7 @@ export function remarkTerm(opts: { locale: Locale; glossary: Glossary }) {
       const label = toString(node).trim()
       const attributes = node.attributes ?? {}
       const key = attributes.key
-      if (!label || Object.keys(attributes).length !== 1 || typeof key !== 'string' || !TAG_PATTERN.test(key)) {
+      if (!label || Object.keys(attributes).length !== 1 || typeof key !== 'string' || !KEY_PATTERN.test(key)) {
         throw new Error(`:term 형식이 틀렸습니다 (${file.path ?? '알 수 없는 파일'}): :term[라벨]{key="kebab-case"}`)
       }
       if (!opts.glossary[key]?.[opts.locale]) throw new Error(`용어집에 없는 키입니다: ${key} (content/glossary.yaml)`)

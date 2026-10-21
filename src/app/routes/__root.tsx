@@ -37,7 +37,7 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: ReactNode }) {
   return (
-    // /posts 의 인라인 스크립트가 페인트 전에 data-tag 를 붙이므로 그 차이는 hydration 경고에서 뺀다
+    // /posts 의 인라인 스크립트가 페인트 전에 data-category 를 붙이므로 그 차이는 hydration 경고에서 뺀다
     <html lang={getLocale()} suppressHydrationWarning>
       <head>
         <HeadContent />

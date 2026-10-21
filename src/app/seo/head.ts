@@ -11,6 +11,8 @@ export type HeadInput = {
   path: string
   // <title> 그대로. 템플릿(… | eunsol)은 호출하는 쪽이 붙인다
   title: string
+  // og:image:alt. OG 이미지에 그린 글자가 title 과 다를 때 준다(글 페이지는 title 이 seoTitle, 이미지는 화면 제목). 없으면 title
+  imageAlt?: string
   description?: string
   type: 'website' | 'article'
   // 절대 URL
@@ -19,7 +21,8 @@ export type HeadInput = {
   alternates: Locale[]
   published?: string
   modified?: string
-  tags?: string[]
+  // <meta name="keywords">. 글 페이지만 준다. article:tag 는 달지 않는다: TanStack 이 같은 property 메타를 하나만 남긴다
+  keywords?: string[]
   jsonLd: Graph
   // 글이면 '/261020.md'. 언어 접두사는 여기서 붙인다
   markdownPath?: string
@@ -36,6 +39,7 @@ export function pageHead(input: HeadInput): { meta: Tag[]; links: Tag[]; scripts
   const meta: Tag[] = [
     { title: input.title },
     ...(description === undefined ? [] : [{ name: 'description', content: description }]),
+    ...(input.keywords === undefined ? [] : [{ name: 'keywords', content: input.keywords.join(', ') }]),
     { property: 'og:site_name', content: site.name },
     { property: 'og:type', content: input.type },
     { property: 'og:title', content: input.title },
@@ -44,14 +48,13 @@ export function pageHead(input: HeadInput): { meta: Tag[]; links: Tag[]; scripts
     { property: 'og:image', content: input.image },
     { property: 'og:image:width', content: '1200' },
     { property: 'og:image:height', content: '630' },
-    { property: 'og:image:alt', content: input.title },
+    { property: 'og:image:alt', content: input.imageAlt ?? input.title },
     { property: 'og:locale', content: site.ogLocales[input.locale] },
     ...others.map((locale) => ({ property: 'og:locale:alternate', content: site.ogLocales[locale] })),
     ...(input.type === 'article' && input.published !== undefined
       ? [
           { property: 'article:published_time', content: input.published },
           { property: 'article:modified_time', content: input.modified ?? input.published },
-          ...(input.tags ?? []).map((tag) => ({ property: 'article:tag', content: tag })),
         ]
       : []),
     { name: 'twitter:card', content: 'summary_large_image' },

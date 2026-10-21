@@ -5,7 +5,7 @@ import { type Locale, m } from '~/shared/i18n'
 
 function Item({ post, locale }: { post: PostMeta; locale: Locale }) {
   return (
-    <li data-post="" data-tags={post.tags.join(' ')} className="post-item">
+    <li data-post="" data-categories={post.categories.join(' ')} className="post-item">
       <Link to="/$slug" params={{ slug: post.slug }} className="post-item-title">
         {post.title}
         {/* dev 에서만 보인다. 프로덕션에는 draft 글이 없다 */}

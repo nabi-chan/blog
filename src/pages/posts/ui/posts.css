@@ -1,4 +1,4 @@
-/* 글 목록 화면: 연도 묶음, 태그 필터 */
+/* 글 목록 화면: 연도 묶음, 카테고리 필터 */
 .posts .display {
   margin-bottom: 2.5rem;
 }
@@ -12,24 +12,24 @@
   font-variant-numeric: tabular-nums;
 }
 
-.tag-filter {
+.category-filter {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem 1.25rem;
   margin-bottom: 1rem;
 }
 
-.tag-filter a {
+.category-filter a {
   color: var(--muted);
   text-decoration: none;
   text-underline-offset: 0.3em;
 }
 
-.tag-filter a:hover {
+.category-filter a:hover {
   color: var(--ink);
 }
 
-html:not([data-tag]) .tag-filter [data-chip=''] {
+html:not([data-category]) .category-filter [data-chip=''] {
   color: var(--ink);
   font-weight: 700;
   text-decoration: underline;

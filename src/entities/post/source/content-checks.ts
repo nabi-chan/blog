@@ -15,9 +15,9 @@ type Locale = 'ko' | 'en'
 
 const parse = (markdown: string): Root => unified().use(remarkParse).use(remarkGfm, { singleTilde: false }).use(remarkDirective).parse(markdown)
 
-export function missingTagLabels(tagKeys: string[], labels: Array<{ key: string }>): string[] {
+export function missingCategoryLabels(categoryKeys: string[], labels: Array<{ key: string }>): string[] {
   const known = new Set(labels.map((label) => label.key))
-  return [...new Set(tagKeys)].filter((key) => !known.has(key))
+  return [...new Set(categoryKeys)].filter((key) => !known.has(key))
 }
 
 export function missingTerms(termKeys: string[], glossary: Array<{ key: string }>): string[] {
@@ -125,14 +125,14 @@ export function externalImages(markdown: string): string[] {
 
 export type ContentPostInput = {
   slug: string
-  ko: { title: string; description: string; body: string; tags: string[]; draft?: boolean }
+  ko: { title: string; description: string; seoTitle: string; keywords: string[]; body: string; categories: string[]; draft?: boolean }
   en?: { body: string; sourceHash: string }
 }
 
 // 글마다 문제를 모은다. content:check 와 audit:repo 가 같이 쓴다
 // options.translation 이 false 면 낡은 번역·구조 불일치는 빼고 본다 (audit 이 번역 검사에서 따로 낸다)
 export function collectContentProblems(
-  input: { posts: ContentPostInput[]; tagKeys: string[]; termKeys: string[] },
+  input: { posts: ContentPostInput[]; categoryKeys: string[]; termKeys: string[] },
   options: { translation?: boolean } = {},
 ): Array<{ slug: string; problems: string[] }> {
   const translation = options.translation ?? true
@@ -146,8 +146,8 @@ export function collectContentProblems(
       const problems: string[] = []
       const koStructure = translationStructure(post.ko.body)
       const enStructure = post.en ? translationStructure(post.en.body) : undefined
-      const tags = missingTagLabels(post.ko.tags, input.tagKeys.map((key) => ({ key })))
-      if (tags.length > 0) problems.push(`태그 표시 이름 없음: ${tags.join(', ')}`)
+      const categories = missingCategoryLabels(post.ko.categories, input.categoryKeys.map((key) => ({ key })))
+      if (categories.length > 0) problems.push(`카테고리 표시 이름 없음: ${categories.join(', ')}`)
       const terms = missingTerms([...koStructure.terms, ...(enStructure?.terms ?? [])], input.termKeys.map((key) => ({ key })))
       if (terms.length > 0) problems.push(`용어집에 없는 :term: ${terms.join(', ')}`)
       for (const line of brokenInternalLinks({ slug: post.slug, locale: 'ko', markdown: post.ko.body, draft: post.ko.draft }, site)) problems.push(`ko 링크 ${line}`)

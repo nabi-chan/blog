@@ -1,5 +1,5 @@
 export { getLobbyIntroFn, getPostFn, listPostsFn } from './api/posts.functions'
 export type { GlossaryEntry, TocItem } from './markdown/render'
 export type { PostIndex, PostMeta } from './model/post-index'
-export type { FeedItem, LobbyIntro, PostPage, TagRef } from './model/post-queries'
+export type { CategoryRef, FeedItem, LobbyIntro, PostPage } from './model/post-queries'
 export { PostList } from './ui/PostList'

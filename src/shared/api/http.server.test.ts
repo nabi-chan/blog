@@ -88,7 +88,7 @@ describe('readJson', () => {
 describe('safeReturnPath', () => {
   it('같은 사이트의 경로는 그대로 돌려준다', () => {
     expect(safeReturnPath('/261020')).toBe('/261020')
-    expect(safeReturnPath('/en/posts?tag=meta#x')).toBe('/en/posts?tag=meta#x')
+    expect(safeReturnPath('/en/posts?category=software#x')).toBe('/en/posts?category=software#x')
   })
 
   it('다른 사이트로 가거나 /admin 으로 되돌아가는 값은 / 로 바꾼다', () => {

@@ -122,7 +122,7 @@ function originChecks(baseUrl: string): SmokeCheck[] {
   return [
     { path: '/admin?return=//evil.com', status: 302, locationIncludes: '.cloudflareaccess.com/cdn-cgi/access/login/' },
     // http 로 온 요청은 경로·쿼리를 지킨 채 https 로 올라가야 한다 (zone 의 Always Use HTTPS)
-    { path: 'http://nabichan.me/posts?tag=meta', status: 301, location: 'https://nabichan.me/posts?tag=meta' },
+    { path: 'http://nabichan.me/posts?category=software', status: 301, location: 'https://nabichan.me/posts?category=software' },
   ]
 }
 

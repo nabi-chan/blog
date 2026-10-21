@@ -32,7 +32,7 @@ const cdata = (text: string) => `<![CDATA[${text.replaceAll(']]>', ']]]]><![CDAT
 // 언어별 RSS 2.0. 본문 전문을 content:encoded 로 싣는다 (스펙 4.9)
 export function buildRss(input: { locale: Locale; title: string; description: string; items: FeedItem[] }): string {
   const latest = input.items.map(({ post }) => post.updated ?? post.date).sort((a, b) => Date.parse(a) - Date.parse(b)).at(-1)
-  const items = input.items.map(({ post, tags, html }) => {
+  const items = input.items.map(({ post, categories, html }) => {
     const url = pageUrl(`/${post.slug}`, input.locale)
     return [
       '    <item>',
@@ -42,7 +42,7 @@ export function buildRss(input: { locale: Locale; title: string; description: st
       `      <pubDate>${rfc822(post.date)}</pubDate>`,
       `      <description>${escapeXml(post.description)}</description>`,
       `      <content:encoded>${cdata(absolutizeHtml(html, url))}</content:encoded>`,
-      ...tags.map((tag) => `      <category>${escapeXml(tag.label)}</category>`),
+      ...categories.map((category) => `      <category>${escapeXml(category.label)}</category>`),
       '    </item>',
     ].join('\n')
   })

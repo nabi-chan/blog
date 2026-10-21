@@ -46,7 +46,7 @@ describe('sitemapEntries', () => {
     title: slug,
     description: slug,
     date,
-    tags: [],
+    categories: [],
     draft: false,
     ...extra,
   })

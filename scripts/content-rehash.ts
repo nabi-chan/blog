@@ -21,7 +21,7 @@ if (!existsSync(enPath)) {
 }
 
 const { frontmatter, body } = splitFrontmatter(readFileSync(koPath, 'utf8'))
-const { title, description } = parse(frontmatter) as { title: string; description: string }
-const hash = computeSourceHash({ title, description, body })
+const { title, description, seoTitle, keywords } = parse(frontmatter) as { title: string; description: string; seoTitle: string; keywords: string[] }
+const hash = computeSourceHash({ title, description, seoTitle, keywords, body })
 writeFileSync(enPath, replaceSourceHash(readFileSync(enPath, 'utf8'), hash))
 console.log(`${enPath}: sourceHash 를 ${hash.slice(0, 8)}… 로 갱신했습니다`)

@@ -23,7 +23,7 @@ describe('viewKey', () => {
   it('해시(목차 이동)는 무시하고 경로와 쿼리로만 화면을 구분한다', () => {
     const base = { pathname: '/261020', searchStr: '' }
     expect(viewKey({ ...base, hash: 'intro' })).toBe(viewKey(base))
-    expect(viewKey({ pathname: '/posts', searchStr: '?tag=meta' })).not.toBe(viewKey({ pathname: '/posts', searchStr: '' }))
+    expect(viewKey({ pathname: '/posts', searchStr: '?category=software' })).not.toBe(viewKey({ pathname: '/posts', searchStr: '' }))
     expect(viewKey({ pathname: '/en/261020', searchStr: '' })).not.toBe(viewKey(base))
   })
 })

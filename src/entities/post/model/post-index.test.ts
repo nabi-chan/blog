@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { type PostMeta, collectTags, createPostIndex, groupByYear } from './post-index'
+import { type PostMeta, collectCategories, createPostIndex, groupByYear } from './post-index'
 
-const meta = (slug: string, locale: PostMeta['locale'], date: string, tags: string[]): PostMeta => ({
+const meta = (slug: string, locale: PostMeta['locale'], date: string, categories: string[]): PostMeta => ({
   slug,
   locale,
   title: slug,
   description: slug,
   date,
-  tags,
+  categories,
   draft: false,
 })
 
@@ -50,9 +50,9 @@ describe('groupByYear', () => {
   })
 })
 
-describe('collectTags', () => {
+describe('collectCategories', () => {
   it('빈도 내림차순, 같으면 키 오름차순', () => {
-    expect(collectTags(idx.list('ko'))).toEqual(['a', 'b'])
-    expect(collectTags([meta('x', 'ko', '2026-01-01T00:00:00+09:00', ['z', 'y', 'z'])])).toEqual(['z', 'y'])
+    expect(collectCategories(idx.list('ko'))).toEqual(['a', 'b'])
+    expect(collectCategories([meta('x', 'ko', '2026-01-01T00:00:00+09:00', ['z', 'y', 'z'])])).toEqual(['z', 'y'])
   })
 })

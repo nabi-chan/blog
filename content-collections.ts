@@ -1,7 +1,7 @@
 import { join } from 'node:path'
 import { type Context, type WriterHook, defineCollection, defineConfig } from '@content-collections/core'
 import { z } from 'zod'
-import { DESCRIPTION_MAX, TAG_PATTERN, site } from './src/shared/config'
+import { DESCRIPTION_MAX, KEY_PATTERN, site } from './src/shared/config'
 import {
   type Glossary,
   absolutizeMarkdownImages,
@@ -77,7 +77,7 @@ const glossary = defineCollection({
   schema: z.object({
     terms: z.array(
       z.object({
-        key: z.string().regex(TAG_PATTERN),
+        key: z.string().regex(KEY_PATTERN),
         ko: z.object({ name: z.string().min(1), definition: z.string().min(1) }),
         en: z.object({ name: z.string().min(1), definition: z.string().min(1) }),
       }),
@@ -98,9 +98,13 @@ const koPosts = defineCollection({
   schema: z.object({
     title: z.string().min(1),
     description: z.string().min(1).max(DESCRIPTION_MAX),
+    // 검색 결과·공유 미리보기 제목(<title>, og:title). 화면 제목과 OG 이미지 글자는 title
+    seoTitle: z.string().min(1),
+    // <meta name="keywords"> 용. 화면에는 보이지 않는다
+    keywords: z.array(z.string().min(1)).min(1),
     date: z.string(),
     updated: z.string().optional(),
-    tags: z.array(z.string().regex(TAG_PATTERN)).default([]),
+    categories: z.array(z.string().regex(KEY_PATTERN)).min(1),
     draft: z.boolean().default(false),
     content: z.string(),
   }),
@@ -129,10 +133,12 @@ const koPosts = defineCollection({
       title: doc.title,
       description: doc.description,
       date,
+      seoTitle: doc.seoTitle,
+      keywords: doc.keywords,
       updated: doc.updated === undefined ? undefined : parseKstDate(doc.updated),
-      tags: doc.tags,
+      categories: doc.categories,
       draft: doc.draft,
-      sourceHash: computeSourceHash({ title: doc.title, description: doc.description, body: doc.content }),
+      sourceHash: computeSourceHash({ title: doc.title, description: doc.description, seoTitle: doc.seoTitle, keywords: doc.keywords, body: doc.content }),
       html: body.html,
       toc: body.toc,
       terms: body.terms,
@@ -151,6 +157,8 @@ const enPosts = defineCollection({
   schema: z.object({
     title: z.string().min(1),
     description: z.string().min(1).max(DESCRIPTION_MAX),
+    seoTitle: z.string().min(1),
+    keywords: z.array(z.string().min(1)).min(1),
     sourceHash: z.string().regex(/^[0-9a-f]{64}$/),
     translationStatus: z.enum(['machine', 'reviewed']),
     content: z.string(),
@@ -167,10 +175,12 @@ const enPosts = defineCollection({
         slug,
         title: ko.title,
         description: ko.description,
+        seoTitle: ko.seoTitle,
+        keywords: ko.keywords,
         content: ko.content,
         date: parseKstDate(ko.date),
         updated: ko.updated === undefined ? undefined : parseKstDate(ko.updated),
-        tags: ko.tags,
+        categories: ko.categories,
         draft: ko.draft,
       },
       { production: isProduction() },
@@ -195,6 +205,8 @@ const enPosts = defineCollection({
     })
     return {
       ...result.post,
+      seoTitle: doc.seoTitle,
+      keywords: doc.keywords,
       html: body.html,
       toc: body.toc,
       terms: body.terms,
@@ -234,13 +246,13 @@ const lobbyIntros = defineCollection({
   },
 })
 
-const tagLabels = defineCollection({
-  name: 'tagLabels',
+const categoryLabels = defineCollection({
+  name: 'categoryLabels',
   directory: 'content',
-  include: 'tags.yaml',
+  include: 'categories.yaml',
   parser: 'yaml',
   schema: z.object({
-    tags: z.array(z.object({ key: z.string().regex(TAG_PATTERN), ko: z.string(), en: z.string() })),
+    categories: z.array(z.object({ key: z.string().regex(KEY_PATTERN), ko: z.string(), en: z.string() })),
   }),
 })
 
@@ -254,6 +266,6 @@ export default defineConfig({
   // 컬렉션은 이 순서대로 하나씩 변환되고, 변환이 끝난 컬렉션의 documents() 는 변환 결과를 돌려준다.
   // enPosts 가 원문의 content 와 draft 를 그대로 봐야 하므로 koPosts 보다 먼저 둔다
   // glossary 는 글보다 먼저 둔다. 글 변환이 용어집을 읽는다
-  content: [glossary, enPosts, koPosts, lobbyIntros, tagLabels],
+  content: [glossary, enPosts, koPosts, lobbyIntros, categoryLabels],
   hooks: { writer: [serverOnlyHook] },
 })
