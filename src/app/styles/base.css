@@ -9,6 +9,8 @@ html {
   text-rendering: optimizeLegibility;
   word-break: keep-all;
   overflow-wrap: anywhere;
+  /* 앵커로 이동한 위치가 붙은 헤더 아래에 오게 한다 */
+  scroll-padding-top: var(--header-height);
 }
 
 body {
