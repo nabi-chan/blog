@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { applyCategorySelection, categoryFilterCss, readCategoryParam } from './category-filter'
+import { applyCategorySelection, categoryFilterCss, isPlainClick, readCategoryParam } from './category-filter'
 
 describe('categoryFilterCss', () => {
   it('카테고리마다 숨김·활성 칩 규칙을 만든다', () => {
@@ -65,5 +65,19 @@ describe('applyCategorySelection', () => {
     applyCategorySelection(doc, '?category=<x>')
     expect(doc.documentElement.dataset.category).toBeUndefined()
     expect(chips.get('')?.attributes.get('aria-current')).toBe('page')
+  })
+})
+
+describe('isPlainClick', () => {
+  const click = { button: 0, metaKey: false, ctrlKey: false, shiftKey: false, altKey: false, defaultPrevented: false }
+
+  it('보조키 없는 왼쪽 클릭은 새로고침 없이 처리한다', () => {
+    expect(isPlainClick(click)).toBe(true)
+  })
+
+  it('새 탭·새 창·다운로드로 여는 클릭과 이미 막힌 클릭은 브라우저에 맡긴다', () => {
+    for (const change of [{ button: 1 }, { metaKey: true }, { ctrlKey: true }, { shiftKey: true }, { altKey: true }, { defaultPrevented: true }]) {
+      expect(isPlainClick({ ...click, ...change })).toBe(false)
+    }
   })
 })

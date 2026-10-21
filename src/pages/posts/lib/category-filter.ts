@@ -18,6 +18,13 @@ export function readCategoryParam(search: string): string | undefined {
   return category !== null && KEY_PATTERN.test(category) ? category : undefined
 }
 
+type ClickLike = { button: number; metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; altKey: boolean; defaultPrevented: boolean }
+
+// 칩 클릭을 새로고침 없이 처리할지 정한다. 새 탭·새 창·다운로드로 여는 클릭은 브라우저 기본 동작에 맡긴다
+export function isPlainClick(event: ClickLike): boolean {
+  return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && !event.defaultPrevented
+}
+
 type ChipLike = { setAttribute(name: string, value: string): void; removeAttribute(name: string): void }
 type DocumentLike = {
   documentElement: { dataset: Record<string, string | undefined> }
