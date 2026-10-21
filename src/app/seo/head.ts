@@ -21,7 +21,7 @@ export type HeadInput = {
   alternates: Locale[]
   published?: string
   modified?: string
-  // <meta name="keywords"> 와 article:tag. 글 페이지만 준다
+  // <meta name="keywords">. 글 페이지만 준다. article:tag 는 달지 않는다: TanStack 이 같은 property 메타를 하나만 남긴다
   keywords?: string[]
   jsonLd: Graph
   // 글이면 '/261020.md'. 언어 접두사는 여기서 붙인다
@@ -55,7 +55,6 @@ export function pageHead(input: HeadInput): { meta: Tag[]; links: Tag[]; scripts
       ? [
           { property: 'article:published_time', content: input.published },
           { property: 'article:modified_time', content: input.modified ?? input.published },
-          ...(input.keywords ?? []).map((keyword) => ({ property: 'article:tag', content: keyword })),
         ]
       : []),
     { name: 'twitter:card', content: 'summary_large_image' },

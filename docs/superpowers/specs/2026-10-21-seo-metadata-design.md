@@ -135,7 +135,7 @@ categories:
 | `<title>`, `og:title`, `twitter:title` | `seoTitle` |
 | `og:image:alt` | `title` (카드에 그린 글자와 같게) |
 | `<meta name="keywords">` | `keywords` 를 `, ` 로 이음 |
-| `article:tag` | `keywords` 각각 (이로하의 결정: 잘게 나뉜 주제어가 OGP 의 tag 뜻에 맞다) |
+| `article:tag` | 달지 않는다. TanStack 의 head 처리가 같은 `property` 메타를 하나만 남겨서 여러 개를 낼 수 없다(구현 중 확인, 이로하의 결정) |
 | JSON-LD `headline`, 브레드크럼 이름 | `title` (화면 제목과 같게) |
 | JSON-LD `keywords` | `keywords` |
 | JSON-LD `articleSection` | 카테고리 표시 이름 배열 (이로하의 결정) |
