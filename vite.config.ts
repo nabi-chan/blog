@@ -11,6 +11,8 @@ import { ogSitePlugin } from './src/shared/og/index.ts'
 export default defineConfig(({ mode }) => ({
   server: { port: 3000 },
   resolve: { tsconfigPaths: true },
+  // 작은 폰트 조각(4KB 미만)도 data: 로 CSS 에 넣지 않는다. CSP 의 font-src 'self' 가 data: 폰트를 막는다
+  build: { assetsInlineLimit: (filePath) => (filePath.endsWith('.woff2') ? false : undefined) },
   plugins: [
     contentCollections(),
     // 사이트 기본 OG 이미지 (Lobby·Posts·404)

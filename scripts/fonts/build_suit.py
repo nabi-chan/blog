@@ -5,7 +5,9 @@
 - 범위는 scripts/fonts/ranges.txt (구글 폰트 Noto Sans KR 분할 경계) 를 그대로 쓴다.
 - SUIT 는 OFL Reserved Font Name 이 선언돼 있어 수정본(서브셋)에는 그 이름을 쓸 수 없다.
   그래서 폰트 내부 이름을 'Eunsol Sans' 로 바꾸고, OFL 전문과 원저작자 표기를 함께 둔다.
-- 결과: public/fonts/suit/eunsol-sans.<N>.woff2, public/fonts/suit/OFL.txt, src/app/styles/fonts.css
+- 결과: src/app/styles/fonts/eunsol-sans.<N>.woff2, src/app/styles/fonts.css, public/fonts/suit/OFL.txt
+- 조각은 fonts.css 가 상대 경로로 가리키고, Vite 가 이름에 내용 해시를 붙여 /assets 로 낸다(1년 캐시).
+  라틴 조각(123번)은 src/app/routes/__root.tsx 가 ?url 로 미리 받게 한다.
 """
 
 import io
@@ -17,7 +19,8 @@ from fontTools.ttLib import TTFont
 
 FAMILY = "Eunsol Sans"
 PS_FAMILY = "EunsolSans"
-OUT_DIR = pathlib.Path("public/fonts/suit")
+OUT_DIR = pathlib.Path("src/app/styles/fonts")
+LICENSE_DIR = pathlib.Path("public/fonts/suit")
 CSS_PATH = pathlib.Path("src/app/styles/fonts.css")
 RANGES_PATH = pathlib.Path("scripts/fonts/ranges.txt")
 # 저작권·상표·라이선스 문구는 원문 그대로 남긴다
@@ -36,7 +39,8 @@ def rename(font: TTFont) -> None:
 
 
 def subset(source: bytes, unicodes: list[int]) -> bytes | None:
-    font = TTFont(io.BytesIO(source))
+    # 저장 시각(head.modified)을 원본 값으로 둔다. 다시 만들어도 내용이 같으면 같은 파일이 나와 Vite 해시가 그대로다
+    font = TTFont(io.BytesIO(source), recalcTimestamp=False)
     options = Options()
     options.layout_features = ["*"]
     options.flavor = "woff2"
@@ -76,7 +80,7 @@ def main() -> None:
         faces.append(
             "@font-face {\n"
             f"  font-family: '{FAMILY}';\n"
-            f"  src: url(/fonts/suit/{name}) format('woff2');\n"
+            f"  src: url(./fonts/{name}) format('woff2');\n"
             "  font-weight: 100 900;\n"
             "  font-style: normal;\n"
             "  font-display: swap;\n"
@@ -87,7 +91,8 @@ def main() -> None:
     header = "/* scripts/fonts/build_suit.py 가 만든 파일이다. 직접 고치지 않는다 */\n"
     CSS_PATH.write_text(header + "\n".join(faces))
     license_text = license_path.read_text()
-    (OUT_DIR / "OFL.txt").write_text(
+    LICENSE_DIR.mkdir(parents=True, exist_ok=True)
+    (LICENSE_DIR / "OFL.txt").write_text(
         "Modified (subset, renamed to 'Eunsol Sans') from SUIT by SUNN (https://github.com/sun-typeface/SUIT)\n\n"
         + license_text
     )

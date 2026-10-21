@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { SECURITY_HEADERS, headersFile, withSecurityHeaders } from './security-headers'
+import { IMMUTABLE_ASSET_CACHE, SECURITY_HEADERS, headersFile, withSecurityHeaders } from './security-headers'
 
 describe('withSecurityHeaders', () => {
   it('Worker 응답에 보안 헤더를 더하고 상태·기존 헤더는 그대로 둔다', async () => {
@@ -40,5 +40,11 @@ describe('headersFile', () => {
   it('public/_headers 는 lib 에서 만든 내용과 같다', () => {
     expect(headersFile().startsWith('/*\n')).toBe(true)
     expect(readFileSync('public/_headers', 'utf8')).toBe(headersFile())
+  })
+
+  it('이름에 내용 해시가 붙는 /assets/* 에만 1년 캐시를 단다', () => {
+    expect(headersFile()).toContain(`/assets/*\n  Cache-Control: ${IMMUTABLE_ASSET_CACHE}\n`)
+    expect(headersFile().match(/Cache-Control/g)).toHaveLength(1)
+    expect(IMMUTABLE_ASSET_CACHE).toBe('public, max-age=31536000, immutable')
   })
 })

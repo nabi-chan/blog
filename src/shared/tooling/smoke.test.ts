@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { checkResponse, extractMetaUrls, extractStylesheets, sitemapPosts } from './smoke'
+import { checkResponse, extractFontPreloads, extractFontUrls, extractMetaUrls, extractStylesheets, sitemapPosts } from './smoke'
 
 const ok = { status: 200, location: null, body: '' }
 
@@ -117,5 +117,19 @@ describe('extractStylesheets', () => {
   it('stylesheet 링크의 주소만 문서 순서대로 고른다', () => {
     const html = '<link rel="preload" href="/fonts/a.woff2"/><link rel="stylesheet" href="/assets/app-abc.css"/><link href="/assets/b.css" rel="stylesheet">'
     expect(extractStylesheets(html)).toEqual(['/assets/app-abc.css', '/assets/b.css'])
+  })
+})
+
+describe('extractFontPreloads', () => {
+  it('as="font" 인 preload 링크의 주소만 고른다', () => {
+    const html = '<link rel="preload" as="font" type="font/woff2" href="/assets/a-1.woff2" crossorigin="anonymous"/><link rel="preload" as="image" href="/og.png"/><link rel="stylesheet" href="/assets/app.css"/>'
+    expect(extractFontPreloads(html)).toEqual(['/assets/a-1.woff2'])
+  })
+})
+
+describe('extractFontUrls', () => {
+  it('CSS 의 woff2 주소를 따옴표와 상관없이 고른다', () => {
+    const css = "@font-face{src:url(/assets/a-1.woff2) format('woff2')}@font-face{src:url(\"/assets/b-2.woff2\")}@font-face{src:url('data:font/woff2;base64,AAAA')}.x{background:url(/a.png)}"
+    expect(extractFontUrls(css)).toEqual(['/assets/a-1.woff2', '/assets/b-2.woff2', 'data:font/woff2;base64,AAAA'])
   })
 })

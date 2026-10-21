@@ -1,7 +1,17 @@
 // 프리뷰(또는 배포) URL 에 요청을 보내 응답을 검사하는 스모크 스크립트
 // 사용법: node scripts/smoke.ts <baseUrl>
-import { type SmokeCheck, type SmokePost, checkResponse, extractMetaUrls, extractStylesheets, sitemapPosts, sitemapUrls } from '../src/shared/tooling/index.ts'
-import { SECURITY_HEADERS } from '../src/shared/lib/security-headers/index.ts'
+import {
+  type SmokeCheck,
+  type SmokePost,
+  checkResponse,
+  extractFontPreloads,
+  extractFontUrls,
+  extractMetaUrls,
+  extractStylesheets,
+  sitemapPosts,
+  sitemapUrls,
+} from '../src/shared/tooling/index.ts'
+import { IMMUTABLE_ASSET_CACHE, SECURITY_HEADERS } from '../src/shared/lib/security-headers/index.ts'
 
 // 글이 있든 없든 늘 맞아야 하는 것
 export const CHECKS: SmokeCheck[] = [
@@ -167,16 +177,35 @@ async function main(baseUrl: string) {
     if (res.status !== 200) failures.push(`메타 주소 ${url}: 200 기대, 실제 ${res.status}`)
   }
   console.log(`메타 주소 ${metaUrls.size}개 확인`)
-  // 배포된 CSS 가 실제로 내려오는지 본다
-  const stylesheets = extractStylesheets(await (await fetch(new URL('/', baseUrl))).text())
+  // 배포된 CSS 가 실제로 내려오는지, 이름에 해시가 붙은 에셋이라 1년 캐시를 받는지 본다
+  const home = await (await fetch(new URL('/', baseUrl))).text()
+  const stylesheets = extractStylesheets(home)
   if (stylesheets.length === 0) failures.push('/: stylesheet 링크가 없습니다')
+  const fontUrls = new Set<string>()
   for (const href of stylesheets) {
     const res = await fetch(new URL(href, baseUrl))
     const type = res.headers.get('content-type') ?? ''
-    await res.arrayBuffer()
+    const cache = res.headers.get('cache-control')
+    const css = await res.text()
     if (res.status !== 200 || !type.includes('text/css')) failures.push(`CSS ${href}: 200·text/css 기대, 실제 ${res.status} ${type}`)
+    if (cache !== IMMUTABLE_ASSET_CACHE) failures.push(`CSS ${href}: cache-control "${IMMUTABLE_ASSET_CACHE}" 기대, 실제 ${cache}`)
+    for (const url of extractFontUrls(css)) fontUrls.add(url)
   }
   console.log(`CSS ${stylesheets.length}개 확인`)
+  // 폰트가 data: 로 인라인되면 CSP 가 막는다. 미리 받는 폰트는 CSS 의 @font-face 주소와 같아야 하고 1년 캐시를 받아야 한다
+  if ([...fontUrls].some((url) => url.startsWith('data:'))) failures.push('폰트: CSS 에 data: 폰트가 있습니다 (CSP 가 막음)')
+  const preloads = extractFontPreloads(home)
+  if (preloads.length === 0) failures.push('폰트: / 에 폰트 preload 가 없습니다')
+  for (const href of preloads) {
+    if (!fontUrls.has(href)) failures.push(`폰트 ${href}: CSS 의 @font-face 주소가 아닙니다`)
+    const res = await fetch(new URL(href, baseUrl))
+    const type = res.headers.get('content-type') ?? ''
+    const cache = res.headers.get('cache-control')
+    await res.arrayBuffer()
+    if (res.status !== 200 || !type.includes('font/woff2')) failures.push(`폰트 ${href}: 200·font/woff2 기대, 실제 ${res.status} ${type}`)
+    if (cache !== IMMUTABLE_ASSET_CACHE) failures.push(`폰트 ${href}: cache-control "${IMMUTABLE_ASSET_CACHE}" 기대, 실제 ${cache}`)
+  }
+  console.log(`폰트 preload ${preloads.length}개 확인`)
   const passed = checks.length - new Set(failures.map((f) => f.split(':')[0])).size
   console.log(`${passed}/${checks.length} 통과`)
   if (failures.length > 0) {

@@ -14,4 +14,13 @@ export {
   translationResults,
 } from './audit.ts'
 export { changedSlugs, indexNowPayload, selectIndexNowUrls, sitemapUrls } from './indexnow.ts'
-export { type SmokeCheck, type SmokePost, checkResponse, extractMetaUrls, extractStylesheets, sitemapPosts } from './smoke.ts'
+export {
+  type SmokeCheck,
+  type SmokePost,
+  checkResponse,
+  extractFontPreloads,
+  extractFontUrls,
+  extractMetaUrls,
+  extractStylesheets,
+  sitemapPosts,
+} from './smoke.ts'

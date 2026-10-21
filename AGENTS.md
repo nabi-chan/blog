@@ -129,6 +129,8 @@ pnpm dev                         # http://localhost:3000
 - `app.css` 의 `@import` 순서가 캐스케이드 순서다. 새 파일은 쓰는 슬라이스 자리에 넣고, 같은 요소를 건드리는 규칙끼리 순서가 바뀌지 않게 한다.
 - 배포 확인은 배포된 CSS 파일을 직접 받아 본다.
 - 무채색, 굵기는 400·700 만 쓴다.
+- 폰트 조각은 `src/app/styles/fonts/` 에 두고 `fonts.css` 가 상대 경로로 가리킨다. Vite 가 이름에 해시를 붙여 `/assets` 로 낸다. `scripts/fonts/build_suit.py` 가 만들고, 라틴 조각(123번)은 `__root.tsx` 가 `?url` 로 미리 받는다.
+  - woff2 는 작아도 `data:` 로 인라인하지 않는다(`vite.config.ts` 의 `assetsInlineLimit`). CSP 의 `font-src 'self'` 가 `data:` 폰트를 막는다.
 
 ## 예산
 
@@ -169,6 +171,9 @@ pnpm dev                         # http://localhost:3000
 - CSP 는 `src/shared/lib/security-headers/security-headers.ts` 에서만 고치고 `public/_headers` 를 다시 만든다(테스트가 둘이 같은지 본다). Cloudflare 가 끼워 넣는 Web Analytics 비콘을 허용해 두었다.
   - 이미지는 같은 출처와 `data:` 만 된다. 글에 외부 이미지 주소를 쓰면 `content:check` 가 문제로 잡는다.
   - 스모크와 `audit:repo --live` 가 정적 응답·Worker 응답·404 의 헤더 값을 lib 과 글자까지 비교한다.
+- 정적 에셋 캐시도 같은 파일(`IMMUTABLE_ASSET_CACHE`)에서 정한다. `/assets/*`(이름에 해시가 붙는 JS·CSS·폰트)만 1년 `immutable` 이고, 나머지는 Workers 기본값(`max-age=0, must-revalidate`)이다.
+  - 해시 없는 파일을 `public/assets/` 에 두지 않는다. 내용을 바꿔도 방문자 브라우저에서 1년 동안 바뀌지 않는다.
+  - 스모크가 CSS·미리 받는 폰트의 `Cache-Control`, 그 폰트가 CSS 의 주소와 같은지, CSS 에 `data:` 폰트가 없는지를 본다.
 
 ### 첫 글 공개 때 한 번
 

@@ -1,7 +1,7 @@
 /* scripts/fonts/build_suit.py 가 만든 파일이다. 직접 고치지 않는다 */
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.0.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.0.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -10,7 +10,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.2.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.2.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -19,7 +19,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.3.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.3.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -28,7 +28,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.4.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.4.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -37,7 +37,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.5.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.5.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -46,7 +46,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.6.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.6.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -55,7 +55,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.7.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.7.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -64,7 +64,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.8.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.8.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -73,7 +73,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.9.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.9.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -82,7 +82,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.10.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.10.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -91,7 +91,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.11.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.11.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -100,7 +100,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.12.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.12.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -109,7 +109,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.13.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.13.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -118,7 +118,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.14.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.14.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -127,7 +127,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.15.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.15.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -136,7 +136,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.16.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.16.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -145,7 +145,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.17.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.17.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -154,7 +154,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.18.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.18.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -163,7 +163,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.19.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.19.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -172,7 +172,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.20.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.20.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -181,7 +181,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.21.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.21.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -190,7 +190,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.22.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.22.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -199,7 +199,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.23.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.23.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -208,7 +208,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.24.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.24.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -217,7 +217,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.25.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.25.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -226,7 +226,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.26.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.26.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -235,7 +235,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.27.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.27.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -244,7 +244,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.28.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.28.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -253,7 +253,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.29.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.29.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -262,7 +262,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.30.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.30.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -271,7 +271,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.31.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.31.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -280,7 +280,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.32.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.32.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -289,7 +289,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.33.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.33.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -298,7 +298,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.34.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.34.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -307,7 +307,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.35.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.35.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -316,7 +316,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.36.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.36.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -325,7 +325,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.37.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.37.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -334,7 +334,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.38.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.38.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -343,7 +343,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.39.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.39.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -352,7 +352,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.40.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.40.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -361,7 +361,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.41.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.41.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -370,7 +370,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.42.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.42.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -379,7 +379,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.43.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.43.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -388,7 +388,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.44.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.44.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -397,7 +397,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.45.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.45.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -406,7 +406,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.46.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.46.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -415,7 +415,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.47.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.47.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -424,7 +424,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.48.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.48.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -433,7 +433,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.49.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.49.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -442,7 +442,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.50.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.50.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -451,7 +451,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.51.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.51.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -460,7 +460,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.52.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.52.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -469,7 +469,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.53.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.53.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -478,7 +478,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.54.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.54.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -487,7 +487,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.55.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.55.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -496,7 +496,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.56.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.56.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -505,7 +505,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.57.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.57.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -514,7 +514,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.58.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.58.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -523,7 +523,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.59.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.59.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -532,7 +532,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.60.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.60.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -541,7 +541,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.61.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.61.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -550,7 +550,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.62.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.62.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -559,7 +559,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.63.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.63.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -568,7 +568,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.64.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.64.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -577,7 +577,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.65.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.65.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -586,7 +586,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.93.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.93.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -595,7 +595,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.94.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.94.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -604,7 +604,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.95.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.95.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -613,7 +613,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.96.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.96.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -622,7 +622,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.97.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.97.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -631,7 +631,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.98.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.98.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -640,7 +640,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.99.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.99.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -649,7 +649,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.100.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.100.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -658,7 +658,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.101.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.101.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -667,7 +667,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.102.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.102.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -676,7 +676,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.103.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.103.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -685,7 +685,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.104.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.104.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -694,7 +694,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.105.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.105.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -703,7 +703,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.106.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.106.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -712,7 +712,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.107.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.107.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -721,7 +721,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.108.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.108.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -730,7 +730,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.109.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.109.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -739,7 +739,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.110.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.110.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -748,7 +748,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.111.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.111.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -757,7 +757,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.112.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.112.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -766,7 +766,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.113.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.113.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -775,7 +775,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.114.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.114.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -784,7 +784,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.115.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.115.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -793,7 +793,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.116.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.116.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -802,7 +802,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.117.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.117.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -811,7 +811,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.118.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.118.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -820,7 +820,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.119.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.119.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -829,7 +829,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.122.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.122.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -838,7 +838,7 @@
 
 @font-face {
   font-family: 'Eunsol Sans';
-  src: url(/fonts/suit/eunsol-sans.123.woff2) format('woff2');
+  src: url(./fonts/eunsol-sans.123.woff2) format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;

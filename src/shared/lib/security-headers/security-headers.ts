@@ -30,8 +30,13 @@ export function withSecurityHeaders(response: Response): Response {
   return copy
 }
 
-// Workers 정적 에셋의 _headers 형식. public/_headers 는 이 출력 그대로다 (테스트가 확인한다)
+// Vite 빌드 산출물(JS·CSS·폰트)은 이름에 내용 해시가 붙어 내용이 바뀌면 주소도 바뀐다. 그래서 1년 동안 다시 묻지 않게 한다.
+// 나머지 정적 파일(HTML·OG 이미지·llms 등)은 Workers 정적 에셋 기본값(max-age=0, must-revalidate)을 그대로 쓴다
+export const IMMUTABLE_ASSET_CACHE = 'public, max-age=31536000, immutable'
+
+// Workers 정적 에셋의 _headers 형식. public/_headers 는 이 출력 그대로다 (테스트가 확인한다).
+// 요청이 여러 규칙에 걸리면 모든 규칙의 헤더가 붙으므로 /assets/* 는 보안 헤더와 캐시 헤더를 같이 받는다
 export function headersFile(): string {
   const lines = Object.entries(SECURITY_HEADERS).map(([name, value]) => `  ${name}: ${value}`)
-  return `/*\n${lines.join('\n')}\n`
+  return `/*\n${lines.join('\n')}\n/assets/*\n  Cache-Control: ${IMMUTABLE_ASSET_CACHE}\n`
 }

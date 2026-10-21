@@ -80,6 +80,23 @@ export function extractStylesheets(html: string): string[] {
   return urls
 }
 
+// 미리 받게 해 둔 폰트 주소. CSS 의 @font-face 주소와 같아야 미리 받은 파일이 그대로 쓰인다
+export function extractFontPreloads(html: string): string[] {
+  const urls: string[] = []
+  for (const [tag] of html.matchAll(/<link\b[^>]*>/gi)) {
+    const href = attr(tag, 'href')
+    if (attr(tag, 'rel') === 'preload' && attr(tag, 'as') === 'font' && href) urls.push(href)
+  }
+  return urls
+}
+
+// CSS 의 폰트 주소(woff2 파일과 data: 폰트). data: 폰트는 CSP(font-src 'self')가 막으므로 스모크가 문제로 잡는다
+export function extractFontUrls(css: string): string[] {
+  return [...css.matchAll(/url\(\s*(['"]?)([^'")]+)\1\s*\)/g)]
+    .map((match) => match[2])
+    .filter((url) => url.startsWith('data:font/') || /\.woff2(\?|$)/.test(url))
+}
+
 export type SmokePost = { slug: string; en: boolean }
 
 // sitemap 주소 중 글 주소만 골라 slug 와 영어판 유무를 돌려준다. 스모크는 이 중 실제 글 하나로 글 페이지를 본다
