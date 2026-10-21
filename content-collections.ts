@@ -98,6 +98,10 @@ const koPosts = defineCollection({
   schema: z.object({
     title: z.string().min(1),
     description: z.string().min(1).max(DESCRIPTION_MAX),
+    // 검색 결과·공유 미리보기 제목(<title>, og:title). 화면 제목과 OG 이미지 글자는 title
+    seoTitle: z.string().min(1),
+    // <meta name="keywords"> 용. 화면에는 보이지 않는다
+    keywords: z.array(z.string().min(1)).min(1),
     date: z.string(),
     updated: z.string().optional(),
     categories: z.array(z.string().regex(KEY_PATTERN)).min(1),
@@ -129,10 +133,12 @@ const koPosts = defineCollection({
       title: doc.title,
       description: doc.description,
       date,
+      seoTitle: doc.seoTitle,
+      keywords: doc.keywords,
       updated: doc.updated === undefined ? undefined : parseKstDate(doc.updated),
       categories: doc.categories,
       draft: doc.draft,
-      sourceHash: computeSourceHash({ title: doc.title, description: doc.description, body: doc.content }),
+      sourceHash: computeSourceHash({ title: doc.title, description: doc.description, seoTitle: doc.seoTitle, keywords: doc.keywords, body: doc.content }),
       html: body.html,
       toc: body.toc,
       terms: body.terms,
@@ -151,6 +157,8 @@ const enPosts = defineCollection({
   schema: z.object({
     title: z.string().min(1),
     description: z.string().min(1).max(DESCRIPTION_MAX),
+    seoTitle: z.string().min(1),
+    keywords: z.array(z.string().min(1)).min(1),
     sourceHash: z.string().regex(/^[0-9a-f]{64}$/),
     translationStatus: z.enum(['machine', 'reviewed']),
     content: z.string(),
@@ -167,6 +175,8 @@ const enPosts = defineCollection({
         slug,
         title: ko.title,
         description: ko.description,
+        seoTitle: ko.seoTitle,
+        keywords: ko.keywords,
         content: ko.content,
         date: parseKstDate(ko.date),
         updated: ko.updated === undefined ? undefined : parseKstDate(ko.updated),
@@ -195,6 +205,8 @@ const enPosts = defineCollection({
     })
     return {
       ...result.post,
+      seoTitle: doc.seoTitle,
+      keywords: doc.keywords,
       html: body.html,
       toc: body.toc,
       terms: body.terms,

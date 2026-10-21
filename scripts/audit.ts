@@ -66,13 +66,13 @@ function baseChecks() {
     : []
   const posts = slugs.map((slug) => {
     const ko = splitFrontmatter(readFileSync(join(POSTS_DIR, slug, 'index.ko.md'), 'utf8'))
-    const meta = parse(ko.frontmatter) as { title: string; description: string; categories?: string[]; draft?: boolean }
+    const meta = parse(ko.frontmatter) as { title: string; description: string; seoTitle?: string; keywords?: string[]; categories?: string[]; draft?: boolean }
     const enPath = join(POSTS_DIR, slug, 'index.en.md')
     const en = existsSync(enPath) ? splitFrontmatter(readFileSync(enPath, 'utf8')) : undefined
     const enMeta = en ? (parse(en.frontmatter) as { sourceHash: string; translationStatus: 'machine' | 'reviewed' }) : undefined
     const input: ContentPostInput = {
       slug,
-      ko: { title: meta.title, description: meta.description, body: ko.body, categories: meta.categories ?? [], draft: meta.draft === true },
+      ko: { title: meta.title, description: meta.description, seoTitle: meta.seoTitle ?? '', keywords: meta.keywords ?? [], body: ko.body, categories: meta.categories ?? [], draft: meta.draft === true },
       en: en && enMeta ? { body: en.body, sourceHash: enMeta.sourceHash } : undefined,
     }
     return { input, translationStatus: enMeta?.translationStatus }

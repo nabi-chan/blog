@@ -125,7 +125,7 @@ export function externalImages(markdown: string): string[] {
 
 export type ContentPostInput = {
   slug: string
-  ko: { title: string; description: string; body: string; categories: string[]; draft?: boolean }
+  ko: { title: string; description: string; seoTitle: string; keywords: string[]; body: string; categories: string[]; draft?: boolean }
   en?: { body: string; sourceHash: string }
 }
 

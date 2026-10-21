@@ -8,6 +8,7 @@ const post = {
   description: 'Notes on the stack',
   date: '2026-10-20T12:00:00+09:00',
   categories: ['AI'],
+  keywords: ['TanStack Start', 'Cloudflare Workers'],
   wordCount: 120,
   image: 'https://nabichan.me/og/en/261020.png',
 }
@@ -49,7 +50,7 @@ describe('postGraph', () => {
       articleSection: ['AI'],
       wordCount: 120,
     })
-    expect(article).not.toHaveProperty('keywords')
+    expect(article.keywords).toEqual(['TanStack Start', 'Cloudflare Workers'])
     expect(byType(graph, 'Person')).toHaveLength(1)
   })
 

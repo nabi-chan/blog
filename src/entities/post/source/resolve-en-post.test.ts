@@ -6,6 +6,8 @@ const ko: KoSource = {
   slug: 'hello',
   title: '안녕',
   description: '설명',
+  seoTitle: '안녕 검색 제목',
+  keywords: ['인사'],
   content: '본문',
   date: '2026-05-06T00:00:00+09:00',
   updated: '2026-05-07T00:00:00+09:00',
@@ -16,7 +18,7 @@ const en: EnSource = {
   slug: 'hello',
   title: 'Hello',
   description: 'Description',
-  sourceHash: computeSourceHash({ title: ko.title, description: ko.description, body: ko.content }),
+  sourceHash: computeSourceHash({ title: ko.title, description: ko.description, seoTitle: ko.seoTitle, keywords: ko.keywords, body: ko.content }),
   translationStatus: 'machine',
 }
 
@@ -29,6 +31,11 @@ describe('resolveEnPost', () => {
     expect(() => resolveEnPost({ ...en, sourceHash: 'x'.repeat(64) }, ko, { production: true })).toThrow(
       /낡았습니다.*content:rehash --post hello/,
     )
+  })
+
+  it('원문의 검색 제목이나 키워드가 바뀌어도 낡은 번역으로 던진다', () => {
+    expect(() => resolveEnPost(en, { ...ko, seoTitle: '바뀐 검색 제목' }, { production: true })).toThrow(/낡았습니다/)
+    expect(() => resolveEnPost(en, { ...ko, keywords: ['인사', '추가'] }, { production: true })).toThrow(/낡았습니다/)
   })
 
   it('원문이 draft 면 프로덕션에서는 건너뛴다', () => {

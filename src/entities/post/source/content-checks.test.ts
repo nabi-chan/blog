@@ -66,7 +66,7 @@ describe('externalImages', () => {
   })
 
   it('collectContentProblems 가 ko·en 외부 이미지를 문제로 낸다', () => {
-    const post = { slug: '261020', ko: { title: 't', description: 'd', body: '![a](https://x.com/a.png)\n', categories: [] } }
+    const post = { slug: '261020', ko: { title: 't', description: 'd', seoTitle: 's', keywords: ['k'], body: '![a](https://x.com/a.png)\n', categories: [] } }
     expect(collectContentProblems({ posts: [post], categoryKeys: [], termKeys: [] })).toEqual([
       { slug: '261020', problems: ['ko 외부 이미지는 CSP 가 막습니다. 파일을 글 폴더에 두세요: https://x.com/a.png'] },
     ])
@@ -88,7 +88,7 @@ describe('messageKeyDiff', () => {
 })
 
 describe('collectContentProblems', () => {
-  const ko = { title: '제목', description: '설명', body: '## 구성\n\n:term[프리렌더]{key="prerender"}\n', categories: ['meta'] }
+  const ko = { title: '제목', description: '설명', seoTitle: 'SEO 제목', keywords: ['키워드'], body: '## 구성\n\n:term[프리렌더]{key="prerender"}\n', categories: ['meta'] }
   const base = { categoryKeys: ['meta'], termKeys: ['prerender'] }
 
   it('문제가 없으면 빈 배열이다', () => {
@@ -124,7 +124,7 @@ describe('collectContentProblems 의 translation 옵션', () => {
       {
         categoryKeys: ['meta'],
         termKeys: [],
-        posts: [{ slug: '261020', ko: { title: 't', description: 'd', body: '## 구성\n', categories: ['meta'] }, en: { body: '## A\n## B\n', sourceHash: 'old' } }],
+        posts: [{ slug: '261020', ko: { title: 't', description: 'd', seoTitle: 's', keywords: ['k'], body: '## 구성\n', categories: ['meta'] }, en: { body: '## A\n## B\n', sourceHash: 'old' } }],
       },
       { translation: false },
     )
@@ -192,7 +192,7 @@ describe('collectContentWarnings', () => {
   it('ko 는 맞춤법과 볼드를, en 은 볼드만 보고 경고가 있는 글만 낸다', () => {
     const post = (slug: string, koBody: string, enBody?: string) => ({
       slug,
-      ko: { title: 't', description: 'd', body: koBody, categories: [] },
+      ko: { title: 't', description: 'd', seoTitle: 's', keywords: ['k'], body: koBody, categories: [] },
       en: enBody === undefined ? undefined : { body: enBody, sourceHash: 'h' },
     })
     expect(

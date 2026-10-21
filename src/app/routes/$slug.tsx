@@ -12,23 +12,25 @@ export const Route = createFileRoute('/$slug')({
     if (!page) throw notFound()
     return page
   },
-  // 글 페이지 제목은 글 제목만 쓴다 (스펙 4.9). 404 면 notFoundComponent 가 제목을 단다
+  // 글 페이지 제목은 검색 제목(seoTitle)만 쓴다. 사이트 이름 접미사는 붙이지 않는다 (스펙 4.9). 404 면 notFoundComponent 가 제목을 단다
   head: ({ loaderData }) => {
     if (!loaderData) return {}
-    const { post, available, categories, wordCount } = loaderData
+    const { post, available, categories, seoTitle, keywords, wordCount } = loaderData
     const image = absoluteUrl(`/og/${post.locale}/${post.slug}.png`)
     const labels = categories.map((category) => category.label)
     return pageHead({
       locale: post.locale,
       path: `/${post.slug}`,
-      title: post.title,
+      title: seoTitle,
+      imageAlt: post.title,
       description: post.description,
       type: 'article',
       image,
       alternates: available,
       published: post.date,
       modified: post.updated,
-      jsonLd: postGraph({ ...post, categories: labels, wordCount, image }),
+      keywords,
+      jsonLd: postGraph({ ...post, categories: labels, keywords, wordCount, image }),
       markdownPath: `/${post.slug}.md`,
     })
   },

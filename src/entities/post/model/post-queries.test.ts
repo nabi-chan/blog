@@ -1,7 +1,7 @@
 import type { Locale } from '~/shared/i18n'
 import { describe, expect, it } from 'vitest'
 import { type PostMeta, createPostIndex } from './post-index'
-import { type BodyKey, type PostBody, type PostSource, categoryRefs, createPostQueries } from './post-queries'
+import { type BodyKey, type PostBody, type PostSeo, type PostSource, categoryRefs, createPostQueries } from './post-queries'
 
 const meta = (slug: string, locale: PostMeta['locale'], date: string, categories: string[]): PostMeta => ({
   slug,
@@ -28,6 +28,11 @@ const sources = new Map<BodyKey, PostSource>([
   ['en/both', { markdown: 'en md', wordCount: 2 }],
   ['ko/ko-only', { markdown: 'ko only md', wordCount: 5 }],
 ])
+const seo = new Map<BodyKey, PostSeo>([
+  ['ko/both', { seoTitle: 'ko 검색 제목', keywords: ['ko 키워드'] }],
+  ['en/both', { seoTitle: 'en search title', keywords: ['en keyword', 'second'] }],
+  ['ko/ko-only', { seoTitle: 'ko only 검색 제목', keywords: ['k'] }],
+])
 const intros = new Map<Locale, PostBody>([['ko', { html: '<p>소개</p>', toc: [], terms: ['hydration'] }]])
 const glossary = {
   hydration: { ko: { name: '하이드레이션', definition: '정의 ko' }, en: { name: 'Hydration', definition: 'def en' } },
@@ -45,7 +50,7 @@ describe('categoryRefs', () => {
 
 describe('createPostQueries', () => {
   it('listPosts 는 그 언어 글과 카테고리 라벨을 돌려준다', () => {
-    const q = createPostQueries({ index: idx, categoryLabels: labels, bodies, sources, glossary, intros })
+    const q = createPostQueries({ index: idx, categoryLabels: labels, bodies, sources, seo, glossary, intros })
     expect(q.listPosts('en')).toEqual({
       posts: idx.list('en'),
       categories: [
@@ -54,10 +59,18 @@ describe('createPostQueries', () => {
       ],
     })
   })
+
+  it('listPosts 의 글에는 검색 제목·키워드가 없다 (목록 데이터에 싣지 않는다)', () => {
+    const q = createPostQueries({ index: idx, categoryLabels: labels, bodies, sources, seo, glossary, intros })
+    for (const post of q.listPosts('ko').posts) {
+      expect(post).not.toHaveProperty('seoTitle')
+      expect(post).not.toHaveProperty('keywords')
+    }
+  })
 })
 
 describe('getPostPage', () => {
-  const q = createPostQueries({ index: idx, categoryLabels: labels, bodies, sources, glossary, intros })
+  const q = createPostQueries({ index: idx, categoryLabels: labels, bodies, sources, seo, glossary, intros })
 
   it('글 메타·있는 언어·카테고리·본문을 돌려준다', () => {
     expect(q.getPostPage('en', 'both')).toEqual({
@@ -71,6 +84,8 @@ describe('getPostPage', () => {
       toc: [],
       terms: { hydration: { name: 'Hydration', definition: 'def en' } },
       wordCount: 2,
+      seoTitle: 'en search title',
+      keywords: ['en keyword', 'second'],
     })
   })
 
@@ -84,17 +99,17 @@ describe('getPostPage', () => {
   })
 
   it('메타는 있는데 본문이 없으면 데이터 오류로 던진다', () => {
-    expect(() => createPostQueries({ index: idx, categoryLabels: labels, bodies: new Map(), sources, glossary, intros }).getPostPage('ko', 'both')).toThrow(
+    expect(() => createPostQueries({ index: idx, categoryLabels: labels, bodies: new Map(), sources, seo, glossary, intros }).getPostPage('ko', 'both')).toThrow(
       /본문이나 원문이 없습니다/,
     )
-    expect(() => createPostQueries({ index: idx, categoryLabels: labels, bodies, sources: new Map(), glossary, intros }).getPostPage('ko', 'both')).toThrow(
+    expect(() => createPostQueries({ index: idx, categoryLabels: labels, bodies, sources: new Map(), seo, glossary, intros }).getPostPage('ko', 'both')).toThrow(
       /본문이나 원문이 없습니다/,
     )
   })
 })
 
 describe('getLobbyIntro', () => {
-  const q = createPostQueries({ index: idx, categoryLabels: labels, bodies, sources, glossary, intros })
+  const q = createPostQueries({ index: idx, categoryLabels: labels, bodies, sources, seo, glossary, intros })
 
   it('그 언어 소개글 HTML 과 쓴 용어의 정의를 돌려준다', () => {
     expect(q.getLobbyIntro('ko')).toEqual({
@@ -118,6 +133,7 @@ describe('listFeed / getMarkdown', () => {
     categoryLabels: labels,
     bodies: new Map([...bodies, ['ko/draft', { html: '<p>d</p>', toc: [], terms: [] }]]),
     sources: new Map([...sources, ['ko/draft', { markdown: 'draft md', wordCount: 1 }]]),
+    seo,
     glossary,
     intros,
   })

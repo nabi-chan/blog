@@ -38,6 +38,7 @@ export function postGraph(input: {
   date: string
   updated?: string
   categories: string[]
+  keywords: string[]
   wordCount: number
   image: string
 }): Graph {
@@ -58,6 +59,7 @@ export function postGraph(input: {
       image: input.image,
       inLanguage: input.locale,
       articleSection: input.categories,
+      keywords: input.keywords,
       wordCount: input.wordCount,
     },
     {

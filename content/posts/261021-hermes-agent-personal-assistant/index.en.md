@@ -1,7 +1,9 @@
 ---
 title: "Hermes Agent: Building a Personal AI Assistant"
+seoTitle: "Hermes Agent: Build a Personal AI Assistant That Remembers Calls, Email, and To-Dos"
 description: "How Iroha, an AI assistant built on Hermes Agent, remembers my calls and emails, answers questions in Slack, and keeps my to-do list. A real-world setup."
-sourceHash: "f7283024f7c2e791ec415c28c8a741523f1a9396f68bb72973fd72d4e7690e18"
+keywords: ["Hermes Agent", "Hermes Agent tutorial", "personal AI assistant", "AI agent", "MCP", "Slack AI assistant", "workflow automation", "Nous Research"]
+sourceHash: "8c4f2c0b5ddda55d5d55615a4cebf53f4575ed0966eb795df2bda4160fc074e9"
 translationStatus: reviewed
 ---
 

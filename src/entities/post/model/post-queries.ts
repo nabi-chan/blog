@@ -14,6 +14,8 @@ export function categoryRefs(keys: string[], locale: Locale, labels: CategoryLab
 export type PostBody = { html: string; toc: TocItem[]; terms: string[] }
 // 글 원문(이미지 경로를 절대 URL 로 바꾼 Markdown)과 단어 수
 export type PostSource = { markdown: string; wordCount: number }
+// 글 페이지 메타에만 쓰는 검색 제목·키워드. 목록 데이터(PostMeta)에는 싣지 않는다
+export type PostSeo = { seoTitle: string; keywords: string[] }
 export type FeedItem = { post: PostMeta; categories: CategoryRef[]; html: string; markdown: string }
 export type BodyKey = `${Locale}/${string}`
 export type PostPage = {
@@ -24,6 +26,8 @@ export type PostPage = {
   toc: TocItem[]
   terms: Record<string, GlossaryEntry>
   wordCount: number
+  seoTitle: string
+  keywords: string[]
 }
 
 export type LobbyIntro = { html: string; terms: Record<string, GlossaryEntry> }
@@ -44,6 +48,7 @@ export function createPostQueries(input: {
   categoryLabels: CategoryLabels
   bodies: ReadonlyMap<BodyKey, PostBody>
   sources: ReadonlyMap<BodyKey, PostSource>
+  seo: ReadonlyMap<BodyKey, PostSeo>
   glossary: Glossary
   intros: ReadonlyMap<Locale, PostBody>
 }): PostQueries {
@@ -74,6 +79,7 @@ export function createPostQueries(input: {
         toc: body.toc,
         terms: termsFor(body.terms, locale),
         wordCount: lookup(input.sources, locale, slug).wordCount,
+        ...lookup(input.seo, locale, slug),
       }
     },
     getLobbyIntro: (locale) => {

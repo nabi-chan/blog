@@ -57,6 +57,23 @@ describe('pageHead', () => {
     expect(metaValue(head, 'twitter:image')).toEqual(['https://nabichan.me/og/en/261020.png'])
   })
 
+  it('글 페이지는 검색 제목을 제목 메타에, 글 제목을 이미지 alt 에, 키워드를 keywords·article:tag 에 단다', () => {
+    const head = pageHead({ ...base, title: 'SEO 제목', imageAlt: '글 제목', keywords: ['a', 'b'] })
+    expect(head.meta.filter((meta) => 'title' in meta)).toEqual([{ title: 'SEO 제목' }])
+    expect(metaValue(head, 'og:title')).toEqual(['SEO 제목'])
+    expect(metaValue(head, 'twitter:title')).toEqual(['SEO 제목'])
+    expect(metaValue(head, 'og:image:alt')).toEqual(['글 제목'])
+    expect(metaValue(head, 'keywords')).toEqual(['a, b'])
+    expect(metaValue(head, 'article:tag')).toEqual(['a', 'b'])
+  })
+
+  it('imageAlt 가 없으면 이미지 alt 는 제목이고, keywords 가 없으면 keywords 메타도 article:tag 도 없다', () => {
+    const head = pageHead(base)
+    expect(metaValue(head, 'og:image:alt')).toEqual(['How I built this blog'])
+    expect(metaValue(head, 'keywords')).toEqual([])
+    expect(metaValue(head, 'article:tag')).toEqual([])
+  })
+
   it('website 타입에는 article 메타가 없고, 설명이 없으면 description 메타도 없다', () => {
     const head = pageHead({ ...base, type: 'website', description: undefined, published: undefined, markdownPath: undefined })
     expect(head.meta.some((meta) => meta.property?.startsWith('article:'))).toBe(false)
