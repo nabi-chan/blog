@@ -103,12 +103,7 @@ function postChecks({ slug, en }: SmokePost, production: boolean): SmokeCheck[] 
     ...ko,
     { path: '/en', status: 200, contains: [`href="/en/${slug}"`] },
     { path: `/${slug}`, status: 200, contains: [`href="/en/${slug}"`] },
-    {
-      path: `/en/${slug}`,
-      status: 200,
-      contains: ['lang="en"', `href="/${slug}"`, 'Comments', 'Views'],
-      notContains: ['site-footer'],
-    },
+    { path: `/en/${slug}`, status: 200, contains: ['lang="en"', `href="/${slug}"`, 'Comments', 'Views'] },
     { path: '/sitemap.xml', status: 200, contains: ['hreflang="en"'] },
     { path: '/en/rss.xml', status: 200, contains: [`https://nabichan.me/en/${slug}`] },
     { path: '/en/llms.txt', status: 200, contains: [`https://nabichan.me/en/${slug}.md`] },

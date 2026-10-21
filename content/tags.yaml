@@ -5,3 +5,12 @@ tags:
   - key: cloudflare
     ko: Cloudflare
     en: Cloudflare
+  - key: hermes-agent
+    ko: Hermes Agent
+    en: Hermes Agent
+  - key: mcp
+    ko: MCP
+    en: MCP
+  - key: automation
+    ko: 자동화
+    en: Automation

@@ -13,3 +13,38 @@ terms:
     en:
       name: Hydration
       definition: The step where the browser's JavaScript attaches to server-rendered HTML so the page becomes interactive.
+  - key: mcp
+    ko:
+      name: MCP
+      definition: Model Context Protocol. AI 에이전트가 외부 도구와 데이터에 붙는 방법을 정한 공개 규약입니다.
+    en:
+      name: MCP
+      definition: Model Context Protocol, an open standard for connecting AI agents to external tools and data.
+  - key: transcription
+    ko:
+      name: 전사
+      definition: 녹음된 말을 글로 옮기는 일입니다. 여기서는 음성 인식 서비스가 자동으로 합니다.
+    en:
+      name: Transcription
+      definition: Turning recorded speech into text. Here a speech recognition API does it automatically.
+  - key: prompt-injection
+    ko:
+      name: 프롬프트 인젝션
+      definition: 메일이나 웹 페이지 같은 입력 속에 지시문을 숨겨 AI가 원래 하지 않을 일을 하게 만드는 공격입니다.
+    en:
+      name: Prompt injection
+      definition: An attack that hides instructions inside input such as an email or web page to make an AI do something it shouldn't.
+  - key: ai-agent
+    ko:
+      name: AI 에이전트
+      definition: 말로 맡긴 일을 스스로 도구를 골라 쓰며 끝까지 해내는 AI 프로그램입니다.
+    en:
+      name: AI agent
+      definition: An AI program that carries a task through to the end, choosing and using tools on its own.
+  - key: skill
+    ko:
+      name: 스킬
+      definition: AI 에이전트가 특정한 일을 하는 방법을 적어 둔 문서입니다. 필요할 때 꺼내 읽고 그대로 따릅니다.
+    en:
+      name: Skill
+      definition: A document describing how an AI agent should do a specific task. The agent reads it when needed and follows it.

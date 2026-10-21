@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 1010" role="img" aria-labelledby="title desc">
+  <title id="title">Iroha's data flow</title>
+  <desc id="desc">Phone call recordings are uploaded to Google Drive by an upload app; call-ingest turns them into text, stores them in the call records, and wakes Iroha to process the call. mail-watch checks Gmail automatically and wakes Iroha to check mail when new mail arrives. entity-context collects new calls and mail automatically and wakes Iroha to build context; the results go into the context records. Processing calls and checking mail both put to-dos into Structured and post messages to Slack. Important mail goes right away, the rest on the hour. When asked in Slack, Iroha reads the context records and Structured to answer. The to-do digest is sent three times a day by a script that reads Structured and posts to Slack.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#262626"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; }
+      .box { fill: #ffffff; stroke: #707070; stroke-width: 1.2; }
+      .tool { fill: #f4f4f4; stroke: #707070; stroke-width: 1.2; }
+      .agent { fill: #ffffff; stroke: #000000; stroke-width: 2.8; }
+      .name { font-size: 18px; font-weight: 700; fill: #000000; text-anchor: middle; }
+      .sub { font-size: 14px; font-weight: 400; fill: #707070; text-anchor: middle; }
+      .edge { fill: none; stroke: #262626; stroke-width: 1.6; }
+      .label { font-size: 13px; font-weight: 400; fill: #707070; paint-order: stroke; stroke: #ffffff; stroke-width: 4px; stroke-linejoin: round; }
+      .legend { font-size: 14px; font-weight: 400; fill: #262626; }
+    </style>
+  </defs>
+
+  <rect width="720" height="1010" fill="#ffffff"/>
+
+  <!-- Call branch (right, x=600) -->
+  <path class="edge" d="M600,80 V110" marker-end="url(#arrow)"/>
+  <path class="edge" d="M600,170 V200" marker-end="url(#arrow)"/>
+  <path class="edge" d="M600,260 V290" marker-end="url(#arrow)"/>
+  <path class="edge" d="M600,350 V400" marker-end="url(#arrow)"/>
+  <text class="label" x="610" y="380">Once transcribed</text>
+
+  <!-- Mail branch (left, x=120) -->
+  <path class="edge" d="M120,80 V200" marker-end="url(#arrow)"/>
+  <path class="edge" d="M120,260 V400" marker-end="url(#arrow)"/>
+  <text class="label" x="130" y="335">On new mail</text>
+
+  <!-- Context branch (middle, x=360) -->
+  <path class="edge" d="M220,50 H360 V290" marker-end="url(#arrow)"/>
+  <text class="label" x="370" y="150">Mail</text>
+  <path class="edge" d="M500,330 H460" marker-end="url(#arrow)"/>
+  <text class="label" x="480" y="320" text-anchor="middle">Calls</text>
+  <path class="edge" d="M360,350 V400" marker-end="url(#arrow)"/>
+  <text class="label" x="370" y="380">Collected automatically</text>
+  <path class="edge" d="M360,460 V510" marker-end="url(#arrow)"/>
+
+  <!-- Iroha → Structured / Slack -->
+  <path class="edge" d="M120,460 V660" marker-end="url(#arrow)"/>
+  <path class="edge" d="M600,460 V660" marker-end="url(#arrow)"/>
+  <path class="edge" d="M120,600 H600"/>
+  <circle cx="120" cy="600" r="3.5" fill="#262626"/>
+  <circle cx="600" cy="600" r="3.5" fill="#262626"/>
+  <text class="label" x="360" y="585" text-anchor="middle">Both: to-dos to Structured · messages to Slack</text>
+  <text class="label" x="588" y="618" text-anchor="end">Important mail right away,</text>
+  <text class="label" x="588" y="634" text-anchor="end">the rest on the hour</text>
+
+  <!-- Context records → Ask & answer (jumps over the merge line) -->
+  <path class="edge" d="M360,570 V594 a6,6 0 0 1 0,12 V660" marker-end="url(#arrow)"/>
+  <text class="label" x="370" y="640">Reads</text>
+
+  <!-- Asking and answering in Slack -->
+  <path class="edge" d="M500,690 H460" marker-end="url(#arrow)"/>
+  <path class="edge" d="M460,710 H500" marker-end="url(#arrow)"/>
+  <text class="label" x="480" y="654" text-anchor="middle">Question</text>
+  <text class="label" x="480" y="737" text-anchor="middle">Answer</text>
+  <path class="edge" d="M220,680 H260" marker-end="url(#arrow)"/>
+  <text class="label" x="240" y="654" text-anchor="middle">Reads</text>
+
+  <!-- To-do digest -->
+  <path class="edge" d="M120,720 V850 H260" marker-end="url(#arrow)"/>
+  <text class="label" x="130" y="790">Open to-dos</text>
+  <path class="edge" d="M460,850 H600 V720" marker-end="url(#arrow)"/>
+  <text class="label" x="610" y="790">Digest message</text>
+
+  <!-- Inputs -->
+  <rect class="box" x="20" y="20" width="200" height="60" rx="8"/>
+  <text class="name" x="120" y="48">Gmail</text>
+  <text class="sub" x="120" y="68">2 accounts</text>
+
+  <rect class="box" x="500" y="20" width="200" height="60" rx="8"/>
+  <text class="name" x="600" y="48">Call recordings</text>
+  <text class="sub" x="600" y="68">Phone records them</text>
+
+  <rect class="box" x="500" y="110" width="200" height="60" rx="8"/>
+  <text class="name" x="600" y="138">Google Drive</text>
+  <text class="sub" x="600" y="158">Uploaded by the app</text>
+
+  <!-- Custom-built programs -->
+  <rect class="tool" x="20" y="200" width="200" height="60" rx="8"/>
+  <text class="name" x="120" y="228">mail-watch</text>
+  <text class="sub" x="120" y="248">Checks automatically</text>
+
+  <rect class="tool" x="500" y="200" width="200" height="60" rx="8"/>
+  <text class="name" x="600" y="228">call-ingest</text>
+  <text class="sub" x="600" y="248">Speech to text</text>
+
+  <rect class="box" x="500" y="290" width="200" height="60" rx="8"/>
+  <text class="name" x="600" y="318">Call records</text>
+  <text class="sub" x="600" y="338">Audio · full transcripts</text>
+
+  <rect class="tool" x="260" y="290" width="200" height="60" rx="8"/>
+  <text class="name" x="360" y="318">entity-context</text>
+  <text class="sub" x="360" y="338">Collects calls and mail</text>
+
+  <!-- Jobs where Iroha thinks -->
+  <rect class="agent" x="20" y="400" width="200" height="60" rx="8"/>
+  <text class="name" x="120" y="428">Check mail</text>
+  <text class="sub" x="120" y="448">Per new email</text>
+
+  <rect class="agent" x="260" y="400" width="200" height="60" rx="8"/>
+  <text class="name" x="360" y="428">Build context</text>
+  <text class="sub" x="360" y="448">When a batch is ready</text>
+
+  <rect class="agent" x="500" y="400" width="200" height="60" rx="8"/>
+  <text class="name" x="600" y="428">Process call</text>
+  <text class="sub" x="600" y="448">Per call</text>
+
+  <rect class="box" x="260" y="510" width="200" height="60" rx="8"/>
+  <text class="name" x="360" y="538">Context records</text>
+  <text class="sub" x="360" y="558">Person · company · project</text>
+
+  <!-- Outputs -->
+  <rect class="box" x="20" y="660" width="200" height="60" rx="8"/>
+  <text class="name" x="120" y="688">Structured</text>
+  <text class="sub" x="120" y="708">Planner app</text>
+
+  <rect class="agent" x="260" y="660" width="200" height="60" rx="8"/>
+  <text class="name" x="360" y="688">Ask &amp; answer</text>
+  <text class="sub" x="360" y="708">When asked</text>
+
+  <rect class="box" x="500" y="660" width="200" height="60" rx="8"/>
+  <text class="name" x="600" y="688">Slack</text>
+  <text class="sub" x="600" y="708">Messages</text>
+
+  <rect class="tool" x="260" y="820" width="200" height="60" rx="8"/>
+  <text class="name" x="360" y="848">To-do digest</text>
+  <text class="sub" x="360" y="868">Automatic at 10 · 17 · 22</text>
+
+  <!-- Legend -->
+  <rect class="agent" x="20" y="940" width="28" height="18" rx="4"/>
+  <text class="legend" x="57" y="954">Jobs where Iroha does the thinking</text>
+  <rect class="tool" x="20" y="970" width="28" height="18" rx="4"/>
+  <text class="legend" x="57" y="984">Custom-built programs</text>
+  <rect class="box" x="380" y="940" width="28" height="18" rx="4"/>
+  <text class="legend" x="417" y="954">External services · storage</text>
+</svg>
