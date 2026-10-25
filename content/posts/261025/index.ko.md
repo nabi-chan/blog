@@ -5,7 +5,7 @@ description: "macOS 고성능 화면 공유는 일반 VNC와 무엇이 다를까
 date: "2026-10-25 12:00"
 categories: ["software", "network"]
 keywords: ["macOS 고성능 화면 공유", "High Performance screen sharing", "macOS 화면 공유 프로토콜", "VNC 프로토콜", "RFB 프로토콜", "SRTP", "HEVC 4:4:4"]
-draft: true
+draft: false
 ---
 
 ## macOS 고성능 화면 공유?
