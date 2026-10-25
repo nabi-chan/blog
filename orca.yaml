@@ -1,0 +1,3 @@
+# Orca 가 새 워크트리를 만들 때 실행한다. pnpm install 의 prepare 가 pre-push hook(.githooks)도 건다
+scripts:
+  setup: pnpm install
