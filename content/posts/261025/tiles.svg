@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" role="img" aria-labelledby="title desc">
+  <title id="title">화면을 띠 4개로 나눠 보내는 구조</title>
+  <desc id="desc">Mac 화면을 가로 띠 4개로 나누고, 띠마다 연속된 번호 SSRC n부터 n+3까지의 스트림으로 보낸다. 네 스트림은 클라이언트의 디코더 하나로 들어간다. 띠끼리 서로의 프레임을 참조하기 때문이다. 디코더가 푼 띠는 위에서부터 차례로 쌓여 화면 하나가 된다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#262626"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; }
+      .band { fill: #f4f4f4; stroke: #707070; stroke-width: 1.2; }
+      .agent { fill: #ffffff; stroke: #000000; stroke-width: 2.4; }
+      .title { font-size: 16px; font-weight: 700; fill: #000000; text-anchor: middle; }
+      .name { font-size: 18px; font-weight: 700; fill: #000000; text-anchor: middle; }
+      .band-text { font-size: 14px; font-weight: 400; fill: #262626; text-anchor: middle; }
+      .sub { font-size: 13px; font-weight: 400; fill: #707070; text-anchor: middle; }
+      .edge { fill: none; stroke: #262626; stroke-width: 1.6; }
+      .label { font-size: 13px; font-weight: 400; fill: #707070; }
+    </style>
+  </defs>
+
+  <rect width="720" height="340" fill="#ffffff"/>
+
+  <!-- Mac 화면 -->
+  <text class="title" x="110" y="34">Mac 화면</text>
+  <rect class="band" x="30" y="50" width="160" height="60"/>
+  <rect class="band" x="30" y="110" width="160" height="60"/>
+  <rect class="band" x="30" y="170" width="160" height="60"/>
+  <rect class="band" x="30" y="230" width="160" height="60"/>
+  <text class="band-text" x="110" y="85">띠 0</text>
+  <text class="band-text" x="110" y="145">띠 1</text>
+  <text class="band-text" x="110" y="205">띠 2</text>
+  <text class="band-text" x="110" y="265">띠 3</text>
+
+  <!-- 스트림 네 개 -->
+  <path class="edge" d="M190,80 H290 L418,150" marker-end="url(#arrow)"/>
+  <path class="edge" d="M190,140 H290 L418,162" marker-end="url(#arrow)"/>
+  <path class="edge" d="M190,200 H290 L418,178" marker-end="url(#arrow)"/>
+  <path class="edge" d="M190,260 H290 L418,190" marker-end="url(#arrow)"/>
+  <text class="label" x="204" y="72">SSRC n</text>
+  <text class="label" x="204" y="132">SSRC n+1</text>
+  <text class="label" x="204" y="192">SSRC n+2</text>
+  <text class="label" x="204" y="252">SSRC n+3</text>
+
+  <!-- 디코더 하나 -->
+  <rect class="agent" x="420" y="130" width="130" height="80" rx="8"/>
+  <text class="name" x="485" y="166">디코더 하나</text>
+  <text class="sub" x="485" y="190">띠끼리 서로 참조</text>
+
+  <path class="edge" d="M550,170 H588" marker-end="url(#arrow)"/>
+
+  <!-- 다시 쌓은 화면 -->
+  <text class="title" x="645" y="34">클라이언트 화면</text>
+  <rect class="band" x="590" y="50" width="110" height="60"/>
+  <rect class="band" x="590" y="110" width="110" height="60"/>
+  <rect class="band" x="590" y="170" width="110" height="60"/>
+  <rect class="band" x="590" y="230" width="110" height="60"/>
+  <text class="band-text" x="645" y="85">띠 0</text>
+  <text class="band-text" x="645" y="145">띠 1</text>
+  <text class="band-text" x="645" y="205">띠 2</text>
+  <text class="band-text" x="645" y="265">띠 3</text>
+</svg>

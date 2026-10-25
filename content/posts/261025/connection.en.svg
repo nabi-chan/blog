@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">Connections in High Performance screen sharing</title>
+  <desc id="desc">There are three connections between the Mac and the client. TCP 5900 is a two-way control channel, encrypted after authentication, that handles keyboard and mouse, cursor, screen size, and video and audio negotiation. Over UDP 5901, HEVC 4:4:4 video comes from the Mac to the client in four bands, encrypted with SRTP. Over UDP 5900, AAC-ELD audio comes from the Mac to the client with SRTP, and receiver reports and keyframe requests go from the client to the Mac with SRTCP.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#262626"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; }
+      .box { fill: #ffffff; stroke: #000000; stroke-width: 2.4; }
+      .name { font-size: 18px; font-weight: 700; fill: #000000; text-anchor: middle; }
+      .sub { font-size: 14px; font-weight: 400; fill: #707070; text-anchor: middle; }
+      .edge { fill: none; stroke: #262626; stroke-width: 1.6; }
+      .edge-udp { fill: none; stroke: #262626; stroke-width: 1.6; stroke-dasharray: 6 4; }
+      .channel { font-size: 15px; font-weight: 700; fill: #000000; text-anchor: middle; }
+      .label { font-size: 13px; font-weight: 400; fill: #707070; text-anchor: middle; }
+      .legend { font-size: 13px; font-weight: 400; fill: #262626; }
+    </style>
+  </defs>
+
+  <rect width="720" height="420" fill="#ffffff"/>
+
+  <!-- End boxes -->
+  <rect class="box" x="20" y="30" width="120" height="320" rx="8"/>
+  <text class="name" x="80" y="180">Mac</text>
+  <text class="sub" x="80" y="204">Screen Sharing</text>
+  <text class="sub" x="80" y="222">server</text>
+
+  <rect class="box" x="580" y="30" width="120" height="320" rx="8"/>
+  <text class="name" x="640" y="180">Client</text>
+
+  <!-- TCP 5900: control channel (two-way) -->
+  <text class="channel" x="360" y="70">TCP 5900 · Control channel</text>
+  <path class="edge" d="M144,90 H576" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text class="label" x="360" y="114">Encrypted after authentication. Keyboard and mouse,</text>
+  <text class="label" x="360" y="132">cursor, screen size, video and audio negotiation</text>
+
+  <!-- UDP 5901: video -->
+  <text class="channel" x="360" y="184">UDP 5901 · Video</text>
+  <path class="edge-udp" d="M144,204 H576" marker-end="url(#arrow)"/>
+  <text class="label" x="360" y="228">HEVC 4:4:4, 4 bands (SRTP)</text>
+
+  <!-- UDP 5900: audio and feedback -->
+  <text class="channel" x="360" y="276">UDP 5900 · Audio and feedback</text>
+  <path class="edge-udp" d="M144,296 H576" marker-end="url(#arrow)"/>
+  <text class="label" x="360" y="290" dy="26">AAC-ELD audio (SRTP)</text>
+  <path class="edge-udp" d="M576,336 H144" marker-end="url(#arrow)"/>
+  <text class="label" x="360" y="360">Receiver reports, keyframe requests (SRTCP)</text>
+
+  <!-- Legend -->
+  <path class="edge" d="M20,396 H60"/>
+  <text class="legend" x="70" y="400">TCP</text>
+  <path class="edge-udp" d="M130,396 H170"/>
+  <text class="legend" x="180" y="400">UDP</text>
+</svg>

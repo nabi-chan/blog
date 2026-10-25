@@ -48,3 +48,31 @@ terms:
     en:
       name: Skill
       definition: A document describing how an AI agent should do a specific task. The agent reads it when needed and follows it.
+  - key: diffie-hellman
+    ko:
+      name: Diffie-Hellman 키 교환
+      definition: 두 쪽이 공개해도 되는 값만 주고받고도 둘만 아는 같은 비밀 값을 얻는 방법입니다. 이 비밀 값으로 암호 키를 만듭니다.
+    en:
+      name: Diffie-Hellman key exchange
+      definition: A method that lets two parties derive the same shared secret while exchanging only values that are safe to make public. The secret is then used to make an encryption key.
+  - key: rtp
+    ko:
+      name: RTP
+      definition: Real-time Transport Protocol. 영상과 소리 같은 실시간 데이터를 보낼 때 패킷마다 순번, 시각, 스트림 번호를 붙이는 표준입니다.
+    en:
+      name: RTP
+      definition: Real-time Transport Protocol, a standard that tags each packet of real-time data such as video and audio with a sequence number, timestamp, and stream ID.
+  - key: hash
+    ko:
+      name: 해시
+      definition: 어떤 데이터든 정해진 길이의 값으로 줄이는 계산입니다. 데이터가 조금만 달라져도 결과가 완전히 바뀌고, 결과로 원래 데이터를 되돌릴 수 없습니다.
+    en:
+      name: Hash
+      definition: A computation that reduces any data to a fixed-length value. A small change in the data changes the result completely, and the original data cannot be recovered from the result.
+  - key: keyframe
+    ko:
+      name: 키프레임
+      definition: 다른 프레임을 참조하지 않고 혼자서 온전히 풀리는 영상 프레임입니다. 나머지 프레임은 대부분 앞 프레임과 달라진 점만 담습니다.
+    en:
+      name: Keyframe
+      definition: A video frame that decodes on its own without referring to other frames. Most other frames carry only what changed from earlier frames.

@@ -23,3 +23,6 @@ categories:
   - key: home-server
     ko: 홈 서버
     en: Home Server
+  - key: network
+    ko: 네트워크
+    en: Networking
