@@ -1,0 +1,8 @@
+#!/bin/sh
+# main 으로 가는 push 에 draft 글이 있으면 막는다 (scripts/pre-push.ts). 일부러 올릴 때는 git push --no-verify
+# PATH 가 짧은 GUI 클라이언트처럼 node 를 찾지 못하면 push 를 막지 않고 건너뛴다
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-push: node 를 찾지 못해 draft 검사를 건너뜁니다" >&2
+  exit 0
+fi
+exec node scripts/pre-push.ts

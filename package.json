@@ -20,7 +20,8 @@
     "content:rehash": "node scripts/content-rehash.ts",
     "content:check": "node scripts/content-check.ts",
     "audit:repo": "node scripts/audit.ts",
-    "lint:fsd": "steiger ./src"
+    "lint:fsd": "steiger ./src",
+    "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.170.45",

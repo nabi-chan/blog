@@ -14,6 +14,7 @@ export {
   translationResults,
 } from './audit.ts'
 export { changedSlugs, indexNowPayload, selectIndexNowUrls, sitemapUrls } from './indexnow.ts'
+export { mainPushes } from './pre-push.ts'
 export {
   type SmokeCheck,
   type SmokePost,

@@ -59,6 +59,11 @@ pnpm dev                         # http://localhost:3000
 
 `.dev.vars` 의 `DEV_OWNER=1` 이면 dev 에서 은솔로 동작한다(배지 댓글, 모든 댓글 수정·삭제). 프로덕션 빌드에서는 읽지 않는다.
 
+`pnpm install` 의 `prepare` 가 `core.hooksPath` 를 `.githooks` 로 맞춘다. pnpm 은 바뀐 것이 없으면 `prepare` 를 건너뛰므로, 이미 설치한 클론에서는 `pnpm run prepare` 를 한 번 실행한다.
+
+- `.githooks/pre-push`(`scripts/pre-push.ts`)는 main 으로 가는 push 에서 바뀐 글 중 `draft: true` 인 글이 있으면 push 를 막는다. 일부러 올릴 때는 `git push --no-verify` 를 쓴다.
+- GitHub 에서 PR 을 머지하는 경로는 hook 이 돌지 않는다.
+
 ## 명령
 
 | 명령 | 하는 일 |
@@ -192,3 +197,4 @@ pnpm dev                         # http://localhost:3000
 - 글 폴더: `content/posts/<YYMMDD(-kebab)?>/index.ko.md` (+ `index.en.md`, 글 옆 이미지). `YYMMDD` 는 frontmatter `date`(KST)와 같고, 하루에 한 편만 쓴다.
 - 카테고리 표시 이름은 `content/categories.yaml`, 용어는 `content/glossary.yaml` 에 ko/en 으로 둔다.
 - frontmatter 의 `title`·`seoTitle`·`keywords`·`categories` 를 쓰는 기준은 `docs/writing/style-guide.md` 7절에 있다.
+- 공개는 ko frontmatter 의 `draft` 를 `false` 로 바꿔서 한다. `draft: true` 인 글은 배포해도 프리렌더·sitemap·RSS 에서 빠져 사이트에 나오지 않는다.
