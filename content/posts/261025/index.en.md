@@ -3,7 +3,7 @@ title: "How macOS High Performance Screen Sharing Works"
 seoTitle: "macOS High Performance Screen Sharing Protocol: VNC, SRTP, and HEVC 4:4:4"
 description: "How is macOS High Performance screen sharing different from regular VNC? A walk through its authentication, encryption, video transport, and loss recovery."
 keywords: ["macOS High Performance screen sharing", "High Performance screen sharing protocol", "macOS Screen Sharing protocol", "Apple VNC protocol", "RFB protocol", "SRTP video streaming", "HEVC 4:4:4", "macOS screen sharing vs VNC"]
-sourceHash: "9f645702f51d1f2d563cda82ca99202167b96d64b053e46eced057e7a194d054"
+sourceHash: "ba353b5a77f8b789497b44e1023c90d9e649508ce26ff6c8fd62766574b0cf02"
 translationStatus: machine
 ---
 
@@ -13,7 +13,9 @@ macOS High Performance screen sharing is a screen sharing mode Apple introduced 
 
 I wrote this post to share how Apple's unpublished High Performance screen sharing protocol works. By the end, you will know how it differs from regular VNC and what path a Mac's screen takes before it is drawn on another device.
 
-I built a client that speaks this protocol myself, and this post is based on the behavior I saw on October 15, 2026. At the time, the Mac was running macOS 27.0.1, and the client device, an iPad Pro 13-inch (M4), was running iPadOS 27.0.1. The protocol differs slightly between macOS builds, so the details here may change as macOS changes.
+I built a client that speaks this protocol myself, and this post is based on the behavior I saw on October 15, 2026. At the time, the Mac was running macOS 27.0.1, and the client device, an iPad Pro 13-inch (M4), was running iPadOS 27.0.1. Only horizontal scrolling was checked on October 26, on a single Mac running macOS 27.0.1 that ran both the client and the server.
+
+The protocol differs slightly between macOS builds, so the details here may change as macOS changes.
 
 ## VNC and RFB
 
@@ -160,7 +162,9 @@ All input is sent over the TCP control channel.
 
 - **Keyboard**: Uses the standard RFB key event as is. Pressed keys are sent as key numbers defined by X11 (keysyms), and Unicode characters such as Korean are typed by sending `0x01000000` plus the character's Unicode code point.
 - **Mouse**: Uses a separate message Apple designed, and the part holding the coordinates and buttons is encrypted once more before it goes into a record. The right and middle button numbers are also swapped relative to the RFB standard.
-- **Scroll**: One scroll event moves the Mac screen by only 1 pixel, so about 12 events are bundled per wheel notch.
+- **Scroll**: Vertical scrolling is sent as presses and releases of virtual buttons 4 and 5, as in the RFB standard. One scroll event moves the Mac screen by only 1 pixel, so about 12 events are bundled per wheel notch.
+
+Horizontal scrolling is sent as buttons 6 and 7, the slots right after buttons 4 and 5, in Apple's mouse message, and each event scrolls by the same amount as a vertical one. However, if you send the same buttons in the standard RFB mouse message during High Performance screen sharing, the Mac takes them as extra button clicks. I have not yet checked on screen which of the two buttons scrolls left.
 
 A Mac with a Retina display lays out the screen at a logical size and actually draws it with twice as many pixels horizontally and vertically (for example, a screen that looks like 1512×982 is drawn at 3024×1964 pixels). Mouse coordinates are based on the actual pixels, not this logical size.
 
