@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 432" role="img" aria-labelledby="title desc">
+  <title id="title">후보를 보강할 때마다 오른 재현율(CLOVA Speech 합의 기준)</title>
+  <desc id="desc">CLOVA Speech 합의로 잰 재현율이다. 회색 띠는 CLOVA Speech 세 실행의 범위 94~98%다. Whisper turbo 77%, Qwen3-ASR에 통화 상대 기준 힌트 83%, 여기에 약어 읽기 84%, 함께 나온 사람·회사 5개 87%, 후보 상한 25개 89%. 참고로 힌트 없는 Qwen3-ASR(약어 읽기 포함)은 81%, 1차 전사 기준 힌트는 두 번 돌려 77%와 80%였다.</desc>
+  <defs>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; }
+      .row { font-size: 14px; font-weight: 400; fill: #262626; }
+      .rowsub { font-size: 12px; font-weight: 400; fill: #707070; }
+      .tick { font-size: 13px; font-weight: 400; fill: #707070; text-anchor: middle; }
+      .value { font-size: 13px; font-weight: 700; fill: #262626; }
+      .legend { font-size: 13px; font-weight: 400; fill: #262626; }
+      .group { font-size: 12px; font-weight: 700; fill: #707070; }
+      .grid { stroke: #e2e2e2; stroke-width: 1; }
+    </style>
+  </defs>
+  <rect width="720" height="432" fill="#ffffff"/>
+  <circle cx="26.0" cy="24" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="legend" x="38" y="29">로컬 설정</text>
+  <circle cx="166.0" cy="24" r="6" fill="#707070" stroke="#ffffff" stroke-width="2"/>
+  <text class="legend" x="178" y="29">참고 설정</text>
+  <rect x="312" y="17" width="28" height="14" fill="#ececec"/>
+  <text class="legend" x="348" y="29">CLOVA Speech 세 실행(94~98%)</text>
+  <rect x="612.0" y="56" width="52.0" height="340" fill="#ececec"/>
+  <line class="grid" x1="300.0" y1="56" x2="300.0" y2="396"/>
+  <text class="tick" x="300.0" y="416">70%</text>
+  <line class="grid" x1="430.0" y1="56" x2="430.0" y2="396"/>
+  <text class="tick" x="430.0" y="416">80%</text>
+  <line class="grid" x1="560.0" y1="56" x2="560.0" y2="396"/>
+  <text class="tick" x="560.0" y="416">90%</text>
+  <line class="grid" x1="690.0" y1="56" x2="690.0" y2="396"/>
+  <text class="tick" x="690.0" y="416">100%</text>
+  <text class="rowsub" x="20" y="416">재현율</text>
+  <text class="row" x="20" y="89">Whisper turbo</text>
+  <circle cx="391.0" cy="84" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="403.0" y="89">77%</text>
+  <text class="row" x="20" y="126">Qwen3-ASR</text>
+  <text class="rowsub" x="20" y="142">통화 상대 기준 힌트</text>
+  <circle cx="469.0" cy="128" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="481.0" y="133">83%</text>
+  <text class="row" x="20" y="177">+ 약어 읽기</text>
+  <circle cx="482.0" cy="172" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="494.0" y="177">84%</text>
+  <text class="row" x="20" y="221">+ 함께 나온 사람·회사 5개</text>
+  <circle cx="521.0" cy="216" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="533.0" y="221">87%</text>
+  <text class="row" x="20" y="265">+ 후보 상한 25개</text>
+  <circle cx="547.0" cy="260" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="559.0" y="265">89%</text>
+  <text class="group" x="20" y="306">참고</text>
+  <text class="row" x="20" y="336">Qwen3-ASR, 힌트 없음</text>
+  <text class="rowsub" x="20" y="352">약어 읽기 포함</text>
+  <circle cx="443.0" cy="338" r="6" fill="#707070" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="455.0" y="343">81%</text>
+  <text class="row" x="20" y="380">Qwen3-ASR</text>
+  <text class="rowsub" x="20" y="396">1차 전사 기준 힌트</text>
+  <line x1="391.0" y1="382" x2="430.0" y2="382" stroke="#707070" stroke-width="2"/>
+  <circle cx="391.0" cy="382" r="6" fill="#707070" stroke="#ffffff" stroke-width="2"/>
+  <circle cx="430.0" cy="382" r="6" fill="#707070" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="442.0" y="387">77% / 80%</text>
+</svg>

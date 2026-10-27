@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 780" role="img" aria-labelledby="title desc">
+  <title id="title">Call processing flow and the part swapped in the test</title>
+  <desc id="desc">When the phone records a call, the upload app puts the recording on Google Drive, and call-ingest downloads it and requests a transcript. Today CLOVA Speech handles transcription and speaker diarization; in the test this step was replaced by local STT made of a speech recognition model and pyannote. Iroha reads the transcript and splits the work into the immediate branch and the context branch. The immediate branch registers to-dos and appointments and posts to Slack. The context branch links people, companies, and projects to the context records. The context records pick up to 15 existing people and companies by alias and hand them to Iroha as candidates.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#262626"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', sans-serif; }
+      .box { fill: #ffffff; stroke: #707070; stroke-width: 1.2; }
+      .tool { fill: #f4f4f4; stroke: #707070; stroke-width: 1.2; }
+      .agent { fill: #ffffff; stroke: #000000; stroke-width: 2.8; }
+      .group { fill: none; stroke: #707070; stroke-width: 1.2; stroke-dasharray: 6 4; }
+      .name { font-size: 18px; font-weight: 700; fill: #000000; text-anchor: middle; }
+      .sub { font-size: 14px; font-weight: 400; fill: #707070; text-anchor: middle; }
+      .grouptitle { font-size: 14px; font-weight: 700; fill: #262626; text-anchor: middle; }
+      .edge { fill: none; stroke: #262626; stroke-width: 1.6; }
+      .label { font-size: 13px; font-weight: 400; fill: #707070; }
+    </style>
+  </defs>
+
+  <rect width="720" height="780" fill="#ffffff"/>
+
+  <rect class="box" x="250" y="24" width="220" height="56" rx="8"/>
+  <text class="name" x="360" y="48">Phone</text>
+  <text class="sub" x="360" y="68">Records calls</text>
+  <path class="edge" d="M360,82 V112" marker-end="url(#arrow)"/>
+
+  <rect class="tool" x="250" y="116" width="220" height="56" rx="8"/>
+  <text class="name" x="360" y="140">Upload app</text>
+  <text class="sub" x="360" y="160">Uploads to Google Drive</text>
+  <path class="edge" d="M360,174 V204" marker-end="url(#arrow)"/>
+
+  <rect class="tool" x="250" y="208" width="220" height="56" rx="8"/>
+  <text class="name" x="360" y="232">call-ingest</text>
+  <text class="sub" x="360" y="252">Downloads, asks for transcript</text>
+  <path class="edge" d="M360,266 V300" marker-end="url(#arrow)"/>
+
+  <rect class="group" x="40" y="304" width="640" height="124" rx="10"/>
+  <text class="grouptitle" x="360" y="328">Swapped in the test</text>
+  <rect class="box" x="70" y="344" width="240" height="64" rx="8"/>
+  <text class="name" x="190" y="370">CLOVA Speech</text>
+  <text class="sub" x="190" y="392">Now: transcription + diarization</text>
+  <path class="edge" d="M314,376 H404" marker-end="url(#arrow)"/>
+  <rect class="box" x="410" y="344" width="240" height="64" rx="8"/>
+  <text class="name" x="530" y="370">Local STT</text>
+  <text class="sub" x="530" y="392">Test: ASR model + pyannote</text>
+
+  <path class="edge" d="M360,430 V462" marker-end="url(#arrow)"/>
+  <text class="label" x="372" y="451">Transcript</text>
+
+  <rect class="agent" x="250" y="466" width="220" height="60" rx="8"/>
+  <text class="name" x="360" y="492">Iroha</text>
+  <text class="sub" x="360" y="512">Reads and organizes</text>
+
+  <path class="edge" d="M320,528 L196,598" marker-end="url(#arrow)"/>
+  <path class="edge" d="M400,528 L524,598" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="60" y="602" width="260" height="64" rx="8"/>
+  <text class="name" x="190" y="628">Immediate branch</text>
+  <text class="sub" x="190" y="650">To-dos, appointments, Slack alert</text>
+
+  <rect class="box" x="400" y="602" width="260" height="64" rx="8"/>
+  <text class="name" x="530" y="628">Context branch</text>
+  <text class="sub" x="530" y="650">Links people, companies, projects</text>
+  <path class="edge" d="M530,668 V700" marker-end="url(#arrow)"/>
+
+  <rect class="tool" x="400" y="704" width="260" height="56" rx="8"/>
+  <text class="name" x="530" y="728">Context records</text>
+  <text class="sub" x="530" y="748">Picks up to 15 candidates by alias</text>
+
+  <path class="edge" d="M660,732 H696 V496 H474" marker-end="url(#arrow)"/>
+  <text class="label" x="688" y="560" text-anchor="end">Candidates</text>
+</svg>

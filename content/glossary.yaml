@@ -76,3 +76,17 @@ terms:
     en:
       name: Keyframe
       definition: A video frame that decodes on its own without referring to other frames. Most other frames carry only what changed from earlier frames.
+  - key: speaker-diarization
+    ko:
+      name: 화자 분리
+      definition: 여러 사람이 말한 녹음에서 누가 언제 말했는지 구간을 나누는 일입니다. 화자 이름은 모르고 A, B처럼 라벨만 붙입니다.
+    en:
+      name: Speaker diarization
+      definition: Splitting a multi-speaker recording into segments by who spoke when. It does not know the speakers' names and only labels them, such as A and B.
+  - key: forced-alignment
+    ko:
+      name: 강제 정렬
+      definition: 이미 받아 적은 글과 오디오를 맞대어, 글의 단어마다 오디오의 어느 시각에 나왔는지 찾는 일입니다.
+    en:
+      name: Forced alignment
+      definition: Matching an existing transcript against its audio to find when each word in the text was spoken.

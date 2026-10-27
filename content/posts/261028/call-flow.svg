@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 780" role="img" aria-labelledby="title desc">
+  <title id="title">통화 처리 흐름과 시험에서 바꾼 부분</title>
+  <desc id="desc">휴대폰이 통화를 녹음하면 업로드 앱이 녹음을 Google Drive에 올리고, call-ingest가 녹음을 내려받아 전사를 요청한다. 지금은 CLOVA Speech가 전사와 화자 분리를 하고, 시험에서는 이 자리를 음성 인식 모델과 pyannote로 이루어진 로컬 STT로 바꿨다. 이로하는 전사록을 읽고 바로 처리하는 갈래와 맥락으로 쌓는 갈래로 나눠 정리한다. 바로 처리하는 갈래는 할 일과 일정을 등록하고 Slack으로 알린다. 맥락으로 쌓는 갈래는 사람·회사·프로젝트를 맥락 기록에 잇는다. 맥락 기록은 별칭으로 기존 사람·회사 후보를 15개까지 골라 이로하에게 넘긴다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#262626"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; }
+      .box { fill: #ffffff; stroke: #707070; stroke-width: 1.2; }
+      .tool { fill: #f4f4f4; stroke: #707070; stroke-width: 1.2; }
+      .agent { fill: #ffffff; stroke: #000000; stroke-width: 2.8; }
+      .group { fill: none; stroke: #707070; stroke-width: 1.2; stroke-dasharray: 6 4; }
+      .name { font-size: 18px; font-weight: 700; fill: #000000; text-anchor: middle; }
+      .sub { font-size: 14px; font-weight: 400; fill: #707070; text-anchor: middle; }
+      .grouptitle { font-size: 14px; font-weight: 700; fill: #262626; text-anchor: middle; }
+      .edge { fill: none; stroke: #262626; stroke-width: 1.6; }
+      .label { font-size: 13px; font-weight: 400; fill: #707070; }
+    </style>
+  </defs>
+
+  <rect width="720" height="780" fill="#ffffff"/>
+
+  <!-- 녹음과 업로드 -->
+  <rect class="box" x="250" y="24" width="220" height="56" rx="8"/>
+  <text class="name" x="360" y="48">휴대폰</text>
+  <text class="sub" x="360" y="68">통화 녹음</text>
+  <path class="edge" d="M360,82 V112" marker-end="url(#arrow)"/>
+
+  <rect class="tool" x="250" y="116" width="220" height="56" rx="8"/>
+  <text class="name" x="360" y="140">업로드 앱</text>
+  <text class="sub" x="360" y="160">녹음을 Google Drive에 올림</text>
+  <path class="edge" d="M360,174 V204" marker-end="url(#arrow)"/>
+
+  <rect class="tool" x="250" y="208" width="220" height="56" rx="8"/>
+  <text class="name" x="360" y="232">call-ingest</text>
+  <text class="sub" x="360" y="252">녹음을 내려받아 전사 요청</text>
+  <path class="edge" d="M360,266 V300" marker-end="url(#arrow)"/>
+
+  <!-- 시험에서 바꾼 부분 -->
+  <rect class="group" x="40" y="304" width="640" height="124" rx="10"/>
+  <text class="grouptitle" x="360" y="328">시험에서 바꾼 부분</text>
+  <rect class="box" x="70" y="344" width="240" height="64" rx="8"/>
+  <text class="name" x="190" y="370">CLOVA Speech</text>
+  <text class="sub" x="190" y="392">지금: 전사·화자 분리</text>
+  <path class="edge" d="M314,376 H404" marker-end="url(#arrow)"/>
+  <rect class="box" x="410" y="344" width="240" height="64" rx="8"/>
+  <text class="name" x="530" y="370">로컬 STT</text>
+  <text class="sub" x="530" y="392">시험: 음성 인식 + pyannote</text>
+
+  <path class="edge" d="M360,430 V462" marker-end="url(#arrow)"/>
+  <text class="label" x="372" y="451">전사록</text>
+
+  <!-- 이로하 -->
+  <rect class="agent" x="250" y="466" width="220" height="60" rx="8"/>
+  <text class="name" x="360" y="492">이로하</text>
+  <text class="sub" x="360" y="512">전사록을 읽고 정리</text>
+
+  <!-- 두 갈래 -->
+  <path class="edge" d="M320,528 L196,598" marker-end="url(#arrow)"/>
+  <path class="edge" d="M400,528 L524,598" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="60" y="602" width="260" height="64" rx="8"/>
+  <text class="name" x="190" y="628">바로 처리하는 갈래</text>
+  <text class="sub" x="190" y="650">할 일·일정 등록, Slack 알림</text>
+
+  <rect class="box" x="400" y="602" width="260" height="64" rx="8"/>
+  <text class="name" x="530" y="628">맥락으로 쌓는 갈래</text>
+  <text class="sub" x="530" y="650">사람·회사·프로젝트를 맥락 기록에</text>
+  <path class="edge" d="M530,668 V700" marker-end="url(#arrow)"/>
+
+  <rect class="tool" x="400" y="704" width="260" height="56" rx="8"/>
+  <text class="name" x="530" y="728">맥락 기록</text>
+  <text class="sub" x="530" y="748">별칭으로 후보를 15개까지 고름</text>
+
+  <!-- 후보가 이로하에게 돌아감 -->
+  <path class="edge" d="M660,732 H696 V496 H474" marker-end="url(#arrow)"/>
+  <text class="label" x="688" y="560" text-anchor="end">후보</text>
+</svg>
