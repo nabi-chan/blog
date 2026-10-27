@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 324" role="img" aria-labelledby="title desc">
+  <title id="title">정답 기준별 재현율: 마지막 로컬 설정과 CLOVA Speech</title>
+  <desc id="desc">네 정답 기준마다 마지막 로컬 설정의 재현율을 점으로, CLOVA Speech 세 실행의 범위를 막대로 나타냈다. CLOVA Speech 합의(기존 사람·회사): 로컬 89%, CLOVA Speech 94~98%. 투표로 고치고 못 가른 8개를 넣은 정답: 로컬 80%, CLOVA Speech 86~92%. 투표로 고치고 못 가른 8개를 뺀 정답: 로컬 88%, CLOVA Speech 87~91%. 직접 듣고 고친 정답: 로컬 84%, CLOVA Speech 82~87%.</desc>
+  <defs>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; }
+      .row { font-size: 14px; font-weight: 400; fill: #262626; }
+      .rowsub { font-size: 12px; font-weight: 400; fill: #707070; }
+      .tick { font-size: 13px; font-weight: 400; fill: #707070; text-anchor: middle; }
+      .value { font-size: 13px; font-weight: 700; fill: #262626; }
+      .legend { font-size: 13px; font-weight: 400; fill: #262626; }
+      .group { font-size: 12px; font-weight: 700; fill: #707070; }
+      .grid { stroke: #e2e2e2; stroke-width: 1; }
+    </style>
+  </defs>
+  <rect width="720" height="324" fill="#ffffff"/>
+  <circle cx="306.0" cy="24" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="legend" x="318" y="29">마지막 로컬 설정</text>
+  <rect x="470" y="19" width="28" height="10" rx="5" fill="#bdbdbd"/>
+  <text class="legend" x="506" y="29">CLOVA Speech 세 실행의 범위</text>
+  <line class="grid" x1="300.0" y1="56" x2="300.0" y2="288"/>
+  <text class="tick" x="300.0" y="308">70%</text>
+  <line class="grid" x1="430.0" y1="56" x2="430.0" y2="288"/>
+  <text class="tick" x="430.0" y="308">80%</text>
+  <line class="grid" x1="560.0" y1="56" x2="560.0" y2="288"/>
+  <text class="tick" x="560.0" y="308">90%</text>
+  <line class="grid" x1="690.0" y1="56" x2="690.0" y2="288"/>
+  <text class="tick" x="690.0" y="308">100%</text>
+  <text class="rowsub" x="20" y="308">재현율</text>
+  <text class="row" x="20" y="82">CLOVA Speech 합의</text>
+  <text class="rowsub" x="20" y="98">기존 사람·회사</text>
+  <rect x="612.0" y="79" width="52.0" height="10" rx="5" fill="#bdbdbd"/>
+  <circle cx="547.0" cy="84" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="547.0" y="71" text-anchor="middle">89%</text>
+  <text class="row" x="20" y="142">투표로 고침</text>
+  <text class="rowsub" x="20" y="158">못 가른 8개 포함</text>
+  <rect x="508.0" y="139" width="78.0" height="10" rx="5" fill="#bdbdbd"/>
+  <circle cx="430.0" cy="144" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="430.0" y="131" text-anchor="middle">80%</text>
+  <text class="row" x="20" y="202">투표로 고침</text>
+  <text class="rowsub" x="20" y="218">못 가른 8개 제외</text>
+  <rect x="521.0" y="199" width="52.0" height="10" rx="5" fill="#bdbdbd"/>
+  <circle cx="534.0" cy="204" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="534.0" y="191" text-anchor="middle">88%</text>
+  <text class="row" x="20" y="262">직접 듣고 고침</text>
+  <text class="rowsub" x="20" y="278">새로 나온 사람 포함</text>
+  <rect x="456.0" y="259" width="65.0" height="10" rx="5" fill="#bdbdbd"/>
+  <circle cx="482.0" cy="264" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="482.0" y="251" text-anchor="middle">84%</text>
+</svg>

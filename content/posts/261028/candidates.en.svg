@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 432" role="img" aria-labelledby="title desc">
+  <title id="title">Recall rising with each candidate fix (CLOVA Speech consensus)</title>
+  <desc id="desc">Recall measured against the CLOVA Speech consensus. The gray band is the range of three CLOVA Speech runs, 94–98%. Whisper turbo 77%, Qwen3-ASR with contact-based hints 83%, plus acronym readings 84%, plus 5 co-mentioned people and companies 87%, plus a candidate cap of 25 89%. For reference, Qwen3-ASR without hints (with acronym readings) scored 81%, and first-pass hints scored 77% and 80% over two runs.</desc>
+  <defs>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', sans-serif; }
+      .row { font-size: 14px; font-weight: 400; fill: #262626; }
+      .rowsub { font-size: 12px; font-weight: 400; fill: #707070; }
+      .tick { font-size: 13px; font-weight: 400; fill: #707070; text-anchor: middle; }
+      .value { font-size: 13px; font-weight: 700; fill: #262626; }
+      .legend { font-size: 13px; font-weight: 400; fill: #262626; }
+      .group { font-size: 12px; font-weight: 700; fill: #707070; }
+      .grid { stroke: #e2e2e2; stroke-width: 1; }
+    </style>
+  </defs>
+  <rect width="720" height="432" fill="#ffffff"/>
+  <circle cx="26.0" cy="24" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="legend" x="38" y="29">Local setup</text>
+  <circle cx="156.0" cy="24" r="6" fill="#707070" stroke="#ffffff" stroke-width="2"/>
+  <text class="legend" x="168" y="29">Reference setup</text>
+  <rect x="306" y="17" width="28" height="14" fill="#ececec"/>
+  <text class="legend" x="342" y="29">CLOVA Speech, 3 runs (94–98%)</text>
+  <rect x="612.0" y="56" width="52.0" height="340" fill="#ececec"/>
+  <line class="grid" x1="300.0" y1="56" x2="300.0" y2="396"/>
+  <text class="tick" x="300.0" y="416">70%</text>
+  <line class="grid" x1="430.0" y1="56" x2="430.0" y2="396"/>
+  <text class="tick" x="430.0" y="416">80%</text>
+  <line class="grid" x1="560.0" y1="56" x2="560.0" y2="396"/>
+  <text class="tick" x="560.0" y="416">90%</text>
+  <line class="grid" x1="690.0" y1="56" x2="690.0" y2="396"/>
+  <text class="tick" x="690.0" y="416">100%</text>
+  <text class="rowsub" x="20" y="416">Recall</text>
+  <text class="row" x="20" y="89">Whisper turbo</text>
+  <circle cx="391.0" cy="84" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="403.0" y="89">77%</text>
+  <text class="row" x="20" y="126">Qwen3-ASR</text>
+  <text class="rowsub" x="20" y="142">contact-based hints</text>
+  <circle cx="469.0" cy="128" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="481.0" y="133">83%</text>
+  <text class="row" x="20" y="177">+ acronym readings</text>
+  <circle cx="482.0" cy="172" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="494.0" y="177">84%</text>
+  <text class="row" x="20" y="221">+ 5 co-mentioned people &amp; companies</text>
+  <circle cx="521.0" cy="216" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="533.0" y="221">87%</text>
+  <text class="row" x="20" y="265">+ candidate cap of 25</text>
+  <circle cx="547.0" cy="260" r="6" fill="#000000" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="559.0" y="265">89%</text>
+  <text class="group" x="20" y="306">Reference</text>
+  <text class="row" x="20" y="336">Qwen3-ASR, no hints</text>
+  <text class="rowsub" x="20" y="352">with acronym readings</text>
+  <circle cx="443.0" cy="338" r="6" fill="#707070" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="455.0" y="343">81%</text>
+  <text class="row" x="20" y="380">Qwen3-ASR</text>
+  <text class="rowsub" x="20" y="396">first-pass hints</text>
+  <line x1="391.0" y1="382" x2="430.0" y2="382" stroke="#707070" stroke-width="2"/>
+  <circle cx="391.0" cy="382" r="6" fill="#707070" stroke="#ffffff" stroke-width="2"/>
+  <circle cx="430.0" cy="382" r="6" fill="#707070" stroke="#ffffff" stroke-width="2"/>
+  <text class="value" x="442.0" y="387">77% / 80%</text>
+</svg>
